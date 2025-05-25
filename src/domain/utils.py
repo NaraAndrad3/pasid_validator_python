@@ -61,7 +61,7 @@ def generate_random_port(min_port = 1000, max_port = 9000):
 
 
 
-ret = parse_properties_file('/home/nara/Documentos/2025.1/SD/Trabalho_Final/pasid_validator_python/config/loadbalancer1.properties')
+ret = read_properties_file('/home/nara/Documentos/2025.1/SD/Trabalho_Final/pasid_validator_python/config/loadbalancer1.properties')
 
 
 for key, value in ret.items():
