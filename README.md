@@ -75,7 +75,7 @@ Nesta primeira etapa, a comunicação é **simulada em memória**. Isso signific
 
 ---
 
-#### ** Como executar o sistema:**
+#### **Como executar o sistema:**
 
 No terminal, dentro da raiz do projeto execute o comando:
 
