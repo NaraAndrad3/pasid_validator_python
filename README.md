@@ -2,12 +2,13 @@
 
 Escrito originalmente em Java, O PASID-VALIDATOR serve para montar um sistema distribuído cliente-servidor(es) e capturar os tempos de cada etapa do processamento. Este projeto reescreve o PASID-VALIDOR na linguagem python, como parte da proposta do trabalho final da disciplina de Sistemas Distribuidos. O projeto é dividido em duas etapas:
 
-* **Etapa 1: Reescrita e Simulação em Memória (Entrega Atual)**
+* **Fase 1: Reescrita e Implementação da Comunicação via Sockets (Versão Atual)**
     * Foco na tradução da lógica original do Java para Python.
-    * A comunicação entre os componentes é simulada diretamente em memória, sem o uso de sockets de rede reais. Isso permite validar o fluxo lógico e os cálculos de tempo de forma controlada.
-* **Etapa 2: Execução Distribuída com Docker (Próximos Passos)**
+    * **Implementação completa da comunicação entre os componentes utilizando sockets TCP/IP reais.** Isso permite validar o fluxo lógico e os cálculos de tempo em um ambiente mais próximo de uma aplicação distribuída.
+* **Fase 2: Execução Distribuída com Docker (Próximos Passos)**
     * Implementação e execução dos componentes em ambientes conteinerizados (Docker).
     * Serão utilizados 1 `Source`, 2 `Load Balancers` e seus respectivos serviços, rodando em contêineres separados para simular um ambiente distribuído real.
+
 
 
 ### Estrutura do projeto
@@ -32,12 +33,19 @@ pasid_validator_python/
 │   ├── loadbalancer1.properties
 │   ├── loadbalancer2.properties
 │   └── source.properties
+├── run_components/
+│   ├── run.sh
+│   ├── run_loadbalancer1.py
+│   ├── run_loadbalancer2.py
+│   ├── run_service1.py
+│   ├── run_service2.py
+│   └── run_source.py
 └── main.py    
 ```
 
-### Como Funciona (Entrega 01 - Simulação em Memória)
+### Como Funciona (Fase 1 - Comunicação via Sockets)
 
-O projeto é construído em torno de uma arquitetura de **proxies** que simulam o fluxo de requisições e o processamento em um ambiente distribuído. Cada componente é uma thread separada, permitindo a execução concorrente.
+O projeto é construído em torno de uma arquitetura de **proxies** que gerenciam o fluxo de requisições e o processamento em um ambiente distribuído. Cada componente é uma thread separada, permitindo a execução concorrente e a comunicação em rede.
 
 #### **Componentes Principais e Suas Funções:**
 
@@ -48,40 +56,46 @@ O projeto é construído em torno de uma arquitetura de **proxies** que simulam 
 
 2.  **`LoadBalancerProxy` (Balanceador de Carga)**
     * **Função:** Recebe requisições e as distribui eficientemente para um grupo de "serviços" (que podem ser outras instâncias de `LoadBalancerProxy` ou `ServiceProxy` no nível final).
-    * **Comportamento:** Simula o roteamento de mensagens, a gerência de filas (com capacidade configurável) e o controle de quais serviços estão disponíveis para receber novas requisições.
+    * **Comportamento:** Simula o roteamento de mensagens, a gerência de filas (com capacidade configurável) e o controle de quais serviços estão disponíveis para receber novas requisições através de "pings".
     * **Configuração:** `config/loadbalancer1.properties` e `config/loadbalancer2.properties` definem suas portas, tamanho da fila, número de serviços que gerenciam e para onde os serviços devem rotear suas respostas.
 
 3.  **`ServiceProxy` (Serviço)**
     * **Função:** Representa uma unidade de trabalho que processa uma requisição.
     * **Simulação:** Após receber uma mensagem, simula um tempo de processamento (baseado em um tempo de serviço e desvio padrão configuráveis) e, em seguida, envia a mensagem para o próximo destino na cadeia (que pode ser outro `LoadBalancerProxy` ou a `Source` novamente).
 
-#### **Comunicação entre Componentes (Entrega 01):**
+#### **Comunicação entre Componentes (Fase 1):**
 
-Nesta primeira etapa, a comunicação é **simulada em memória**. Isso significa que:
+Nesta fase, a comunicação é realizada através de **sockets TCP/IP reais**. Isso significa que:
 
-* **Sem Sockets Reais:** Os componentes **não** utilizam sockets TCP/IP ou comunicação de rede física.
-* **Chamada Direta de Métodos:** A interação ocorre através da chamada direta de métodos (`receiving_messages`) entre as instâncias dos proxies, usando um registro global (`AbstractProxy._proxy_registry`) para "encontrar" a instância correta de destino pelo seu identificador (porta).
-* **Propósito:** Esta abordagem simplificada permite validar a lógica do fluxo de mensagens, o cálculo de tempos e a interação entre os componentes de forma isolada e controlada, antes de introduzir a complexidade da rede real na próxima etapa.
+* **Sockets de Rede:** Os componentes utilizam o módulo `socket` do Python para estabelecer conexões TCP/IP.
+* **Comunicação Persistente:** As conexões são mantidas abertas quando possível para permitir comunicação bidirecional contínua (ex: para pings e respostas).
+* **Fluxo de Dados:** Mensagens são enviadas e recebidas como strings via rede.
 
-#### **Fluxo de Requisições Típico na Entrega 01:**
+#### **Fluxo de Requisições Típico na Fase 1:**
 
-1.  **`Source`** gera uma mensagem com um timestamp inicial.
-2.  Essa mensagem é "enviada" para o **`LoadBalancerProxy 1`** (porta 2000).
-3.  **`LoadBalancerProxy 1`** a coloca em sua fila e a distribui para um de seus `ServiceProxy`s internos.
-4.  O `ServiceProxy` (gerenciado por LB1) simula o processamento e "envia" a mensagem para o **`LoadBalancerProxy 2`** (porta 3000).
-5.  **`LoadBalancerProxy 2`** a distribui para um de seus `ServiceProxy`s internos.
-6.  O `ServiceProxy` (gerenciado por LB2) simula o processamento e "envia" a mensagem de volta para o **`Source`** (porta 1000).
-7.  A `Source` recebe a mensagem finalizada, calcula o tempo total de resposta e os T-values (tempos de transição entre os componentes) e os loga.
+1.  **`Source`** inicia uma conexão TCP/IP com o `LoadBalancerProxy 1` (porta 2000).
+2.  **`Source`** gera uma mensagem com um timestamp inicial e a envia para o `LoadBalancerProxy 1` através da conexão.
+3.  **`LoadBalancerProxy 1`** recebe a mensagem, a coloca em sua fila e, quando um serviço está disponível, a encaminha para um de seus `ServiceProxy`s internos (ex: `ServiceProxy 1` na porta 2001).
+4.  O `ServiceProxy` (gerenciado por LB1) simula o processamento e estabelece uma nova conexão (ou utiliza uma existente) para enviar a mensagem processada para o **`LoadBalancerProxy 2`** (porta 3000).
+5.  **`LoadBalancerProxy 2`** recebe a mensagem e a distribui para um de seus `ServiceProxy`s internos (ex: `ServiceProxy 3` na porta 3001).
+6.  O `ServiceProxy` (gerenciado por LB2) simula o processamento e estabelece uma nova conexão (ou utiliza uma existente) para enviar a mensagem de volta para o **`Source`** (porta 1025).
+7.  A `Source` recebe a mensagem finalizada através de sua porta de escuta, calcula o tempo total de resposta e os T-values (tempos de transição entre os componentes) e os loga.
 
 ---
 
 #### **Como executar o sistema:**
 
-No terminal, dentro da raiz do projeto execute o comando:
+Para executar o sistema, você pode utilizar o script `run.sh` no diretório `run_components` ou iniciar cada componente em um terminal diferente.
 
+
+Dentro da raiz do projeto, execute:
+
+```bash
+cd run_components/
+./run.sh
 ```
-    python3 main.py
-```
+
+O arquivo run.sh foi implementado apenas para facilitar a inicialização dos componentes para os testes, dessa forma não seria necessário executar manualmente cada componente separadamente.
 
 ---
 
@@ -89,7 +103,7 @@ No terminal, dentro da raiz do projeto execute o comando:
 
 * **Python 3.12.3**: Linguagem de programação principal.
 * **`threading`**: Módulo Python para lidar com concorrência e execução de componentes em threads separadas.
-* **(Próxima Etapa) `socket`**: Módulo Python para comunicação de rede (será utilizado na Etapa 2 para sockets TCP/IP reais).
+* **`socket`**: Módulo Python para comunicação de rede.
 * **(Próxima Etapa) Docker**: Para conteinerização dos componentes na Etapa 2.
 
 ---
