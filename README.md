@@ -86,6 +86,6 @@ Nesta primeira etapa, a comunicação é **simulada em memória**. Isso signific
 
 ### 🤝 Autores
 
-* [@NaraAndrad3](https://github.com/NaraAndrad3) (Link opcional para perfil do GitHub)
+* [@NaraAndrad3](https://github.com/NaraAndrad3)
 
 ---
