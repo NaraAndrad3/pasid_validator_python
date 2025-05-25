@@ -1,427 +1,306 @@
-
 import threading
 import time
 import sys
-import os 
+import os
 from collections import OrderedDict
+
 
 from src.domain.abstract_proxy import AbstractProxy
 from src.domain.target_address import TargetAddress
-from src.domain.utils import read_properties_file, get_current_millis
-
-from src.domain.service_proxy import ServiceProxy 
+from src.domain.utils import read_properties_file, get_current_millis, calculate_std_dev, calculate_mean # Presumindo que estas funções estão em utils
 
 class Source(AbstractProxy):
     """
-    A classe Source atua como o gerador de requisições e o ponto final para as respostas
-    no sistema distribuído simulado. Ela é a "origem" das mensagens, responsável
-    por iniciar o fluxo de comunicação e coletar métricas de desempenho.
+    A classe Source gera dados sintéticos (mensagens) e interage com os Load Balancers,
+    atuando como a origem das requisições e o receptor final das respostas processadas.
     """
-    
+
     def __init__(self, properties_path: str):
-        """
-        Construtor da classe Source.
-        Inicializa o Source lendo as configurações de um arquivo de propriedades.
+        # Carrega as propriedades do arquivo de configuração
+        props = read_properties_file(properties_path)
 
-        Args:
-            properties_path (str): O caminho para o diretório que contém o arquivo 'source.properties'.
-        """
-        # Chama o construtor da classe pai (AbstractProxy) com o nome "source" e porta 0.
-        # A porta 0 é usada na simulação em memória, pois o Source não escuta diretamente conexões
-        # da mesma forma que um LoadBalancer ou ServiceProxy.
-        super().__init__("source", 0) 
-
-        self.properties_path = properties_path
-        self.log_writer = None # Objeto para escrever no arquivo de log
-        self.init_log_file() # Inicializa o arquivo de log (log.txt)
-
-        # Lê as propriedades do arquivo 'source.properties' localizado no caminho fornecido.
-        props = read_properties_file(f"{properties_path}/source.properties")
-
-        # Configurações principais do Source baseadas nas propriedades
-        self.model_feeding_stage = props.get("modelFeedingStage").lower() == 'true'
-        self.proxy_name = "origem" # Nome do proxy, alterado para português
-        self.local_port = int(props.get("sourcePort")) # Porta local do Source
+        # Propriedades específicas da Source
+        self.model_feeding_stage = props.get("modelFeedingStage", "false").lower() == 'true'
+        self.json_path = props.get("jsonPath") 
         
-        # Endereço do primeiro destino para o qual o Source enviará mensagens 
-        self.target_address = TargetAddress(
-            props.get("targetIp"),
-            int(props.get("targetPort"))
-        )
-        # Número máximo de mensagens esperadas para serem consideradas nos cálculos de métricas
+        
+        source_port = int(props.get("sourcePort"))
+        target_ip = props.get("targetIp")
+        target_port = int(props.get("targetPort"))
+        
+        
+        super().__init__("Source", source_port, TargetAddress(target_ip, target_port))
+
         self.max_considered_messages_expected = int(props.get("maxConsideredMessagesExpected"))
-
-        # Listas de Tempos Médios de Resposta (MRTs) e Desvios Padrão (SDVs) do modelo,
-        # usados na fase de validação (se implementada) para comparação.
-        mrts_array = props.get("mrtsFromModel", "").split(',')
-        self.mrts_from_model = [float(mrt.strip()) for mrt in mrts_array if mrt.strip()]
-
-        sdvs_array = props.get("sdvsFromModel", "").split(',')
-        self.sdvs_from_model = [float(sdv.strip()) for sdv in sdvs_array if sdv.strip()]
-
-        # Configurações para variação de serviços (usado para reconfigurar Load Balancers dinamicamente)
-        self.arrival_delay = int(props.get("variatingServices.arrivalDelay")) # Atraso entre o envio de mensagens (em ms)
+        self.arrival_delay = int(props.get("variatingServices.arrivalDelay")) 
+        
+       
         self.variated_server_load_balancer_ip = props.get("variatingServices.variatedServerLoadBalancerIp")
         self.variated_server_load_balancer_port = int(props.get("variatingServices.variatedServerLoadBalancerPort"))
+        
+        self.qtd_services = [int(q) for q in props.get("variatingServices.qtdServices").split(',')]
+        self.mrts_from_model = [float(m) for m in props.get("mrtsFromModel").split(',')]
+        self.sdvs_from_model = [float(s) for s in props.get("sdvsFromModel").split(',')]
 
-        # Lista de quantidades de serviços a serem variadas durante a simulação
-        qtd_services_array = props.get("variatingServices.qtdServices", "").split(',')
-        self.qtd_services = [int(q.strip()) for q in qtd_services_array if q.strip()]
+        self.source_current_index_message = 0
+        self.dropp_count = 0
+        self.all_cycles_completed = False
+        
+        self.considered_messages = [] # Lista para armazenar mensagens que retornam para a Source
+        self.current_cycle_index = 0 # Para rastrear em qual ciclo de qtdServices/MRT/SDV 
+        self.experiment_data = [] # Para armazenar os MRTs calculados
+        self.experiment_error = [] # Para armazenar os SDVs calculados
 
-        # Variáveis de estado para controlar o progresso da simulação
-        self.cycles_completed = [False] * len(self.qtd_services) # Rastreia quais ciclos de variação de serviço foram concluídos
-        self.all_cycles_completed = False # Flag para indicar se todos os ciclos de variação foram completados
-
-        self.considered_messages = [] # Lista para armazenar as mensagens de resposta consideradas para análise
-        self.source_current_index_message = 1 # Contador do índice da mensagem atual a ser enviada
-        self.dropp_count = 0 # Contador de mensagens descartadas na origem
-
-        self.experiment_data = [] # Lista para armazenar dados experimentais (ex: MRTs calculados)
-        self.experiment_error = [] # Lista para armazenar erros experimentais (ex: desvios padrão)
-
-        # Configuração de um mecanismo de timeout (para futuras entregas ou cenários mais complexos)
-        self.timeout_duration = 30000 # Duração do timeout em milissegundos (30 segundos)
-        self.timeout_future = None # Objeto para controlar o agendamento do timeout
-        self.is_timeout_triggered = False # Flag para indicar se o timeout foi acionado
-
-        # Registra esta instância do Source no registro global de proxies.
-        # Isso permite que outros componentes do sistema (Load Balancers, Services)
-        # possam encontrar e enviar mensagens de volta para o Source.
-        AbstractProxy.register_proxy(self)
-
-        # Imprime os parâmetros de configuração do Source no início da execução.
         self.print_source_parameters()
 
-    def init_log_file(self):
-        """
-        Inicializa o arquivo de log 'log.txt'.
-        Se o arquivo já existir, ele é removido antes de ser aberto para garantir um log limpo a cada execução.
-        O arquivo é aberto no modo de 'append' ('a') com codificação UTF-8.
-        """
-        try:
-            log_file_path = "log.txt"
-            if os.path.exists(log_file_path):
-                os.remove(log_file_path) # Remove o arquivo de log existente
-            self.log_writer = open(log_file_path, 'a', encoding='utf-8') # Abre para escrita em modo append
-        except OSError as e:
-            # Em caso de erro ao inicializar o arquivo de log, imprime uma mensagem de erro
-            # e define log_writer como None para evitar futuras tentativas de escrita.
-            print(f"ERRO: Erro ao inicializar o arquivo de log: {e}", file=sys.stderr)
-            self.log_writer = None # Fallback: não haverá log em arquivo
-
-    def log(self, message: str):
-        """
-        Escreve uma mensagem tanto no console quanto no arquivo de log (se estiver disponível).
-
-        Args:
-            message (str): A mensagem a ser logada.
-        """
-        print(message) # Imprime a mensagem no console
-        if self.log_writer: # Verifica se o escritor de log está ativo
-            try:
-                self.log_writer.write(message + "\n") # Escreve a mensagem no arquivo
-                self.log_writer.flush() # Garante que a mensagem seja escrita imediatamente no disco
-            except OSError as e:
-                # Em caso de erro de escrita no arquivo de log, imprime uma mensagem de erro
-                # e desativa o log em arquivo para evitar mais erros.
-                print(f"ERRO: Erro ao escrever no arquivo de log: {e}", file=sys.stderr)
-                self.log_writer = None # Desativa o log em arquivo
-
     def print_source_parameters(self):
-        """
-        Imprime (e loga) todos os parâmetros de configuração do Source.
-        Útil para depuração e para ter um resumo das configurações no início da simulação.
-        """
-        self.log("")
+        """Imprime os parâmetros de configuração da Source."""
         self.log("======================================")
         self.log("Parâmetros da Origem:")
-        self.log(f"Caminho das Propriedades: {self.properties_path}")
-        self.log(f"Fase de Alimentação do Modelo: {self.model_feeding_stage}")
-        self.log(f"Porta da Origem: {self.local_port}")
-        self.log(f"IP do Destino: {self.target_address.get_ip()}")
-        self.log(f"Porta do Destino: {self.target_address.get_port()}")
-        self.log(f"Máximo de Mensagens Consideradas Esperadas: {self.max_considered_messages_expected}")
+        self.log(f"Nome do Proxy: {self.proxy_name}")
+        self.log(f"Porta Local: {self.local_port}")
+        self.log(f"Destino Principal (Primeiro LB): {self.target_address.get_ip()}:{self.target_address.get_port()}")
+        self.log(f"Estágio de Alimentação do Modelo: {self.model_feeding_stage}")
+        self.log(f"Atraso de Chegada (ms): {self.arrival_delay}")
+        self.log(f"Máximo de Mensagens Esperadas por Ciclo: {self.max_considered_messages_expected}")
+        self.log(f"Servidor Balanceador Variável (IP:Porta): {self.variated_server_load_balancer_ip}:{self.variated_server_load_balancer_port}")
+        self.log(f"Qtd. de Serviços por Ciclo: {self.qtd_services}")
         self.log(f"MRTs do Modelo: {self.mrts_from_model}")
         self.log(f"SDVs do Modelo: {self.sdvs_from_model}")
-        self.log(f"Atraso de Chegada: {self.arrival_delay}ms")
-        self.log(f"Quantidade de Serviços a Variar: {self.qtd_services}")
         self.log("======================================")
-
-    def close_log(self):
-        """
-        Fecha o arquivo de log.
-        Deve ser chamado ao final da execução da simulação para garantir que todos os dados sejam salvos.
-        """
-        if self.log_writer:
-            self.log_writer.close()
 
     def run(self):
         """
-        Método principal da thread do Source.
-        Determina qual fase da simulação (alimentação do modelo ou validação) será executada.
+        O loop de execução principal da Source.
+        Gera mensagens e as envia para o Load Balancer.
         """
-        print("Iniciando a Origem...")
+        self.log("Iniciando a Origem...")
+       
         try:
             if self.model_feeding_stage:
-                # Se estiver na fase de alimentação do modelo, gera dados para treinamento.
                 self.send_message_feeding_stage()
             else:
-                # Caso contrário, executa a fase de validação do modelo.
                 self.send_messages_validation_stage()
         except Exception as e:
-            # Captura e loga qualquer erro inesperado durante a execução principal.
             self.log(f"ERRO na execução da Origem: {e}")
             import traceback
-            traceback.print_exc() # Imprime o stack trace completo para depuração
+            traceback.print_exc()
         finally:
-            self.close_log() # Garante que o arquivo de log seja fechado ao final
-
-    def send_message_feeding_stage(self):
-        """
-        Implementa a lógica para a "fase de alimentação do modelo".
-        Nesta fase, um número fixo de requisições é gerado para coletar dados de temporização
-        (os "T-values") que podem ser usados para calibrar um modelo de desempenho.
-        """
-        # Sobrescreve o atraso de chegada para 2000ms, conforme o comportamento original do código Java.
-        self.arrival_delay = 2000 
-        self.log("ATENÇÃO: Garanta que o atraso de chegada seja um valor maior que a soma de todos os tempos de serviço.")
-        self.log("##############################")
-        self.log("Fase de Alimentação do Modelo Iniciada")
-        self.log("##############################")
-        self.log(f"Apenas 10 requisições serão geradas com Atraso de Chegada (AD) = {self.arrival_delay}ms")
-
-        time.sleep(5) # Espera 5 segundos antes de começar a enviar mensagens
-
-        # Loop para gerar e enviar 10 mensagens
-        for j in range(1, 11):
-            # Formato da mensagem: "ID_CLIENTE;INDEX_MENSAGEM;TIMESTAMP_ENVIO;"
-            # O '1' inicial pode ser um ID de cliente padrão.
-            msg = f"1;{self.source_current_index_message};{get_current_millis()};"
-            try:
-                self._send(msg) # Tenta enviar a mensagem para o destino
-            except Exception as e:
-                self.log(f"ERRO ao enviar mensagem na fase de alimentação: {e}")
-                sys.exit(1) # Sai da simulação em caso de erro crítico de envio
-            self.source_current_index_message += 1 # Incrementa o índice da mensagem
-            time.sleep(self.arrival_delay / 1000.0) # Aguarda o atraso de chegada em segundos
-
-        # Após enviar todas as mensagens, o Source entra em um loop de espera
-        # para aguardar o retorno das mensagens processadas pelo sistema.
-        print("Aguardando as mensagens serem processadas...")
-        while True:
-            time.sleep(1) # Apenas espera; as respostas são tratadas pelo método 'receiving_messages'
-
-    def send_messages_validation_stage(self):
-        """
-        Método placeholder para a fase de validação do modelo.
-        Nesta entrega, esta fase não está implementada. Em uma versão completa,
-        envolveria a geração de mensagens com base em taxas de chegada controladas
-        e a comparação dos MRTs experimentais com os MRTs preditos pelo modelo.
-        """
-        self.log("A Fase de Validação não está implementada nesta entrega.")
-        self.log("Saindo, pois a fase de validação não é o foco desta entrega.")
-        sys.exit(0) # Encerra a simulação
-
-    def _send_message_to_configure_server(self, config_message: str):
-        """
-        Simula o envio de uma mensagem de configuração para um LoadBalancerProxy.
-        Este método é usado para modificar dinamicamente o número de serviços gerenciados
-        por um Load Balancer específico.
-
-        Args:
-            config_message (str): A mensagem de configuração a ser enviada.
-        """
-        # Procura a instância do LoadBalancerProxy pelo seu número de porta registrado.
-        target_lb_proxy = AbstractProxy.get_proxy_by_port(self.variated_server_load_balancer_port)
-        if target_lb_proxy:
-            print(f"[{self.proxy_name}] Enviando mensagem de configuração para o Balanceador de Carga na porta {self.variated_server_load_balancer_port}")
-            # Na simulação em memória, a comunicação é simulada chamando diretamente
-            # o método receiving_messages() do Load Balancer.
-            target_lb_proxy.receiving_messages(config_message) 
-            print(f"[{self.proxy_name}] Mensagem de configuração simulada enviada e assumida como reconhecida.")
-        else:
-            # Levanta um erro se o Load Balancer de destino não for encontrado.
-            raise RuntimeError(f"Não foi possível encontrar o LoadBalancerProxy na porta {self.variated_server_load_balancer_port} para configuração.")
+            self.stop_proxy() 
 
     def _send(self, msg: str):
         """
-        Simula o envio de uma mensagem do Source para o seu destino (geralmente o primeiro Load Balancer).
-        Verifica se o destino está livre antes de enviar. Se o destino estiver ocupado,
-        a mensagem é "descartada na origem" e o Source espera o atraso de chegada.
-
-        Args:
-            msg (str): A mensagem a ser enviada.
+        Envia a mensagem via socket para o destino principal (primeiro Load Balancer).
         """
-        if self.is_destiny_free(self.target_address):
-            # Se o destino estiver livre, envia a mensagem.
-            self.send_message_to_destiny(msg, self.target_address)
-        else:
-            # Se o destino estiver ocupado, a mensagem é descartada.
-            self.log(f"DESCARTADA NA ORIGEM: {msg}")
-            self.dropp_count += 1 # Incrementa o contador de mensagens descartadas
-            # Conforme o comportamento do código Java, se a mensagem é descartada,
-            # o Source ainda espera o atraso de chegada antes de tentar novamente ou enviar a próxima.
-            time.sleep(self.arrival_delay / 1000.0)
+        try:
+            
+            message_with_delimiter = msg + "\n" 
+            self.send_message_to_destiny(message_with_delimiter, self.target_address)
+        except Exception as e:
+            self.log(f"ERRO ao enviar mensagem para {self.target_address.get_ip()}:{self.target_address.get_port()}: {e}")
+            self.dropp_count += 1
+        
+       
+        time.sleep(self.arrival_delay / 1000.0) 
+
+    def _send_config_message(self, target_address: TargetAddress, config_message: str):
+        """
+        Envia uma mensagem de configuração para um Load Balancer específico.
+        """
+        try:
+            message_with_delimiter = config_message + "\n"
+            self.send_message_to_destiny(message_with_delimiter, target_address)
+            self.log(f"[{self.proxy_name}] Mensagem de configuração enviada para {target_address}: '{config_message}'")
+        except Exception as e:
+            self.log(f"[{self.proxy_name}] ERRO ao enviar mensagem de configuração para {target_address}: {e}")
+
+    def send_message_feeding_stage(self):
+        """
+        Simula a etapa de 'alimentação do modelo', enviando mensagens contínuas.
+        Esta etapa é executada indefinidamente ou até ser interrompida manualmente.
+        """
+        self.log("[Stage] Alimentação do Modelo: Iniciado.")
+        message_index = 0
+        while self.is_running: 
+            message = f"{message_index};{get_current_millis()};"
+            self._send(message)
+            message_index += 1
+            if message_index % 100 == 0:
+                self.log(f"[{self.proxy_name}] Enviadas {message_index} mensagens no estágio de alimentação.")
+
+    def send_messages_validation_stage(self):
+        """
+        Simula a etapa de 'validação', que envolve o envio de mensagens e
+        a reconfiguração de serviços para diferentes ciclos.
+        """
+        self.log("[Stage] Validação: Iniciado.")
+        
+        
+        while self.current_cycle_index < len(self.qtd_services) and self.is_running:
+            qtd_services_for_cycle = self.qtd_services[self.current_cycle_index]
+            self.log(f"[{self.proxy_name}] Iniciando Ciclo {self.current_cycle_index + 1} com {qtd_services_for_cycle} serviços.")
+
+            
+            variated_lb_address = TargetAddress(self.variated_server_load_balancer_ip, self.variated_server_load_balancer_port)
+            config_message = f"config;{qtd_services_for_cycle}"
+            self._send_config_message(variated_lb_address, config_message)
+            
+            
+            time.sleep(2) 
+
+            self.considered_messages.clear() 
+            self.source_current_index_message = 0 
+            
+            
+            while self.source_current_index_message < self.max_considered_messages_expected and self.is_running:
+                message = f"{self.source_current_index_message};{get_current_millis()};"
+                self._send(message)
+                self.source_current_index_message += 1
+                if self.source_current_index_message % 10 == 0:
+                    self.log(f"[{self.proxy_name}] Enviadas {self.source_current_index_message} mensagens no ciclo atual.")
+
+            #
+            self.log(f"[{self.proxy_name}] Aguardando o retorno de {self.max_considered_messages_expected} mensagens.")
+            wait_start_time = time.time()
+           
+            WAIT_TIMEOUT_SECONDS = 300 
+            while len(self.considered_messages) < self.max_considered_messages_expected and \
+                  self.is_running and \
+                  (time.time() - wait_start_time) < WAIT_TIMEOUT_SECONDS:
+                time.sleep(0.1) # Espera pelas mensagens chegarem
+
+            if len(self.considered_messages) >= self.max_considered_messages_expected:
+                self.log(f"[{self.proxy_name}] Todas as {self.max_considered_messages_expected} mensagens retornaram para o ciclo {self.current_cycle_index + 1}.")
+                self.execute_second_stage_of_validation_metrics() # Processa mensagens retornadas e calcula métricas
+            else:
+                self.log(f"[{self.proxy_name}] ATENÇÃO: Apenas {len(self.considered_messages)} de {self.max_considered_messages_expected} mensagens retornaram após o tempo limite para o ciclo {self.current_cycle_index + 1}.")
+                
+                self.execute_second_stage_of_validation_metrics() 
+
+            self.current_cycle_index += 1 
+            self.log(f"[{self.proxy_name}] Ciclo {self.current_cycle_index} completado.")
+
+        self.all_cycles_completed = True
+        self.log("[Stage] Validação: Finalizado. Todos os ciclos concluídos.")
+        self.display_final_results()
+
 
     def receiving_messages(self, received_message: str):
         """
-        Lida com as mensagens de entrada (respostas) que chegam ao Source vindo do sistema distribuído.
-        Este método é chamado quando o Source recebe uma mensagem de volta (uma resposta finalizada).
-
-        Args:
-            received_message (str): A mensagem recebida.
+        Lida com as mensagens de entrada (respostas ou pings) que chegam ao Source via socket.
         """
-        if received_message is None:
-            return # Ignora mensagens nulas
+        if received_message is None or received_message.strip() == "":
+            return
 
-        # Primeiro, processa a mensagem para calcular e anexar o Tempo Médio de Resposta (MRT) final.
-        processed_message = self._register_mrt_at_the_end_source(received_message) 
+        message_stripped = received_message.strip()
         
-        # Delega o processamento posterior da resposta com base na fase da simulação.
-        if self.model_feeding_stage:
-            # Se estiver na fase de alimentação, executa a lógica de coleta de T-values.
-            self.execute_first_stage_of_model_feeding(processed_message) 
-        else:
-            # Se estiver na fase de validação, executa a lógica correspondente (atualmente não implementada).
-            self.execute_second_stage_of_validation(processed_message)
+        if message_stripped == "ping":
+            
+            self.log(f"[{self.proxy_name}] Recebido ping.")
+            return
 
-    def _register_mrt_at_the_end_source(self, received_message: str) -> str:
-        """
-        Calcula e registra o Tempo Médio de Resposta (MRT) final da mensagem
-        quando ela retorna ao Source. O MRT é a duração total que a mensagem
-        levou desde o seu envio inicial até o seu retorno.
-
-        Args:
-            received_message (str): A mensagem recebida, contendo os timestamps intermediários.
-
-        Returns:
-            str: A mensagem original com o MRT final anexado.
-        """
-        parts = received_message.split(';')
         
-        # Assume que o penúltimo elemento é o timestamp de saída do último serviço,
-        # e o terceiro elemento é o timestamp de envio inicial do Source.
-        last_timestamp_str = parts[-2]
-        first_timestamp_str = parts[2]
-
-        try:
-            last_timestamp = int(last_timestamp_str)
-            first_timestamp = int(first_timestamp_str)
-        except (ValueError, IndexError):
-            # Se houver um erro ao analisar os timestamps, loga o erro e retorna a mensagem original.
-            self.log(f"ERRO ao analisar timestamps para MRT: {received_message}. Pulando cálculo de MRT.")
-            return received_message 
-
-        current_mrt = last_timestamp - first_timestamp # Cálculo do MRT
-        # Anexa a label "RESPONSE TIME:" e o valor do MRT à mensagem.
-        received_message += f"TEMPO DE RESPOSTA:;{current_mrt};" 
-        return received_message
-
-    def execute_first_stage_of_model_feeding(self, received_message: str):
-        """
-        Processa as mensagens de resposta durante a fase de alimentação do modelo.
-        Coleta os tempos de transição (T-values) e, em um ponto específico (quando a segunda
-        mensagem processada é recebida), calcula as médias desses T-values e encerra a simulação.
-
-        Args:
-            received_message (str): A mensagem de resposta recebida e já com o MRT final.
-        """
-        self.considered_messages.append(received_message) # Adiciona a mensagem à lista de mensagens consideradas
-        self.log(received_message) # Loga a mensagem completa recebida
-
-        try:
-            # Extrai o índice da mensagem para determinar o ponto de cálculo dos T-values.
-            index_from_message = int(received_message.split(";")[1])
-        except (ValueError, IndexError):
-            self.log(f"ERRO ao analisar o índice da mensagem: {received_message}")
-            return 
+        self.log(f"[{self.proxy_name}] Mensagem de resposta recebida: {message_stripped[:70]}...")
         
-        # A lógica original do Java parece triggar o cálculo no recebimento da mensagem de índice 2.
-        if index_from_message == 2: 
-            self.log("Acionando o cálculo de T1-T5...")
-            time.sleep(1) # Pequeno atraso para garantir que todos os logs anteriores sejam exibidos
+        
+        self.considered_messages.append(message_stripped)
 
-            # OrderedDict é usado para manter a ordem dos T-values, como no Java.
-            durations_map = OrderedDict() # (Variável não usada diretamente, mas mantém a ideia original)
-            
-            # Dicionário para armazenar as durações extraídas para cada T-value.
-            extracted_durations = {f"T{k}": [] for k in range(1, 6)} # T1, T2, T3, T4, T5
-            
-            for message_str in self.considered_messages:
-                values = message_str.split(";")
-                
-                # Validação para garantir que a mensagem tem comprimento suficiente para extrair todos os T-values.
-                # O número 17 é um palpite baseado no formato de mensagem Java que acumula timestamps.
-                if len(values) < 17: 
-                    self.log(f"AVISO: Mensagem muito curta para extração completa dos valores T: {message_str}. Tamanho: {len(values)}")
-                    continue
-                
-                try:
-                    # Extrai os valores de duração dos tempos de transição (T-values)
-                    # T1: Tempo de rede do Source para o primeiro Load Balancer.
-                    extracted_durations["T1"].append(int(values[4]))
-                    # T2: Tempo de processamento do primeiro Load Balancer.
-                    extracted_durations["T2"].append(int(values[7]))
-                    # T3: Tempo de rede do primeiro Load Balancer para o segundo Load Balancer.
-                    extracted_durations["T3"].append(int(values[10]))
-                    # T4: Tempo de processamento do segundo Load Balancer.
-                    extracted_durations["T4"].append(int(values[13]))
-                    # T5: Tempo de rede do segundo Load Balancer de volta ao Source.
-                    extracted_durations["T5"].append(int(values[16]))
-                except (ValueError, IndexError) as e:
-                    self.log(f"ERRO ao extrair valores T da mensagem '{message_str}': {e}")
-                    continue
-
-            # Calcula a média das durações para cada T-value.
-            final_averages = OrderedDict()
-            for key, durations in extracted_durations.items():
-                if durations:
-                    avg = sum(durations) / len(durations)
-                    final_averages[key] = avg
-                else:
-                    final_averages[key] = 0.0 # Define 0.0 se não houver durações (evita divisão por zero)
-
-            self.log("Os tempos para alimentar as transições do modelo são os seguintes:")
-            for key, avg_value in final_averages.items():
-                self.log(f"{key} = {avg_value}")
-            
-            self.log("Fase de Alimentação do Modelo concluída. Saindo da simulação.")
-            sys.exit(0) # Encerra a simulação após o cálculo dos T-values.
-
-    def execute_second_stage_of_validation(self, received_message: str):
-        """
-        Método placeholder para a lógica da fase de validação.
-        Nesta entrega, ele apenas indica que a lógica não está implementada.
-        Em uma versão completa, esta fase usaria o modelo treinado para prever
-        o desempenho e comparar com os resultados experimentais.
-
-        Args:
-            received_message (str): A mensagem de resposta recebida.
-        """
-        self.log("A lógica da Fase de Validação não está implementada nesta entrega.")
-
-    def create_connection_with_destiny(self):
-        """
-        Sobrescreve o método abstrato da classe pai.
-        Na simulação em memória, o Source não estabelece conexões de socket diretas com seus destinos.
-        A comunicação é feita através do registro interno de proxies.
-        """
-        pass # Nenhuma ação é necessária para a simulação em memória
 
     def _simulate_is_free(self) -> bool:
         """
-        Sobrescreve o método _simulate_is_free da classe AbstractProxy.
-        O Source é sempre considerado livre para receber mensagens, pois ele atua como
-        o coletor final de respostas e não tem uma "fila de processamento" que possa ficar cheia.
-
-        Returns:
-            bool: Sempre retorna True, indicando que o Source está sempre disponível para receber.
+        A Source geralmente está sempre livre para receber mensagens (respostas).
+        É principalmente um emissor e receptor, não um processador com uma fila que fica "ocupada".
         """
-        return True
+        return True 
+    def _register_mrt_at_the_end_source(self, received_message: str) -> str:
+        """
+        Calcula o Tempo Médio de Resposta (MRT) a partir da string completa da mensagem
+        quando ela retorna para a Source.
+        Este método é mais um placeholder, pois a extração real do MRT ocorre em _parse_mrt.
+        """
+       
+        return received_message 
+    def execute_first_stage_of_model_feeding(self, processed_message: str = ""): # Adicionado processed_message com valor padrão
+        """
+        Placeholder para a lógica após receber uma mensagem na etapa de alimentação do modelo.
+        """
+        
+        pass
 
-# Bloco de código para garantir que o diretório 'config' exista.
-# Isso é útil para armazenar arquivos de propriedades que configuram a simulação.
-script_dir = os.path.dirname(__file__) # Obtém o diretório do script atual
-config_dir = os.path.join(script_dir, "../../config") # Constrói o caminho para o diretório 'config' (dois níveis acima)
-if not os.path.exists(config_dir):
-    os.makedirs(config_dir) # Cria o diretório 'config' se ele não existir
+    def execute_second_stage_of_validation_metrics(self):
+        """
+        Executa a segunda etapa de validação após um ciclo de mensagens ter retornado.
+        Calcula o MRT e o desvio padrão para as mensagens coletadas.
+        """
+        if not self.considered_messages:
+            self.log(f"[{self.proxy_name}] Nenhuma mensagem retornou para o ciclo {self.current_cycle_index + 1}. Não é possível calcular MRT/SDV.")
+            self.experiment_data.append(0.0) 
+            self.experiment_error.append(0.0) 
+            return
+
+        mrts = self._extract_mrts(self.considered_messages)
+        if not mrts:
+            self.log(f"[{self.proxy_name}] Nenhuma MRT válida extraída das mensagens retornadas para o ciclo {self.current_cycle_index + 1}.")
+            self.experiment_data.append(0.0)
+            self.experiment_error.append(0.0)
+            return
+
+        mrt_from_experiment = calculate_mean(mrts)
+        standard_deviation = calculate_std_dev(mrts, mrt_from_experiment)
+
+        self.display_results(mrt_from_experiment, standard_deviation)
+        self.log(f"[{self.proxy_name}] Ciclo {self.current_cycle_index + 1} Concluído. MRT Experimental: {mrt_from_experiment:.2f}ms, SD Experimental: {standard_deviation:.2f}ms")
+
+    def _extract_mrts(self, messages: list[str]) -> list[float]:
+        """
+        Extrai os valores de MRT de uma lista de mensagens.
+        """
+        mrts = []
+        for message in messages:
+            mrt = self._parse_mrt(message)
+            if mrt is not None:
+                mrts.append(mrt)
+        return mrts
+
+    def _parse_mrt(self, message: str) -> float | None:
+        """
+        Extrai o valor de MRT de uma única mensagem.
+        Formato esperado de ServiceProxy._register_mrt_at_the_end:
+        "...RESPONSE TIME:;{mrt_value};"
+        """
+        parts = message.split(';')
+        try:
+           
+            if "RESPONSE TIME:" in parts:
+                idx = parts.index("RESPONSE TIME:")
+                if idx + 1 < len(parts):
+                    return float(parts[idx + 1])
+        except (ValueError, IndexError):
+            self.log(f"[{self.proxy_name}] Não foi possível parsear MRT de: '{message}'")
+        return None
+
+    def display_results(self, mrt_from_experiment: float, standard_deviation: float):
+        """
+        Exibe os resultados calculados de MRT e desvio padrão.
+        """
+        self.log(f"MRT From Experiment: {mrt_from_experiment:.2f}; SD From Experiment: {standard_deviation:.2f}")
+        self.experiment_data.append(mrt_from_experiment)
+        self.experiment_error.append(standard_deviation)
+
+    def display_final_results(self):
+        """
+        Exibe o resumo final dos resultados após a conclusão de todos os ciclos.
+        """
+        self.log("\n======================================")
+        self.log("Resultados Finais da Simulação:")
+        for i, mrt_exp in enumerate(self.experiment_data):
+            sd_exp = self.experiment_error[i]
+            mrt_model = self.mrts_from_model[i] if i < len(self.mrts_from_model) else "N/A"
+            sd_model = self.sdvs_from_model[i] if i < len(self.sdvs_from_model) else "N/A"
+            self.log(f"Ciclo {i + 1} (Qtd Serviços: {self.qtd_services[i] if i < len(self.qtd_services) else 'N/A'}):")
+            self.log(f"  MRT Experimental: {mrt_exp:.2f}ms, SD Experimental: {sd_exp:.2f}ms")
+            self.log(f"  MRT do Modelo: {mrt_model}, SD do Modelo: {sd_model}")
+        self.log(f"Mensagens descartadas na Origem: {self.dropp_count}")
+        self.log("======================================")
+
+  

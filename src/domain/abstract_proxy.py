@@ -2,189 +2,278 @@ import threading
 import time
 import socket
 import sys
-
-from src.domain.target_address import TargetAddress
-from src.domain.utils import get_current_millis
-
-
-
+import os
+from src.domain.target_address import TargetAddress # Certifique-se de que TargetAddress está bem definido
 
 class AbstractProxy(threading.Thread):
-    """Classe base abstrata para todos os componentes do sistema (Source, LoadBalancerProxy, ServiceProxy).
-    Ela define a interface comum e gerencia a "comunicação" interna entre os componentes na simulação in-memory.
-    Os componentes podem se comunicar entre si através de mensagens, utilizando o método send_message_to_destiny.
-    Essa classe também implementa um registro de proxies, permitindo que qualquer proxy envie uma mensagem para outro proxy
-    simplesmente conhecendo sua porta de destino.
-    A classe é responsável por gerenciar as conexões de origem e destino, além de fornecer métodos para processar mensagens.
-    A classe é inicializada com o nome do proxy, a porta local e, opcionalmente, um endereço de destino.
-    A classe é executada em uma thread separada, permitindo que os proxies funcionem de forma assíncrona.
-    A classe também implementa um método para verificar se o proxy de destino está livre para receber mensagens.
+    """
+    Classe base para todos os componentes do sistema distribuído (Source, LoadBalancerProxy, ServiceProxy).
+    Implementa a comunicação via sockets TCP/IP para permitir que os componentes
+    se comuniquem entre processos distintos.
     """
     
-    
-    def __init__(self, proxy_name, local_port, target_address = None):
+    def __init__(self, proxy_name: str, local_port: int, target_address: TargetAddress = None):
+        """
+        Construtor da classe base AbstractProxy.
+
+        Args:
+            proxy_name (str): O nome do proxy (ex: "Source", "Server1", "service2001").
+            local_port (int): A porta TCP/IP na qual este proxy irá escutar por mensagens.
+            target_address (TargetAddress, opcional): O endereço (IP e Porta) para onde este proxy
+                                                        irá enviar suas mensagens após o processamento.
+                                                        Padrão é None se não houver um destino imediato.
+        """
         super().__init__()
         self.proxy_name = proxy_name
         self.local_port = local_port
-        self.target_address = target_address
-        self.content_to_process = None
-        self.local_socket = None
-        self.connection_destiny_socket = None
-        self.is_running = True
+        self.target_address = target_address #
+        
+        self.local_socket = None # Socket para escutar conexões de entrada.
+        
+        self._outbound_connections: dict[tuple[str, int], socket.socket] = {}
+        
+        self.is_running = True # Flag para controlar o ciclo de vida da thread principal.
 
-        self.incoming_connections = {}
-        self.outgoing_connections = {} 
-        self.queue_sizes = {} 
+        self.log_writer = None
+        self.init_log_file()
+        self.start_listening() # Inicia o servidor de socket para receber conexões.
 
-    def run(self):
+    def init_log_file(self):
         """
-            Método que inicia a execução do proxy. Ele cria um socket local e
-            aguarda conexões de origem. Quando uma conexão é estabelecida, ele
-            inicia uma nova thread para gerenciar essa conexão. Se um endereço de
-            destino for fornecido, ele também inicia uma thread para gerenciar o
-            estabelecimento de conexões de destino.
-            O método também registra o proxy no dicionário de proxies para permitir
-            a comunicação entre os proxies.
+        Inicializa o arquivo de log para este proxy.
+        Cria um diretório 'logs' se não existir e abre um arquivo de log específico para o proxy.
         """
-        self._start_connection_establishment_origin_thread()
-        if self.target_address:
-            self._start_connection_establishment_destiny_thread()
+        log_dir = "logs"
+        if not os.path.exists(log_dir):
+            os.makedirs(log_dir)
+        log_file_path = os.path.join(log_dir, f"{self.proxy_name}_{self.local_port}.log")
+        self.log_writer = open(log_file_path, "a", encoding='utf-8')
+        self.log(f"Log iniciado para {self.proxy_name} na porta {self.local_port}")
 
-    def _start_connection_establishment_origin_thread(self):
+    def log(self, message: str):
         """
-            Inicia uma nova thread para gerenciar o estabelecimento de 
-            conexões de origem
+        Escreve uma mensagem no arquivo de log do proxy e no console.
         """
-        origin_thread = threading.Thread(target=self._connection_establishment_origin_task, daemon=True)
-        origin_thread.start()
+        timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        log_entry = f"[{timestamp}] {message}\n"
+        if self.log_writer:
+            self.log_writer.write(log_entry)
+            self.log_writer.flush()
+        print(log_entry.strip())
 
-    def _connection_establishment_origin_task(self):
+    def start_listening(self):
         """
-            Inicia uma nova thread para gerenciar o estabelecimento de
-            conexões de origem
+        Inicia o servidor de socket para este proxy, permitindo que ele receba mensagens
+        de outros proxies ou componentes.
+        """
+        try:
+            self.local_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.local_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) 
+            self.local_socket.bind(("", self.local_port))
+            self.local_socket.listen(5) 
+            self.log(f"[{self.proxy_name}] Escutando na porta {self.local_port}...")
+            
+            
+            threading.Thread(target=self._accept_connections, daemon=True).start()
+        except Exception as e:
+            self.log(f"[{self.proxy_name}] ERRO ao iniciar o listener na porta {self.local_port}: {e}")
+            self.is_running = False
+
+    def _accept_connections(self):
+        """
+        Loop para aceitar novas conexões de entrada.
+        Quando uma nova conexão é aceita, uma nova thread é iniciada para lidar com ela.
+        """
+        while self.is_running:
+            try:
+                conn, addr = self.local_socket.accept()
+                self.log(f"[{self.proxy_name}] Conexão aceita de {addr[0]}:{addr[1]}")
+                conn.settimeout(1.0) 
+                threading.Thread(target=self._handle_client_connection, args=(conn, addr), daemon=True).start()
+            except socket.timeout:
+                continue
+            except OSError as e: 
+                if self.is_running:
+                    self.log(f"[{self.proxy_name}] Erro OSError ao aceitar conexão: {e}")
+                break 
+            except Exception as e:
+                if self.is_running:
+                    self.log(f"[{self.proxy_name}] ERRO ao aceitar conexão: {e}")
+                break
+
+    def _handle_client_connection(self, conn: socket.socket, addr):
+        """
+        Lida com uma conexão de cliente individual, lendo dados do socket.
+        Implementa um buffer para ler mensagens delimitadas por '\n'.
+
+        Args:
+            conn (socket.socket): O objeto socket da conexão com o cliente.
+            addr (tuple): O endereço (IP, Porta) do cliente conectado.
+        """
+        buffer = ""
+        try:
+            while self.is_running:
+                data = conn.recv(4096).decode('utf-8')
+                if not data:
+                    break 
+                
+                buffer += data
+                
+                while '\n' in buffer:
+                    message, buffer = buffer.split('\n', 1)
+                    self.receiving_messages(message.strip()) 
+        except socket.timeout:
+            
+            pass 
+        except OSError as e:
+             
+             self.log(f"[{self.proxy_name}] Erro na conexão com {addr[0]}:{addr[1]} (OSError): {e}")
+        except Exception as e:
+            self.log(f"[{self.proxy_name}] ERRO inesperado na conexão do cliente {addr[0]}:{addr[1]}: {e}")
+        finally:
+            self.log(f"[{self.proxy_name}] Conexão com {addr[0]}:{addr[1]} encerrada.")
+            conn.close()
+
+    def _get_or_create_outbound_connection(self, target_address: TargetAddress) -> socket.socket:
+        """
+        Obtém uma conexão de saída existente ou cria uma nova para o destino especificado.
+        Mantém conexões persistentes no dicionário _outbound_connections.
+        """
+        target_key = (target_address.get_ip(), target_address.get_port())
+        
+        if target_key not in self._outbound_connections or not self._is_socket_connected(self._outbound_connections[target_key]):
+           
+            new_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            try:
+                new_sock.connect(target_key)
+                new_sock.settimeout(5.0) 
+                self._outbound_connections[target_key] = new_sock
+                self.log(f"[{self.proxy_name}] Conexão estabelecida com destino: {target_address.get_ip()}:{target_address.get_port()}")
+            except Exception as e:
+                self.log(f"[{self.proxy_name}] ERRO ao estabelecer conexão com {target_address.get_ip()}:{target_address.get_port()}: {e}")
+                if target_key in self._outbound_connections:
+                    del self._outbound_connections[target_key] 
+                raise 
+        return self._outbound_connections[target_key]
+
+    def _is_socket_connected(self, sock: socket.socket) -> bool:
+        """
+        Verifica se um socket está conectado.
         """
         try:
             
-            pass
+            sock.send(b'') 
+            return True
+        except socket.error as e:
+            return False
         except Exception as e:
-            print(f"[{self.proxy_name}] Error in origin connection: {e}", file=sys.stderr)
+            self.log(f"[{self.proxy_name}] Erro inesperado ao verificar conexão do socket: {e}")
+            return False
 
-    def _start_connection_establishment_destiny_thread(self):
-        """
-            Inicia uma nova thread para gerenciar o estabelecimento de
-            conexões de destino
-        """
-        destiny_thread = threading.Thread(target=self._connection_establishment_destiny_task, daemon=True)
-        destiny_thread.start()
 
-    def _connection_establishment_destiny_task(self):
+    def send_message_to_destiny(self, message: str, target_address: TargetAddress):
         """
-            Inicia uma nova thread para gerenciar o estabelecimento de
-            conexões de destino
-        """
-       
-        self.create_connection_with_destiny()
-        
+        Envia uma mensagem para um destino específico via socket.
+        Estabelece a conexão se ela ainda não existir ou estiver fechada.
 
-    def has_something_to_process(self):
+        Args:
+            message (str): A mensagem a ser enviada (já deve incluir o delimitador '\n').
+            target_address (TargetAddress): O endereço (IP e Porta) do destino.
         """
-            Verifica se há algo a ser processado pelo proxy
+        try:
+            sock = self._get_or_create_outbound_connection(target_address)
+            sock.sendall(message.encode('utf-8'))
+            self.log(f"[{self.proxy_name}] Mensagem enviada para {target_address.get_ip()}:{target_address.get_port()}: '{message.strip()}'")
+        except Exception as e:
+            self.log(f"[{self.proxy_name}] ERRO ao enviar mensagem para {target_address.get_ip()}:{target_address.get_port()}: {e}")
+           
+            target_key = (target_address.get_ip(), target_address.get_port())
+            if target_key in self._outbound_connections:
+                self._outbound_connections[target_key].close()
+                del self._outbound_connections[target_key]
+
+
+    def is_destiny_free(self, target_address: TargetAddress) -> bool:
+        """
+        Verifica se o destino especificado está livre para receber mensagens,
+        enviando uma mensagem "ping" via socket e esperando uma resposta.
+
+        Args:
+            target_address (TargetAddress): O endereço do destino a ser verificado.
 
         Returns:
-            bool: _description_
+            bool: True se o destino estiver livre, False caso contrário.
         """
-        return self.content_to_process is not None
+        try:
+            sock = self._get_or_create_outbound_connection(target_address)
+            sock.sendall(b"ping\n") 
+            
+           
+            response = sock.recv(1024).decode('utf-8').strip() # Lê a resposta
+            self.log(f"[{self.proxy_name}] Resposta de ping de {target_address.get_ip()}:{target_address.get_port()}: '{response}'")
+            return response == "free"
+        except socket.timeout:
+            self.log(f"[{self.proxy_name}] Timeout ao verificar disponibilidade de {target_address.get_ip()}:{target_address.get_port()}. Assumindo 'busy'.")
+            return False 
+        except Exception as e:
+            self.log(f"[{self.proxy_name}] ERRO ao verificar disponibilidade de {target_address.get_ip()}:{target_address.get_port()}: {e}")
+           
+            target_key = (target_address.get_ip(), target_address.get_port())
+            if target_key in self._outbound_connections:
+                self._outbound_connections[target_key].close()
+                del self._outbound_connections[target_key]
+            return False
 
-    def set_content_to_process(self, content_to_process):
-        """
-            Define o conteúdo a ser processado pelo proxy.
 
-        Args:
-            content_to_process (_type_): _description_
+    def stop_proxy(self):
         """
+        Para a execução do proxy, fechando os sockets e liberando recursos.
+        """
+        self.is_running = False
+        if self.local_socket:
+            try:
+                self.local_socket.close()
+                self.log(f"[{self.proxy_name}] Socket local fechado na porta {self.local_port}.")
+            except Exception as e:
+                self.log(f"[{self.proxy_name}] Erro ao fechar socket local: {e}")
         
-        self.content_to_process = content_to_process
 
-    def create_connection_with_destiny(self):
+        for conn_key, sock in list(self._outbound_connections.items()): 
+            try:
+                sock.close()
+                self.log(f"[{self.proxy_name}] Socket de destino ({conn_key[0]}:{conn_key[1]}) fechado.")
+            except Exception as e:
+                self.log(f"[{self.proxy_name}] Erro ao fechar socket de destino {conn_key[0]}:{conn_key[1]}: {e}")
+            finally:
+                del self._outbound_connections[conn_key]
+
+        if self.log_writer:
+            self.log_writer.close()
+        self.log(f"[{self.proxy_name}] Proxy parado.")
+
+
+    def run(self):
         """
-            Cria uma conexão com o proxy de destino
+        Método run da thread. As subclasses devem implementar sua lógica principal de processamento aqui.
+        Este método base serve principalmente para iniciar o listener de socket.
         """
-        
-        raise NotImplementedError("Subclasses must implement create_connection_with_destiny")
+        self.log(f"[{self.proxy_name}] Thread principal iniciada. Aguardando mensagens...")
+ 
 
-    def receiving_messages(self, message: str): 
-        
-        print(f"[{self.proxy_name}] recebida: {message[:100]}...")
+    def receiving_messages(self, received_message: str):
+        """
+        Método abstrato para processar mensagens recebidas.
+        Cada subclasse deve fornecer sua própria implementação para lidar com os dados recebidos.
+        """
+        raise NotImplementedError(f"Método 'receiving_messages' deve ser implementado pela subclasse {self.__class__.__name__}.")
 
-    """
-        Este é um dicionário estático de classe (compartilhado por todas as instâncias de AbstractProxy e suas subclasses).
-        Ele atua como um "serviço de nomes" ou "registro de componentes" na simulação.
-        
-        Permite que qualquer proxy envie uma mensagem para outro proxy simplesmente conhecendo sua porta de destino.
-        Quando um proxy precisa enviar uma mensagem, ele busca o proxy de destino neste dicionario pela porta e invoca
-        diretamente seu método receiving_messages.
+    def _simulate_is_free(self) -> bool:
+        """
+        Método abstrato para simular se o proxy (ou seu recurso principal) está livre.
+        Cada subclasse deve implementar sua própria lógica para determinar se está livre.
+        Para comunicação via socket, este método será chamado para determinar a resposta ao "ping".
+
         Returns:
-            _type_: _description_
-        """      
-    _proxy_registry = {} 
-
-    @classmethod
-    def register_proxy(cls, proxy_instance):
-        """ Método de classe que adiciona uma instância de proxy ao _proxy_registry
-        dado uma porta local. Isso permite que proxies se comuniquem entre si.
-
-        Args:
-            proxy_instance (objeto): Instância de AbstractProxy a ser registrada.
+            bool: True se o proxy estiver livre para processar mais trabalho, False caso contrário.
         """
-        
-        cls._proxy_registry[proxy_instance.local_port] = proxy_instance
-
-    @classmethod
-    def get_proxy_by_port(cls, port):
-        """
-            Método de classe que busca uma instância de proxy no _proxy_registry
-            a partir do numero da porta local.
-        """
-        return cls._proxy_registry.get(port)
-
-    def is_destiny_free(self, target_address):
-        """
-            Verifica se o proxy de destino está livre para receber mensagens
-            Args:
-                target_address (TargetAddress): O endereço de destino a ser verificado
-        """
-       
-        target_proxy = AbstractProxy.get_proxy_by_port(target_address.get_port())
-        if target_proxy:
-            return target_proxy._simulate_is_free()
-        return False 
-
-    def _simulate_is_free(self):
-        """
-            Simula a verificação se o proxy de destino está livre para receber mensagens.
-            Esse método aqui é só um método auxiliar que é chamado pelo método is_destiny_free.
-            Returns:
-                bool: True se o proxy de destino estiver livre
-                      False caso contrário.
-        """
-        return True 
-
-    def send_message_to_destiny(self, message, target_address):
-        """Envia uma mensagem para o proxy de destino, os sockets ainda não estão habilitados
-        aqui para enviar mensagens, mas a comunicação entre os proxies é feita diretamente 
-        através do método receiving_messages
-
-        Args:
-            message (str): mensagem a ser enviada
-            target_address (TargetAddress): Endereço de destin
-        """
-        
-        # aqui recupera o proxy de destino a partir do dicionário
-        target_proxy = AbstractProxy.get_proxy_by_port(target_address.get_port())
-        if target_proxy:
-           # aui eu simulo um atraso só mesmo para simular um tempo de espera
-            time.sleep(0.003)
-            # aqui eu chamo o método receiving_messages do proxy de destino
-            target_proxy.receiving_messages(message)
-        else:
-            print(f"[{self.proxy_name}] Could not find target proxy at port {target_address.get_port()} to send message: {message[:50]}...")
+        raise NotImplementedError(f"Método '_simulate_is_free' deve ser implementado pela subclasse {self.__class__.__name__}.")

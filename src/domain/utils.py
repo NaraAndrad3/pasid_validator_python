@@ -1,5 +1,7 @@
 import random
 import time
+import os
+import math # Adicionar esta importação para math.sqrt
 
 def get_current_millis():
     """
@@ -23,11 +25,18 @@ def read_properties_file(filepath):
     """
         Lê um arquivo .properties e retorna seu conteúdo como um dicionário.
         
+        Raises:
+            FileNotFoundError: Se o arquivo de propriedades não for encontrado.
+            Exception: Se ocorrer outro erro durante a leitura do arquivo.
+        
         Returns:
-            dict: Dicionário contendo as proprerties do componente ou um dicionário
-            vazio se o arquivo não for encontrado ou não puder ser lido.
+            dict: Dicionário contendo as propriedades do componente.
     """
     properties = {}
+    if not os.path.exists(filepath):
+        # Alterado para re-lançar FileNotFoundError
+        raise FileNotFoundError(f"Properties file not found at {filepath}")
+    
     try:
         with open(filepath, 'r', encoding='utf-8') as f:
             for line in f:
@@ -40,13 +49,12 @@ def read_properties_file(filepath):
                 elif ':' in line:
                     key, value = line.split(':', 1)
                 else:
-                    continue # Skip malformed lines
+                    continue # Ignorar linhas malformadas
 
                 properties[key.strip()] = value.strip()
-    except FileNotFoundError:
-        print(f"Error: Properties file not found at {filepath}")
     except Exception as e:
-        print(f"Error reading properties file {filepath}: {e}")
+        # Captura outras exceções de leitura de arquivo
+        raise Exception(f"Error reading properties file {filepath}: {e}")
     return properties
 
 def generate_random_port(min_port = 1000, max_port = 9000):
@@ -58,11 +66,25 @@ def generate_random_port(min_port = 1000, max_port = 9000):
     """
     return random.randint(min_port, max_port)
 
+def calculate_mean(data):
+    """
+    Calcula a média (average) de uma lista de dados numéricos.
+    """
+    if not data:
+        return 0.0
+    return sum(data) / len(data)
 
+def calculate_std_dev(data, mean_val=None):
+    """
+    Calcula o desvio padrão de uma lista de dados numéricos.
+    Se mean_val for fornecido, ele o usa, caso contrário, calcula a média.
+    """
+    if not data:
+        return 0.0
+    
+    if mean_val is None:
+        mean_val = calculate_mean(data)
+    
+    variance = sum([(x - mean_val) ** 2 for x in data]) / len(data)
+    return math.sqrt(variance)
 
-
-ret = read_properties_file('/home/nara/Documentos/2025.1/SD/Trabalho_Final/pasid_validator_python/config/loadbalancer1.properties')
-
-
-for key, value in ret.items():
-    print(f"{key}: {value}")
