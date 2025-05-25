@@ -1,0 +1,43 @@
+Iniciando os Serviços...
+Iniciando os Load Balancers...
+Iniciando a Source...
+[1748213635636] Log iniciado para Source na porta 1025
+[1748213635636] [Source] Escutando na porta 1025...
+[1748213635636] ======================================
+[1748213635636] Parâmetros da Origem:
+[1748213635636] Nome do Proxy: Source
+[1748213635636] Porta Local: 1025
+[1748213635636] Destino Principal (Primeiro LB): localhost:2000
+[1748213635636] Estágio de Alimentação do Modelo: True
+[1748213635637] Atraso de Chegada (ms): 100
+[1748213635637] Máximo de Mensagens Esperadas por Ciclo: 10
+[1748213635637] Servidor Balanceador Variável (IP:Porta): localhost:3000
+[1748213635637] Qtd. de Serviços por Ciclo: [1, 2]
+[1748213635637] MRTs do Modelo: [405597.23, 203892.96]
+[1748213635637] SDVs do Modelo: [1245.97, 613.95]
+[1748213635637] ======================================
+[1748213635637] Iniciando a Origem...
+
+*****************************************************
+[Source] Source iniciada na porta 1025. Pressione Enter para parar...
+
+*****************************************************
+[1748213635637] [Stage] Alimentação do Modelo: Iniciado.
+[1748213635637] [Source] Conexão estabelecida com destino: localhost:2000
+[1748213635637] [Source] Mensagem enviada para localhost:2000: '0;1748213635637;'
+[1748213635737] [Source] Mensagem enviada para localhost:2000: '1;1748213635737;'
+[1748213635759] [Source] Conexão aceita de 127.0.0.1:49736
+[1748213635759] [Source] Mensagem de resposta recebida: 0;1748213635637;1748213635639;0;1748213635639;1748213635639;0;1748213635699;60;1748213635702;0;1748213635702;1748213635702;0;1748213635758;56;...
+[1748213635838] [Source] Mensagem enviada para localhost:2000: '2;1748213635838;'
+[1748213635861] [Source] Conexão aceita de 127.0.0.1:49738
+[1748213635861] [Source] Mensagem de resposta recebida: 1;1748213635737;1748213635739;0;1748213635739;1748213635739;0;1748213635796;57;1748213635798;0;1748213635798;1748213635798;0;1748213635860;62;...
+[1748213635938] [Source] Mensagem enviada para localhost:2000: '3;1748213635938;'
+[1748213635942] [Source] Mensagem de resposta recebida: 2;1748213635838;1748213635838;0;1748213635838;1748213635839;0;1748213635894;55;1748213635895;0;1748213635895;1748213635895;0;1748213635941;46;...
+[1748213636038] [Source] Mensagem enviada para localhost:2000: '4;1748213636038;'
+[1748213636046] [Source] Mensagem de resposta recebida: 3;1748213635938;1748213635939;0;1748213635939;1748213635939;0;1748213635996;57;1748213635997;0;1748213635997;1748213635997;0;1748213636045;48;...
+[1748213636138] [Source] Estágio de alimentação finalizado após enviar 5 mensagens.
+[1748213636139] [Source] Sinal de parada recebido. Encerrando threads e conexões...
+[1748213636139] [Source] Socket local fechado na porta 1025.
+[1748213636139] [Source] Conexão de saída para localhost:2000 fechada.
+[1748213636139] [Source] Proxy completamente parado.
+[Source] Source parada.
