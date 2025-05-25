@@ -3,7 +3,7 @@ import time
 import sys
 import os
 from collections import OrderedDict
-
+import socket
 
 from src.domain.abstract_proxy import AbstractProxy
 from src.domain.target_address import TargetAddress
@@ -19,9 +19,9 @@ class Source(AbstractProxy):
         # Carrega as propriedades do arquivo de configuração
         props = read_properties_file(properties_path)
 
-        # Propriedades específicas da Source
+        
         self.model_feeding_stage = props.get("modelFeedingStage", "false").lower() == 'true'
-        self.json_path = props.get("jsonPath") 
+
         
         
         source_port = int(props.get("sourcePort"))
@@ -115,24 +115,21 @@ class Source(AbstractProxy):
             self.log(f"[{self.proxy_name}] ERRO ao enviar mensagem de configuração para {target_address}: {e}")
 
     def send_message_feeding_stage(self):
-        """
-        Simula a etapa de 'alimentação do modelo', enviando mensagens contínuas.
-        Esta etapa é executada indefinidamente ou até ser interrompida manualmente.
-        """
         self.log("[Stage] Alimentação do Modelo: Iniciado.")
         message_index = 0
-        while self.is_running: 
-            message = f"{message_index};{get_current_millis()};"
+        MAX_MESSAGES_TO_SEND = 5 
+        while self.is_running and message_index < MAX_MESSAGES_TO_SEND:
+            # aqui marca o timestamp de envio--> id_message;timestamp
+            message = f"{message_index};{get_current_millis()};" 
             self._send(message)
             message_index += 1
             if message_index % 100 == 0:
                 self.log(f"[{self.proxy_name}] Enviadas {message_index} mensagens no estágio de alimentação.")
-
+        self.log(f"[{self.proxy_name}] Estágio de alimentação finalizado após enviar {message_index} mensagens.")
+ 
+        
     def send_messages_validation_stage(self):
-        """
-        Simula a etapa de 'validação', que envolve o envio de mensagens e
-        a reconfiguração de serviços para diferentes ciclos.
-        """
+        
         self.log("[Stage] Validação: Iniciado.")
         
         
@@ -185,9 +182,9 @@ class Source(AbstractProxy):
         self.display_final_results()
 
 
-    def receiving_messages(self, received_message: str):
+    def receiving_messages(self, received_message: str,conn: socket.socket):
         """
-        Lida com as mensagens de entrada (respostas ou pings) que chegam ao Source via socket.
+            Lida com as mensagens de entrada (respostas ou pings) que chegam ao Source via socket.
         """
         if received_message is None or received_message.strip() == "":
             return
@@ -200,7 +197,7 @@ class Source(AbstractProxy):
             return
 
         
-        self.log(f"[{self.proxy_name}] Mensagem de resposta recebida: {message_stripped[:70]}...")
+        self.log(f"[{self.proxy_name}] Mensagem de resposta recebida: {message_stripped}...")
         
         
         self.considered_messages.append(message_stripped)
@@ -208,29 +205,29 @@ class Source(AbstractProxy):
 
     def _simulate_is_free(self) -> bool:
         """
-        A Source geralmente está sempre livre para receber mensagens (respostas).
-        É principalmente um emissor e receptor, não um processador com uma fila que fica "ocupada".
+            A Source geralmente está sempre livre para receber mensagens (respostas).
+            É principalmente um emissor e receptor, não um processador com uma fila que fica "ocupada".
         """
         return True 
-    def _register_mrt_at_the_end_source(self, received_message: str) -> str:
+    def _register_mrt_at_the_end_source(self, received_message):
         """
-        Calcula o Tempo Médio de Resposta (MRT) a partir da string completa da mensagem
-        quando ela retorna para a Source.
-        Este método é mais um placeholder, pois a extração real do MRT ocorre em _parse_mrt.
+            Calcula o Tempo Médio de Resposta (MRT) a partir da string completa da mensagem
+            quando ela retorna para a Source.
+            Este método é mais um placeholder, pois a extração real do MRT ocorre em _parse_mrt.
         """
        
         return received_message 
-    def execute_first_stage_of_model_feeding(self, processed_message: str = ""): # Adicionado processed_message com valor padrão
+    def execute_first_stage_of_model_feeding(self, processed_message: str = ""): 
         """
-        Placeholder para a lógica após receber uma mensagem na etapa de alimentação do modelo.
+            Placeholder para a lógica após receber uma mensagem na etapa de alimentação do modelo.
         """
         
         pass
 
     def execute_second_stage_of_validation_metrics(self):
         """
-        Executa a segunda etapa de validação após um ciclo de mensagens ter retornado.
-        Calcula o MRT e o desvio padrão para as mensagens coletadas.
+            Executa a segunda etapa de validação após um ciclo de mensagens ter retornado.
+            Calcula o MRT e o desvio padrão para as mensagens coletadas.
         """
         if not self.considered_messages:
             self.log(f"[{self.proxy_name}] Nenhuma mensagem retornou para o ciclo {self.current_cycle_index + 1}. Não é possível calcular MRT/SDV.")

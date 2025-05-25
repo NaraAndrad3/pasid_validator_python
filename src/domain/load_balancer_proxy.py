@@ -3,17 +3,12 @@
 import threading
 import time
 import sys
-import socket # Importar socket para lidar com possíveis erros específicos
-import random # Para generate_random_port
+import socket
+import random
 
 from src.domain.abstract_proxy import AbstractProxy
 from src.domain.target_address import TargetAddress
-# ServiceProxy não será importado diretamente aqui se cada um for um processo separado,
-# a menos que você precise da classe para instanciar (mas elas não estarão no mesmo processo).
-# Por enquanto, vou mantê-lo para que o código seja semanticamente similar ao Java,
-# mas o comportamento de "criação" mudará.
-from src.domain.service_proxy import ServiceProxy # Manter por enquanto para a estrutura
-from src.domain.utils import read_properties_file, get_current_millis, generate_random_port
+from src.domain.utils import read_properties_file, get_current_millis
 
 class LoadBalancerProxy(AbstractProxy):
     """ 
@@ -22,18 +17,15 @@ class LoadBalancerProxy(AbstractProxy):
     """
     
     def __init__(self, config_path):
-        # Carrega as propriedades do arquivo de configuração.
         props = read_properties_file(config_path)
 
         proxy_name = props.get("server.loadBalancerName", "UnnamedLoadBalancer")
         local_port = int(props.get("server.loadBalancerPort"))
         
-       
         service_target_ip = props.get("service.serviceTargetIp")
         service_target_port = int(props.get("service.serviceTargetPort"))
         
         super().__init__(proxy_name, local_port, TargetAddress(service_target_ip, service_target_port))
-        
         
         self.queue_load_balancer_max_size = int(props.get("server.queueLoadBalancerMaxSize"))
         self.qtd_services_in_this_cycle = int(props.get("server.qtdServices")) 
@@ -44,33 +36,33 @@ class LoadBalancerProxy(AbstractProxy):
         self.service_std = float(props.get("service.std"))
         self.target_is_source = props.get("service.targetIsSource").lower() == 'true'
         
-        # Inicializa estruturas de dados internas.
-        self.queue = [] # Fila de mensagens que o Load Balancer precisa processar/despachar.
+        # Fila de mensagens que o Load Balancer precisa processar/despachar.
+        self.queue = [] 
+        # Lock para proteger o acesso à fila em um ambiente multithread.
+        self.queue_lock = threading.Lock() 
 
+        # Lista de endereços dos serviços que o Load Balancer irá gerenciar.
         self.service_addresses: list[TargetAddress] = [] 
-
         self._initialize_service_addresses() 
 
+        # Dicionário para armazenar conexões persistentes com os serviços gerenciados.
+        # {TargetAddress: socket.socket}
+        self.active_service_connections: dict[TargetAddress, socket.socket] = {}
+        # Lock para proteger o acesso ao dicionário de conexões.
+        self.connections_lock = threading.Lock() 
 
+        # Índice para implementação de Round Robin
+        self.current_service_index = 0
         
         self.print_load_balancer_parameters()
 
     def _initialize_service_addresses(self):
         """
         Inicializa a lista de endereços dos serviços que o Load Balancer irá gerenciar.
-        Em um ambiente distribuído, esses serviços seriam processos separados
-        já escutando em suas respectivas portas. O Load Balancer apenas precisa saber
-        onde encontrá-los.
-
-        Para a simulação, vamos assumir que as portas dos serviços são sequenciais
-        a partir de uma porta inicial (ex: porta do LB + 1), ou lidas de um arquivo.
         """
-        
-        
         start_service_port = self.local_port + 1 
         for i in range(self.qtd_services_in_this_cycle):
             service_port = start_service_port + i
-            # O IP dos serviços gerenciados será localhost se estiverem na mesma máquina.
             ta = TargetAddress("localhost", service_port)
             self.service_addresses.append(ta)
             self.log(f"[{self.proxy_name}] Gerenciando serviço em {ta.get_ip()}:{ta.get_port()}")
@@ -92,48 +84,137 @@ class LoadBalancerProxy(AbstractProxy):
         O método run é o ponto de entrada para a execução do Load Balancer.
         Ele inicia um loop que processa as mensagens na fila e as distribui para os serviços disponíveis.
         """
-        
+        self.log(f"[{self.proxy_name}] Iniciando o Load Balancer.")
         while self.is_running:
-            self._process_queue()
-            time.sleep(0.0001) 
+            try:
+                self._process_queue()
+            except Exception as e:
+                self.log(f"[{self.proxy_name}] ERRO no loop principal de processamento da fila: {e}")
+            time.sleep(0.001) # Pequena pausa para evitar consumo excessivo de CPU
+
+    def _get_next_service_address_rr(self) -> TargetAddress | None:
+        """
+        Obtém o próximo endereço de serviço usando a estratégia Round Robin.
+        """
+        with self.connections_lock: # Protege o acesso à lista de endereços
+            if not self.service_addresses:
+                return None
+            
+            # Garante que o índice não exceda o número de serviços
+            if self.current_service_index >= len(self.service_addresses):
+                self.current_service_index = 0
+                
+            service_addr = self.service_addresses[self.current_service_index]
+            self.current_service_index = (self.current_service_index + 1) % len(self.service_addresses)
+            return service_addr
+
+    def _get_or_create_service_connection(self, service_addr: TargetAddress) -> socket.socket | None:
+        """
+        Tenta obter uma conexão existente ou cria uma nova para o serviço.
+        Retorna a socket se bem-sucedido, None caso contrário.
+        """
+        with self.connections_lock: # Protege o acesso ao dicionário de conexões
+            s = self.active_service_connections.get(service_addr)
+            if s:
+                try:
+                    # Tenta um envio nulo para verificar se a conexão está viva (keep-alive)
+                    s.sendall(b'') 
+                    return s
+                except (socket.error, BrokenPipeError, ConnectionResetError) as e:
+                    self.log(f"[{self.proxy_name}] Conexão existente para {service_addr} está morta: {e}. Removendo.")
+                    del self.active_service_connections[service_addr] # Remove conexão morta
+                    s = None # Força a criação de uma nova
+
+            # Se não houver conexão ativa ou se a existente morreu, tenta criar uma nova
+            try:
+                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                s.settimeout(5) # Timeout para a conexão e operações de E/S
+                s.connect((service_addr.get_ip(), service_addr.get_port()))
+                # Adiciona a nova conexão ao dicionário
+                self.active_service_connections[service_addr] = s
+                self.log(f"[{self.proxy_name}] Conexão estabelecida com sucesso para {service_addr}.")
+                return s
+            except socket.error as e:
+                self.log(f"[{self.proxy_name}] Erro ao estabelecer conexão com {service_addr}: {e}")
+                return None
+            except Exception as e:
+                self.log(f"[{self.proxy_name}] Erro inesperado ao criar conexão com {service_addr}: {e}")
+                return None
+
+    def _close_service_connection(self, service_addr: TargetAddress):
+        """Fecha e remove uma conexão específica do dicionário."""
+        with self.connections_lock: # Protege o acesso ao dicionário de conexões
+            if service_addr in self.active_service_connections:
+                s = self.active_service_connections.pop(service_addr)
+                try:
+                    s.shutdown(socket.SHUT_RDWR) # Tenta shutdown antes de fechar para garantir o fim da comunicação
+                    s.close()
+                    self.log(f"[{self.proxy_name}] Conexão fechada para {service_addr}.")
+                except Exception as e:
+                    self.log(f"[{self.proxy_name}] Erro ao fechar conexão para {service_addr}: {e}")
+
     def _process_queue(self):
         """
         Processa as mensagens na fila do Load Balancer.
-        Tenta distribuir mensagens para serviços disponíveis usando sockets.
+        Tenta distribuir mensagens para serviços disponíveis usando conexões persistentes.
         """
-        if self.has_something_to_process():
-            msg = self.queue.pop(0) # Remove a mensagem mais antiga da fila.
-            
-            sent = False
-            # Itera sobre os endereços dos serviços gerenciados.
-            for service_addr in self.service_addresses:
-                try:
-                    
-                    if self.is_destiny_free(service_addr):
-                        
-                        msg = self._register_time_when_arrives_lb(msg) 
-                        
-                        msg_to_send = msg + f"{get_current_millis()};" 
+        with self.queue_lock: # Protege o acesso à fila
+            if not self.queue:
+                return
 
-                        # Envia a mensagem para o serviço disponível.
-                        self.send_message_to_destiny(msg_to_send + "\n", service_addr)
-                        sent = True
-                        break 
-                except Exception as e:
-                    self.log(f"[{self.proxy_name}] Erro ao tentar enviar/verificar serviço {service_addr}: {e}")
-                    
-            
-            if not sent:
+            msg = self.queue[0] # Pega a mensagem mais antiga, mas não a remove ainda.
+        
+        service_addr = self._get_next_service_address_rr()
+        if not service_addr:
+            self.log(f"[{self.proxy_name}] Nenhum serviço disponível para processar a mensagem. Fila: {len(self.queue)}")
+            return
+
+        conn_socket = self._get_or_create_service_connection(service_addr)
+        if conn_socket:
+            try:
                
-                self.log(f"[{self.proxy_name}] Todos os serviços ocupados ou inacessíveis. Mensagem permanece na fila: {msg.strip()}")
-                self.queue.insert(0, msg) 
+                data_output_stream = conn_socket.makefile('wb')
+                data_input_stream = conn_socket.makefile('rb')
 
+                # 1. Enviar "ping" para verificar a disponibilidade do serviço
+                data_output_stream.write(b"ping\n")
+                data_output_stream.flush()
+                
+                # 2. Ler a resposta "free" ou "busy" do serviço
+                response = data_input_stream.readline().decode().strip()
+
+                if response == "free":
+                    # Se o serviço estiver livre, registra o tempo de chegada e envia a mensagem de dados
+                    msg_processed = self._register_time_when_arrives_lb(msg) 
+                    msg_to_send = msg_processed + f"{get_current_millis()};" # Adiciona timestamp de saída do LB
+
+                    data_output_stream.write((msg_to_send + "\n").encode())
+                    data_output_stream.flush()
+                    self.log(f"[{self.proxy_name}] Mensagem enviada para {service_addr}: {msg_to_send[:50]}...")
+                    
+                    with self.queue_lock: 
+                        self.queue.pop(0) 
+                    
+                else:
+                    self.log(f"[{self.proxy_name}] Serviço {service_addr} está ocupado ({response}).")
+                    # Mensagem permanece na fila para ser tentada novamente com outro serviço
+            except (socket.error, BrokenPipeError, ConnectionResetError) as e:
+                self.log(f"[{self.proxy_name}] Erro de comunicação com {service_addr} na conexão persistente: {e}. Fechando conexão.")
+                self._close_service_connection(service_addr)
+                # Mensagem permanece na fila para ser tentada novamente com outro serviço
+            except Exception as e:
+                self.log(f"[{self.proxy_name}] Erro inesperado ao processar serviço {service_addr}: {e}")
+                # Mensagem permanece na fila
+        else:
+            self.log(f"[{self.proxy_name}] Não foi possível estabelecer conexão com {service_addr}. Mensagem permanece na fila.")
+            # Mensagem permanece na fila
 
     def has_something_to_process(self):
         """
         Verifica se há mensagens na fila do Load Balancer.
         """
-        return bool(self.queue)
+        with self.queue_lock:
+            return bool(self.queue)
 
     def create_connection_with_destiny(self):
         """
@@ -141,9 +222,11 @@ class LoadBalancerProxy(AbstractProxy):
         dinamicamente para os serviços filhos e para seu destino principal.
         Este método não é chamado diretamente no loop principal do LB.
         """
-        self.log(f"[{self.proxy_name}] O gerenciamento de conexões é dinâmico para serviços.")
+        # A lógica de conexão para o destino final (Source) está no AbstractProxy.
+        # As conexões para os serviços gerenciados são controladas por _get_or_create_service_connection
+        pass 
 
-    def receiving_messages(self, received_message: str):
+    def receiving_messages(self, received_message: str, conn: socket.socket): # <- MUDAR AQUI
         """
         Processa as mensagens recebidas pelo balanecador de carga via socket.
         """
@@ -153,71 +236,68 @@ class LoadBalancerProxy(AbstractProxy):
         message_stripped = received_message.strip()
         
         if message_stripped.startswith("config;"):
-            
             self._change_service_targets_of_this_server(message_stripped)
+            
         elif message_stripped == "ping":
             
             try:
-                # O AbstractProxy.py já tem a lógica de enviar "free" ou "busy" em resposta a um ping.
-                # Apenas precisamos garantir que _simulate_is_free() reflita o estado do LB.
-                response = "free" if self._simulate_is_free() else "busy"
-                # A resposta a um ping é enviada de volta pela mesma conexão que o ping chegou.
-                # No _handle_client_connection do AbstractProxy, a resposta de ping é enviada automaticamente
-                # se o método _simulate_is_free() for chamado.
-                # Neste ponto, como a mensagem é recebida, o proxy de entrada já lidou com isso.
-                pass 
+                output_stream = conn.makefile('wb')
+                if self._simulate_is_free(): 
+                    output_stream.write(b"free\n")
+                    self.log(f"[{self.proxy_name}] Respondeu 'free' ao ping de {conn.getpeername()}.")
+                else:
+                    output_stream.write(b"busy\n")
+                    self.log(f"[{self.proxy_name}] Respondeu 'busy' ao ping de {conn.getpeername()}.")
+                output_stream.flush()
             except Exception as e:
-                self.log(f"[{self.proxy_name}] Erro ao lidar com ping: {e}")
+                self.log(f"[{self.proxy_name}] ERRO ao responder ping em LoadBalancerProxy: {e}")
         else:
-            
-            if len(self.queue) < self.queue_load_balancer_max_size:
-                self.queue.append(message_stripped)
-                self.log(f"[{self.proxy_name}] Mensagem adicionada à fila ({len(self.queue)}/{self.queue_load_balancer_max_size}): {message_stripped[:50]}...")
-            else:
-                self.log(f"[{self.proxy_name}] Fila cheia. Mensagem descartada: {message_stripped[:50]}...")
+            with self.queue_lock:
+                if len(self.queue) < self.queue_load_balancer_max_size:
+                    self.queue.append(message_stripped)
+                    self.log(f"[{self.proxy_name}] Mensagem adicionada à fila ({len(self.queue)}/{self.queue_load_balancer_max_size}): {message_stripped[:50]}...")
+                else:
+                    self.log(f"[{self.proxy_name}] Fila cheia. Mensagem descartada: {message_stripped[:50]}...")
 
     def _simulate_is_free(self) -> bool:
         """
         Verifica se o Load Balancer está livre para processar mensagens,
         baseando-se no tamanho de sua fila.
         """
-        return len(self.queue) < self.queue_load_balancer_max_size
-
+        with self.queue_lock: 
+            return len(self.queue) < self.queue_load_balancer_max_size
 
     def _change_service_targets_of_this_server(self, config_message: str):
         """
         Simula a capacidade de reconfigurar dinamicamente o número de serviços que este
-        Load Balancer gerencia. Para a comunicação via socket entre processos,
-        isso é mais complexo: o LB precisaria enviar mensagens de controle para
-        os *outros processos* ServiceProxy para que eles se iniciem/parem,
-        ou você os gerencia manualmente.
-
-        Por simplicidade na segunda entrega, esta função apenas atualizará
-        a lista de `service_addresses` que o LB conhece, mas não iniciará/parará
-        os processos ServiceProxy reais. Você precisará gerenciar os processos
-        ServiceProxy separadamente.
-
-        Args:
-            config_message (str): A mensagem de configuração que contém o novo número de serviços.
-                                  Formato esperado: "config;<nova_qtd_servicos>"
+        Load Balancer gerencia.
         """
         self.log(f"[{self.proxy_name}] Reconfigurando serviços com a mensagem: {config_message}")
         parts = config_message.split(';')
-        new_qtd_services = int(parts[1])
+        
+        try:
+            new_qtd_services = int(parts[1])
+        except (ValueError, IndexError):
+            self.log(f"[{self.proxy_name}] Formato de mensagem de configuração inválido: {config_message}")
+            return
 
         
-        self.service_addresses.clear() 
+        current_service_addrs = list(self.service_addresses) 
+        for service_addr in current_service_addrs:
+            self._close_service_connection(service_addr)
 
-        start_service_port = self.local_port + 1
-        for i in range(new_qtd_services):
-            service_port = start_service_port + i 
-            ta = TargetAddress("localhost", service_port)
-            self.service_addresses.append(ta)
-            self.log(f"[{self.proxy_name}] Adicionado novo serviço gerenciado: {ta.get_ip()}:{ta.get_port()}")
+        with self.connections_lock:
+            self.service_addresses.clear() 
 
+            start_service_port = self.local_port + 1
+            for i in range(new_qtd_services):
+                service_port = start_service_port + i 
+                ta = TargetAddress("localhost", service_port)
+                self.service_addresses.append(ta)
+                self.log(f"[{self.proxy_name}] Adicionado novo serviço gerenciado: {ta.get_ip()}:{ta.get_port()}")
+            self.current_service_index = 0 
         self.log(f"[{self.proxy_name}] Reconfiguração completa. Nova contagem de serviços conhecidos: {len(self.service_addresses)}")
         
-
     def _register_time_when_arrives_lb(self, received_message: str) -> str:
         """
         Registra o tempo em milissegundos quando a mensagem chega ao Load Balancer.
@@ -226,11 +306,43 @@ class LoadBalancerProxy(AbstractProxy):
         parts = received_message.split(';')
         
        
-        last_timestamp_str = parts[-1].strip()
-        last_timestamp = int(last_timestamp_str) if last_timestamp_str.isdigit() else get_current_millis()
+        last_timestamp_str = parts[-1].strip() if parts else ""
+        
+        last_timestamp = get_current_millis()
+        if last_timestamp_str.isdigit():
+            try:
+                last_timestamp = int(last_timestamp_str)
+            except ValueError:
+                self.log(f"[{self.proxy_name}] Aviso: Não foi possível converter timestamp '{last_timestamp_str}' para int. Usando tempo atual.")
+        else:
+             self.log(f"[{self.proxy_name}] Aviso: Último elemento '{last_timestamp_str}' não é um timestamp válido. Usando tempo atual.")
 
         time_now = get_current_millis() # Timestamp de chegada ao Load Balancer.
         duration = time_now - last_timestamp # Duração do tempo de rede de entrada (do hop anterior até o LB).
         
         received_message += f"{time_now};{duration};"
         return received_message
+
+    def stop_proxy(self):
+        """
+        Para o proxy e fecha todas as conexões ativas.
+        """
+        # Garante que a flag de execução seja definida como False
+        self.is_running = False 
+        self.log(f"[{self.proxy_name}] Sinal de parada recebido. Encerrando threads e conexões...")
+
+        # Fecha as conexões de serviço gerenciadas
+        with self.connections_lock:
+            for service_addr, conn_socket in list(self.active_service_connections.items()):
+                try:
+                    conn_socket.shutdown(socket.SHUT_RDWR)
+                    conn_socket.close()
+                    self.log(f"[{self.proxy_name}] Conexão de serviço {service_addr} fechada durante a parada.")
+                except Exception as e:
+                    self.log(f"[{self.proxy_name}] Erro ao fechar conexão de serviço {service_addr}: {e}")
+            self.active_service_connections.clear() # Limpa o dicionário
+
+        # Chama o método stop_proxy da classe pai para lidar com sockets de escuta e logs
+        super().stop_proxy()
+
+        self.log(f"[{self.proxy_name}] Proxy completamente parado.")

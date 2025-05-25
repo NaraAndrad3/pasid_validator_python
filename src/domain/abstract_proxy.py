@@ -3,7 +3,8 @@ import time
 import socket
 import sys
 import os
-from src.domain.target_address import TargetAddress # Certifique-se de que TargetAddress está bem definido
+from src.domain.target_address import TargetAddress 
+from src.domain.utils import get_current_millis, calculate_delay
 
 class AbstractProxy(threading.Thread):
     """
@@ -13,36 +14,26 @@ class AbstractProxy(threading.Thread):
     """
     
     def __init__(self, proxy_name: str, local_port: int, target_address: TargetAddress = None):
-        """
-        Construtor da classe base AbstractProxy.
-
-        Args:
-            proxy_name (str): O nome do proxy (ex: "Source", "Server1", "service2001").
-            local_port (int): A porta TCP/IP na qual este proxy irá escutar por mensagens.
-            target_address (TargetAddress, opcional): O endereço (IP e Porta) para onde este proxy
-                                                        irá enviar suas mensagens após o processamento.
-                                                        Padrão é None se não houver um destino imediato.
-        """
         super().__init__()
         self.proxy_name = proxy_name
         self.local_port = local_port
-        self.target_address = target_address #
+        self.target_address = target_address
         
         self.local_socket = None # Socket para escutar conexões de entrada.
         
+        # Dicionário para gerenciar conexões de SAÍDA persistentes para destinos fixos
+        # (ex: Source para LoadBalancer1, LoadBalancer2 para Source)
         self._outbound_connections: dict[tuple[str, int], socket.socket] = {}
-        
-        self.is_running = True # Flag para controlar o ciclo de vida da thread principal.
+        self._outbound_connections_lock = threading.Lock() # Lock para proteger o dicionário
 
+        self.is_running = True
         self.log_writer = None
+        self._log_writer_closed = False # Nova flag para controlar o fechamento do log_writer
+
         self.init_log_file()
-        self.start_listening() # Inicia o servidor de socket para receber conexões.
+        self.start_listening() 
 
     def init_log_file(self):
-        """
-        Inicializa o arquivo de log para este proxy.
-        Cria um diretório 'logs' se não existir e abre um arquivo de log específico para o proxy.
-        """
         log_dir = "logs"
         if not os.path.exists(log_dir):
             os.makedirs(log_dir)
@@ -51,21 +42,24 @@ class AbstractProxy(threading.Thread):
         self.log(f"Log iniciado para {self.proxy_name} na porta {self.local_port}")
 
     def log(self, message: str):
-        """
-        Escreve uma mensagem no arquivo de log do proxy e no console.
-        """
-        timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        log_entry = f"[{timestamp}] {message}\n"
-        if self.log_writer:
-            self.log_writer.write(log_entry)
-            self.log_writer.flush()
-        print(log_entry.strip())
+        log_entry = f"[{get_current_millis()}] {message}\n"
+        print(log_entry.strip()) # Mantém a impressão no console
+
+        if self.log_writer is not None:
+            try:
+                if not self.log_writer.closed and not self._log_writer_closed: # Verifica a nova flag
+                    self.log_writer.write(log_entry)
+                    self.log_writer.flush()
+                #else: # Desabilitar aviso se o log_writer já está fechado intencionalmente
+                    #sys.stderr.write(f"[{get_current_millis()}] WARNING: Tentativa de escrever em arquivo de log fechado para {self.proxy_name}: {message}\n")
+            except ValueError as e:
+                sys.stderr.write(f"[{get_current_millis()}] ERROR ao escrever no arquivo de log para {self.proxy_name}: {e} - Mensagem: {message}\n")
+            except Exception as e:
+                sys.stderr.write(f"[{get_current_millis()}] ERRO INESPERADO durante o log para {self.proxy_name}: {e} - Mensagem: {message}\n")
+        # else: # Desabilitar aviso se o log_writer não foi inicializado (pode ocorrer antes da init completa)
+            #sys.stderr.write(f"[{get_current_millis()}] WARNING: log_writer não inicializado para {self.proxy_name}: {message}\n")
 
     def start_listening(self):
-        """
-        Inicia o servidor de socket para este proxy, permitindo que ele receba mensagens
-        de outros proxies ou componentes.
-        """
         try:
             self.local_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.local_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) 
@@ -73,22 +67,20 @@ class AbstractProxy(threading.Thread):
             self.local_socket.listen(5) 
             self.log(f"[{self.proxy_name}] Escutando na porta {self.local_port}...")
             
-            
             threading.Thread(target=self._accept_connections, daemon=True).start()
         except Exception as e:
             self.log(f"[{self.proxy_name}] ERRO ao iniciar o listener na porta {self.local_port}: {e}")
             self.is_running = False
 
     def _accept_connections(self):
-        """
-        Loop para aceitar novas conexões de entrada.
-        Quando uma nova conexão é aceita, uma nova thread é iniciada para lidar com ela.
-        """
         while self.is_running:
             try:
                 conn, addr = self.local_socket.accept()
                 self.log(f"[{self.proxy_name}] Conexão aceita de {addr[0]}:{addr[1]}")
                 conn.settimeout(1.0) 
+                # Cada conexão é gerenciada por uma thread separada.
+                # A responsabilidade de fechar a conexão está na lógica de recebimento,
+                # ou na parada do proxy.
                 threading.Thread(target=self._handle_client_connection, args=(conn, addr), daemon=True).start()
             except socket.timeout:
                 continue
@@ -103,36 +95,38 @@ class AbstractProxy(threading.Thread):
 
     def _handle_client_connection(self, conn: socket.socket, addr):
         """
-        Lida com uma conexão de cliente individual, lendo dados do socket.
-        Implementa um buffer para ler mensagens delimitadas por '\n'.
-
-        Args:
-            conn (socket.socket): O objeto socket da conexão com o cliente.
-            addr (tuple): O endereço (IP, Porta) do cliente conectado.
+        Lida com uma conexão de cliente individual.
+        Esta thread permanece ativa enquanto a conexão estiver ativa e o proxy estiver rodando.
+        Não fecha a conexão incondicionalmente no 'finally' para permitir persistência.
         """
         buffer = ""
         try:
             while self.is_running:
                 data = conn.recv(4096).decode('utf-8')
-                if not data:
+                if not data: # Cliente fechou a conexão
+                    self.log(f"[{self.proxy_name}] Cliente {addr[0]}:{addr[1]} encerrou a conexão.")
                     break 
                 
                 buffer += data
                 
                 while '\n' in buffer:
                     message, buffer = buffer.split('\n', 1)
-                    self.receiving_messages(message.strip()) 
+                    # receiving_messages deve lidar com o ping e as mensagens de dados
+                    # Ele não deve fechar a conexão.
+                    self.receiving_messages(message.strip(), conn) # Passa a socket para a subclasse
         except socket.timeout:
-            
-            pass 
-        except OSError as e:
-             
-             self.log(f"[{self.proxy_name}] Erro na conexão com {addr[0]}:{addr[1]} (OSError): {e}")
+            # self.log(f"[{self.proxy_name}] Timeout na conexão com {addr[0]}:{addr[1]}.")
+            pass # Isso é normal para conexões persistentes que não estão sempre enviando dados
+        except (ConnectionResetError, BrokenPipeError, socket.error) as e:
+            self.log(f"[{self.proxy_name}] Conexão com {addr[0]}:{addr[1]} foi resetada/quebrada: {e}")
         except Exception as e:
             self.log(f"[{self.proxy_name}] ERRO inesperado na conexão do cliente {addr[0]}:{addr[1]}: {e}")
         finally:
-            self.log(f"[{self.proxy_name}] Conexão com {addr[0]}:{addr[1]} encerrada.")
-            conn.close()
+            # A conexão é fechada apenas se a thread principal decidir parar,
+            # ou se a conexão quebrar (tratado nas exceções acima).
+            # Removido o conn.close() incondicional aqui.
+            pass
+
 
     def _get_or_create_outbound_connection(self, target_address: TargetAddress) -> socket.socket:
         """
@@ -141,44 +135,62 @@ class AbstractProxy(threading.Thread):
         """
         target_key = (target_address.get_ip(), target_address.get_port())
         
-        if target_key not in self._outbound_connections or not self._is_socket_connected(self._outbound_connections[target_key]):
-           
+        with self._outbound_connections_lock: # Protege o acesso ao dicionário de conexões
+            sock = self._outbound_connections.get(target_key)
+            
+            if sock and self._is_socket_connected(sock): # Verifica se a socket está ativa
+                return sock
+            
+            # Se não há socket, ou está inativa, tenta criar uma nova
+            if sock: # Se existia uma socket mas estava inativa, feche-a e remova-a
+                try:
+                    sock.close()
+                except Exception as e:
+                    self.log(f"[{self.proxy_name}] Erro ao fechar socket inativa para {target_key}: {e}")
+                del self._outbound_connections[target_key]
+                
             new_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             try:
                 new_sock.connect(target_key)
                 new_sock.settimeout(5.0) 
                 self._outbound_connections[target_key] = new_sock
                 self.log(f"[{self.proxy_name}] Conexão estabelecida com destino: {target_address.get_ip()}:{target_address.get_port()}")
+                return new_sock
             except Exception as e:
                 self.log(f"[{self.proxy_name}] ERRO ao estabelecer conexão com {target_address.get_ip()}:{target_address.get_port()}: {e}")
-                if target_key in self._outbound_connections:
-                    del self._outbound_connections[target_key] 
-                raise 
-        return self._outbound_connections[target_key]
+                raise # Propaga a exceção para que o chamador possa lidar com ela
 
     def _is_socket_connected(self, sock: socket.socket) -> bool:
         """
-        Verifica se um socket está conectado.
+        Verifica se um socket está conectado e aparentemente funcional.
+        Isso é um 'best effort', pois a conexão pode cair a qualquer momento.
         """
         try:
-            
-            sock.send(b'') 
-            return True
-        except socket.error as e:
+            # Tenta um envio nulo para verificar a vivacidade da conexão.
+            # SHUT_RDWR não deve ser usado aqui, pois é um fechamento de conexão.
+            # sock.getsockopt(socket.SOL_SOCKET, socket.SO_ERROR) pode ser mais robusto.
+            error_code = sock.getsockopt(socket.SOL_SOCKET, socket.SO_ERROR)
+            if error_code == 0:
+                # Tenta enviar um byte para verificar se o pipe está quebrado
+                # Usar MSG_DONTWAIT para não bloquear
+                try:
+                    sock.send(b'', socket.MSG_DONTWAIT)
+                except BlockingIOError:
+                    pass # Isso é esperado se não houver dados para enviar imediatamente
+                return True
+            else:
+                self.log(f"[{self.proxy_name}] Socket {sock.fileno()} erro de SO_ERROR: {error_code}")
+                return False
+        except (socket.error, ConnectionResetError, BrokenPipeError):
             return False
         except Exception as e:
             self.log(f"[{self.proxy_name}] Erro inesperado ao verificar conexão do socket: {e}")
             return False
 
-
     def send_message_to_destiny(self, message: str, target_address: TargetAddress):
         """
-        Envia uma mensagem para um destino específico via socket.
-        Estabelece a conexão se ela ainda não existir ou estiver fechada.
-
-        Args:
-            message (str): A mensagem a ser enviada (já deve incluir o delimitador '\n').
-            target_address (TargetAddress): O endereço (IP e Porta) do destino.
+            Envia uma mensagem para um destino específico via socket.
+            Estabelece a conexão se ela ainda não existir ou estiver fechada.
         """
         try:
             sock = self._get_or_create_outbound_connection(target_address)
@@ -186,30 +198,35 @@ class AbstractProxy(threading.Thread):
             self.log(f"[{self.proxy_name}] Mensagem enviada para {target_address.get_ip()}:{target_address.get_port()}: '{message.strip()}'")
         except Exception as e:
             self.log(f"[{self.proxy_name}] ERRO ao enviar mensagem para {target_address.get_ip()}:{target_address.get_port()}: {e}")
-           
-            target_key = (target_address.get_ip(), target_address.get_port())
-            if target_key in self._outbound_connections:
-                self._outbound_connections[target_key].close()
-                del self._outbound_connections[target_key]
+            # Em caso de erro, tente fechar a conexão e removê-la para que uma nova seja criada na próxima tentativa
+            with self._outbound_connections_lock:
+                target_key = (target_address.get_ip(), target_address.get_port())
+                if target_key in self._outbound_connections:
+                    try:
+                        self._outbound_connections[target_key].close()
+                    except Exception as close_e:
+                        self.log(f"[{self.proxy_name}] Erro ao fechar socket com erro para {target_key}: {close_e}")
+                    del self._outbound_connections[target_key]
 
 
+    
     def is_destiny_free(self, target_address: TargetAddress) -> bool:
         """
         Verifica se o destino especificado está livre para receber mensagens,
         enviando uma mensagem "ping" via socket e esperando uma resposta.
-
-        Args:
-            target_address (TargetAddress): O endereço do destino a ser verificado.
-
-        Returns:
-            bool: True se o destino estiver livre, False caso contrário.
+        Esta é uma transação de ping de uma única mensagem (ping-response).
         """
         try:
-            sock = self._get_or_create_outbound_connection(target_address)
-            sock.sendall(b"ping\n") 
             
-           
-            response = sock.recv(1024).decode('utf-8').strip() # Lê a resposta
+            sock = self._get_or_create_outbound_connection(target_address)
+            
+            data_output_stream = sock.makefile('wb')
+            data_input_stream = sock.makefile('rb')
+
+            data_output_stream.write(b"ping\n")
+            data_output_stream.flush()
+            
+            response = data_input_stream.readline().decode('utf-8').strip() # Lê a resposta
             self.log(f"[{self.proxy_name}] Resposta de ping de {target_address.get_ip()}:{target_address.get_port()}: '{response}'")
             return response == "free"
         except socket.timeout:
@@ -217,63 +234,74 @@ class AbstractProxy(threading.Thread):
             return False 
         except Exception as e:
             self.log(f"[{self.proxy_name}] ERRO ao verificar disponibilidade de {target_address.get_ip()}:{target_address.get_port()}: {e}")
-           
-            target_key = (target_address.get_ip(), target_address.get_port())
-            if target_key in self._outbound_connections:
-                self._outbound_connections[target_key].close()
-                del self._outbound_connections[target_key]
+            # Em caso de erro, remove a conexão para que uma nova seja tentada na próxima vez
+            with self._outbound_connections_lock:
+                target_key = (target_address.get_ip(), target_address.get_port())
+                if target_key in self._outbound_connections:
+                    try:
+                        self._outbound_connections[target_key].close()
+                    except Exception as close_e:
+                        self.log(f"[{self.proxy_name}] Erro ao fechar socket com erro para {target_key}: {close_e}")
+                    del self._outbound_connections[target_key]
             return False
 
 
     def stop_proxy(self):
-        """
-        Para a execução do proxy, fechando os sockets e liberando recursos.
-        """
+        # Esta flag garante que o log_writer seja fechado apenas uma vez.
+        if self._log_writer_closed:
+            return
+
         self.is_running = False
+        self.log(f"[{self.proxy_name}] Sinal de parada recebido. Encerrando threads e conexões...")
+
+        # Fecha o socket de escuta local
         if self.local_socket:
             try:
                 self.local_socket.close()
                 self.log(f"[{self.proxy_name}] Socket local fechado na porta {self.local_port}.")
             except Exception as e:
                 self.log(f"[{self.proxy_name}] Erro ao fechar socket local: {e}")
+
+        # Fechar todas as conexões de saída (para destinos fixos)
+        with self._outbound_connections_lock:
+            for target_key, sock in list(self._outbound_connections.items()):
+                try:
+                    sock.shutdown(socket.SHUT_RDWR)
+                    sock.close()
+                    self.log(f"[{self.proxy_name}] Conexão de saída para {target_key[0]}:{target_key[1]} fechada.")
+                except Exception as e:
+                    self.log(f"[{self.proxy_name}] Erro ao fechar conexão de saída para {target_key[0]}:{target_key[1]}: {e}")
+            self._outbound_connections.clear()
         
-
-        for conn_key, sock in list(self._outbound_connections.items()): 
+        # Fechar o log_writer de forma segura e apenas uma vez
+        if self.log_writer is not None:
             try:
-                sock.close()
-                self.log(f"[{self.proxy_name}] Socket de destino ({conn_key[0]}:{conn_key[1]}) fechado.")
+                if not self.log_writer.closed:
+                    self.log_writer.close()
             except Exception as e:
-                self.log(f"[{self.proxy_name}] Erro ao fechar socket de destino {conn_key[0]}:{conn_key[1]}: {e}")
+                sys.stderr.write(f"[{self.proxy_name}] ERRO ao fechar log_writer: {e}\n")
             finally:
-                del self._outbound_connections[conn_key]
+                self.log_writer = None
+                self._log_writer_closed = True 
 
-        if self.log_writer:
-            self.log_writer.close()
-        self.log(f"[{self.proxy_name}] Proxy parado.")
+        print(f"[{get_current_millis()}] [{self.proxy_name}] Proxy completamente parado.")
 
 
     def run(self):
-        """
-        Método run da thread. As subclasses devem implementar sua lógica principal de processamento aqui.
-        Este método base serve principalmente para iniciar o listener de socket.
-        """
         self.log(f"[{self.proxy_name}] Thread principal iniciada. Aguardando mensagens...")
  
-
-    def receiving_messages(self, received_message: str):
+    
+    def receiving_messages(self, received_message: str, conn: socket.socket):
         """
         Método abstrato para processar mensagens recebidas.
         Cada subclasse deve fornecer sua própria implementação para lidar com os dados recebidos.
+        A socket 'conn' é passada para permitir que a subclasse responda na mesma conexão.
         """
         raise NotImplementedError(f"Método 'receiving_messages' deve ser implementado pela subclasse {self.__class__.__name__}.")
 
     def _simulate_is_free(self) -> bool:
         """
         Método abstrato para simular se o proxy (ou seu recurso principal) está livre.
-        Cada subclasse deve implementar sua própria lógica para determinar se está livre.
         Para comunicação via socket, este método será chamado para determinar a resposta ao "ping".
-
-        Returns:
-            bool: True se o proxy estiver livre para processar mais trabalho, False caso contrário.
         """
         raise NotImplementedError(f"Método '_simulate_is_free' deve ser implementado pela subclasse {self.__class__.__name__}.")
