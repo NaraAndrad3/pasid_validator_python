@@ -108,7 +108,7 @@ O arquivo run.sh foi implementado apenas para facilitar a inicialização dos co
 
 ---
 
-### 🤝 Autores
+### Autores
 
 * [@NaraAndrad3](https://github.com/NaraAndrad3)
 
