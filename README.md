@@ -75,6 +75,16 @@ Nesta primeira etapa, a comunicação é **simulada em memória**. Isso signific
 
 ---
 
+#### ** Como executar o sistema:**
+
+No terminal, dentro da raiz do projeto execute o comando:
+
+```
+    python3 main.py
+```
+
+---
+
 ### Tecnologias Utilizadas
 
 * **Python 3.12.3**: Linguagem de programação principal.
