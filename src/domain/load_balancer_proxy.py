@@ -36,22 +36,21 @@ class LoadBalancerProxy(AbstractProxy):
         self.service_std = float(props.get("service.std"))
         self.target_is_source = props.get("service.targetIsSource").lower() == 'true'
         
-        # Fila de mensagens que o Load Balancer precisa processar/despachar.
+        
         self.queue = [] 
-        # Lock para proteger o acesso à fila em um ambiente multithread.
+       
         self.queue_lock = threading.Lock() 
 
-        # Lista de endereços dos serviços que o Load Balancer irá gerenciar.
+        
         self.service_addresses: list[TargetAddress] = [] 
         self._initialize_service_addresses() 
 
-        # Dicionário para armazenar conexões persistentes com os serviços gerenciados.
-        # {TargetAddress: socket.socket}
+        
         self.active_service_connections: dict[TargetAddress, socket.socket] = {}
-        # Lock para proteger o acesso ao dicionário de conexões.
+       
         self.connections_lock = threading.Lock() 
 
-        # Índice para implementação de Round Robin
+        
         self.current_service_index = 0
         
         self.print_load_balancer_parameters()
@@ -90,23 +89,17 @@ class LoadBalancerProxy(AbstractProxy):
                 self._process_queue()
             except Exception as e:
                 self.log(f"[{self.proxy_name}] ERRO no loop principal de processamento da fila: {e}")
-            time.sleep(0.001) # Pequena pausa para evitar consumo excessivo de CPU
+            time.sleep(0.001) 
 
     def _get_next_service_address_rr(self) -> TargetAddress | None:
         """
         Obtém o próximo endereço de serviço usando a estratégia Round Robin.
         """
-        with self.connections_lock: # Protege o acesso à lista de endereços
+        with self.connections_lock: 
             if not self.service_addresses:
                 return None
             
-            # Garante que o índice não exceda o número de serviços
-            # Adicionado um loop para garantir que todos os serviços sejam considerados
-            # em caso de falha de conexão ou serviço ocupado.
-            # No entanto, a lógica original de Round Robin é suficiente se _get_or_create_service_connection for robusto.
-            
-            # Se o problema é o service3002 não receber, esta parte não é o problema principal,
-            # mas o que acontece *depois* da escolha do serviço.
+           
             
             service_addr = self.service_addresses[self.current_service_index]
             self.current_service_index = (self.current_service_index + 1) % len(self.service_addresses)
@@ -121,20 +114,20 @@ class LoadBalancerProxy(AbstractProxy):
             s = self.active_service_connections.get(service_addr)
             if s:
                 try:
-                    # Tenta um envio nulo para verificar se a conexão está viva (keep-alive)
+                   
                     s.sendall(b'') 
                     return s
                 except (socket.error, BrokenPipeError, ConnectionResetError) as e:
                     self.log(f"[{self.proxy_name}] Conexão existente para {service_addr} está morta: {e}. Removendo.")
                     del self.active_service_connections[service_addr] # Remove conexão morta
-                    s = None # Força a criação de uma nova
+                    s = None 
 
-            # Se não houver conexão ativa ou se a existente morreu, tenta criar uma nova
+           
             try:
                 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                s.settimeout(45) # AUMENTADO PARA 45 SEGUNDOS (antes 25)
+                s.settimeout(45) 
                 s.connect((service_addr.get_ip(), service_addr.get_port()))
-                # Adiciona a nova conexão ao dicionário
+               
                 self.active_service_connections[service_addr] = s
                 self.log(f"[{self.proxy_name}] Conexão estabelecida com sucesso para {service_addr}.")
                 return s
@@ -162,16 +155,12 @@ class LoadBalancerProxy(AbstractProxy):
         Processa as mensagens na fila do Load Balancer.
         Tenta distribuir mensagens para serviços disponíveis usando conexões persistentes.
         """
-        with self.queue_lock: # Protege o acesso à fila
+        with self.queue_lock: 
             if not self.queue:
                 return
 
             msg = self.queue[0] # Pega a mensagem mais antiga, mas não a remove ainda.
         
-        # Iterar sobre os serviços para encontrar um disponível
-        # Removi o loop 'attempts' para focar na lógica original de Round Robin,
-        # pois o problema é mais profundo do que simplesmente tentar outro serviço.
-        # O problema é a forma como o LB trata o 'free/busy' e a reconfiguração.
         
         service_addr = self._get_next_service_address_rr()
         if not service_addr:
@@ -202,7 +191,7 @@ class LoadBalancerProxy(AbstractProxy):
                     self.log(f"[{self.proxy_name}] Mensagem enviada para {service_addr}: {msg_to_send[:50]}...")
                     
                     with self.queue_lock: 
-                        self.queue.pop(0) # Remove a mensagem da fila somente após o envio bem-sucedido
+                        self.queue.pop(0) #
                     
                 else:
                     self.log(f"[{self.proxy_name}] Serviço {service_addr} está ocupado ({response}). Mensagem permanece na fila.")
@@ -262,16 +251,7 @@ class LoadBalancerProxy(AbstractProxy):
             except Exception as e:
                 self.log(f"[{self.proxy_name}] ERRO ao responder ping em LoadBalancerProxy: {e}")
         else:
-            # Se for uma mensagem que não é "config;" ou "ping", ela é uma requisição para ser balanceada
-            # (vindo de Server1 ou Source).
-            # No fluxo descrito, as respostas dos Service300x vão DIRETAMENTE para o Source.
-            # O LoadBalancerProxy (Server2) não deve receber essas respostas para reencaminhar.
-            # Se o LB2 está recebendo respostas dos Service300x, isso está fora do fluxo definido.
-            # A menos que o target_address dos ServiceProxy (3001/3002) seja o LB2 e não o Source.
-            # Se o service3001 está enviando para Source, o LB2 não deveria receber.
-
-            # Reverti a mudança anterior: O LB2 não deve encaminhar respostas.
-            # Ele só deve adicionar requisições à sua fila.
+            
             with self.queue_lock:
                 if len(self.queue) < self.queue_load_balancer_max_size:
                     self.queue.append(message_stripped)
@@ -302,16 +282,15 @@ class LoadBalancerProxy(AbstractProxy):
             self.log(f"[{self.proxy_name}] Formato de mensagem de configuração inválido: {config_message}")
             return
 
-        # Fechar todas as conexões de serviços gerenciados ativas antes de reconfigurar
-        current_service_addrs = list(self.service_addresses) # Criar uma cópia para iterar
+       
+        current_service_addrs = list(self.service_addresses) 
         for service_addr in current_service_addrs:
-            self._close_service_connection(service_addr) # Isso também remove do dicionário
+            self._close_service_connection(service_addr) 
 
         with self.connections_lock:
-            self.service_addresses.clear() # Limpa a lista de endereços
+            self.service_addresses.clear() 
 
-            # As portas dos serviços gerenciados pelo LB são (porta do LB + 1), (porta do LB + 2), etc.
-            # Ex: Se LB2 está na 3000, ele gerencia 3001, 3002.
+  
             start_service_port = self.local_port + 1
             for i in range(new_qtd_services):
                 service_port = start_service_port + i 

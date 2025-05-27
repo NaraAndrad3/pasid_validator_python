@@ -19,16 +19,15 @@ class AbstractProxy(threading.Thread):
         self.local_port = local_port
         self.target_address = target_address
         
-        self.local_socket = None # Socket para escutar conexões de entrada.
+        self.local_socket = None 
         
-        # Dicionário para gerenciar conexões de SAÍDA persistentes para destinos fixos
-        # (ex: Source para LoadBalancer1, LoadBalancer2 para Source)
+        
         self._outbound_connections: dict[tuple[str, int], socket.socket] = {}
-        self._outbound_connections_lock = threading.Lock() # Lock para proteger o dicionário
+        self._outbound_connections_lock = threading.Lock() 
 
         self.is_running = True
         self.log_writer = None
-        self._log_writer_closed = False # Nova flag para controlar o fechamento do log_writer
+        self._log_writer_closed = False 
 
         self.init_log_file()
         self.start_listening() 
@@ -43,22 +42,19 @@ class AbstractProxy(threading.Thread):
 
     def log(self, message: str):
         log_entry = f"[{get_current_millis()}] {message}\n"
-        print(log_entry.strip()) # Mantém a impressão no console
+        print(log_entry.strip()) 
 
         if self.log_writer is not None:
             try:
                 if not self.log_writer.closed and not self._log_writer_closed: # Verifica a nova flag
                     self.log_writer.write(log_entry)
                     self.log_writer.flush()
-                #else: # Desabilitar aviso se o log_writer já está fechado intencionalmente
-                    #sys.stderr.write(f"[{get_current_millis()}] WARNING: Tentativa de escrever em arquivo de log fechado para {self.proxy_name}: {message}\n")
+               
             except ValueError as e:
                 sys.stderr.write(f"[{get_current_millis()}] ERROR ao escrever no arquivo de log para {self.proxy_name}: {e} - Mensagem: {message}\n")
             except Exception as e:
                 sys.stderr.write(f"[{get_current_millis()}] ERRO INESPERADO durante o log para {self.proxy_name}: {e} - Mensagem: {message}\n")
-        # else: # Desabilitar aviso se o log_writer não foi inicializado (pode ocorrer antes da init completa)
-            #sys.stderr.write(f"[{get_current_millis()}] WARNING: log_writer não inicializado para {self.proxy_name}: {message}\n")
-
+        
     def start_listening(self):
         try:
             self.local_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -78,9 +74,7 @@ class AbstractProxy(threading.Thread):
                 conn, addr = self.local_socket.accept()
                 self.log(f"[{self.proxy_name}] Conexão aceita de {addr[0]}:{addr[1]}")
                 conn.settimeout(1.0) 
-                # Cada conexão é gerenciada por uma thread separada.
-                # A responsabilidade de fechar a conexão está na lógica de recebimento,
-                # ou na parada do proxy.
+
                 threading.Thread(target=self._handle_client_connection, args=(conn, addr), daemon=True).start()
             except socket.timeout:
                 continue
@@ -93,24 +87,19 @@ class AbstractProxy(threading.Thread):
                     self.log(f"[{self.proxy_name}] ERRO ao aceitar conexão: {e}")
                 break
 
-    # Dentro de AbstractProxy.py
+
     def _handle_client_connection(self, conn: socket.socket, addr):
         buffer = ""
         self.log(f"[{self.proxy_name}] [HANDLE_CLIENT] Iniciando tratamento de conexão para {addr[0]}:{addr[1]}")
         try:
             while self.is_running:
-                # O timeout aqui é crucial. Se for muito curto, pode fechar conexões persistentes.
-                # Um timeout maior (ou nenhum, e confiar na lógica de recv retornar vazio) é mais adequado para persistência.
-                # No entanto, para permitir que a thread _handle_client_connection termine se is_running=False,
-                # algum timeout é necessário.
-                # Vamos manter o timeout de 1.0 segundos por enquanto, mas estar ciente que pode ser a causa.
-                # Se o cliente não envia dados por 1 segundo, esta thread pode sair do loop.
+                
                 conn.settimeout(1.0) 
                 data = conn.recv(4096).decode('utf-8')
                 
                 if not data: # Cliente fechou a conexão
                     self.log(f"[{self.proxy_name}] [HANDLE_CLIENT] Cliente {addr[0]}:{addr[1]} encerrou a conexão (recv retornou vazio).")
-                    break # SAIR DO LOOP E FECHAR A CONEXÃO
+                    break 
                 
                 self.log(f"[{self.proxy_name}] [HANDLE_CLIENT] Recebido '{len(data)}' bytes de {addr[0]}:{addr[1]}. Data: '{data.strip()[:50]}'")
                 buffer += data
@@ -119,29 +108,23 @@ class AbstractProxy(threading.Thread):
                     message, buffer = buffer.split('\n', 1)
                     self.log(f"[{self.proxy_name}] [HANDLE_CLIENT] Mensagem completa extraída: '{message.strip()[:50]}'")
                     self.receiving_messages(message.strip(), conn)
-            # A thread só chega aqui se is_running for False ou se o cliente fechar
+            
             self.log(f"[{self.proxy_name}] [HANDLE_CLIENT] Loop de recebimento encerrado para {addr[0]}:{addr[1]}.")
         except socket.timeout:
-            # Não quebre o loop imediatamente em timeout, a menos que o cliente seja persistente e não haja dados.
-            # Isso significa que a conexão está "ociosa", mas não necessariamente quebrada.
-            # A thread continua rodando e esperando por mais dados.
-            # Removido o 'pass' aqui para não sair do loop principal em caso de timeout.
-            # A thread DEVE permanecer esperando por mais dados.
+            
             self.log(f"[{self.proxy_name}] [HANDLE_CLIENT] Timeout de leitura de {addr[0]}:{addr[1]}. Conexão ociosa.")
-            pass # Continua o loop para tentar receber novamente.
+            pass 
         except (ConnectionResetError, BrokenPipeError, socket.error) as e:
             self.log(f"[{self.proxy_name}] [HANDLE_CLIENT] Conexão com {addr[0]}:{addr[1]} foi resetada/quebrada: {e}")
-            return # SAIR DO LOOP E FECHAR A CONEXÃO
+            return 
         except Exception as e:
             self.log(f"[{self.proxy_name}] [HANDLE_CLIENT] ERRO inesperado na conexão do cliente {addr[0]}:{addr[1]}: {e}")
-            return # SAIR DO LOOP E FECHAR A CONEXÃO
+            return 
         finally:
-            # Este bloco 'finally' sempre será executado quando a thread _handle_client_connection terminar.
-            # Isso garante que o socket 'conn' seja fechado.
+          
             try:
                 if conn:
-                    # shutdown(SHUT_RDWR) pode causar BrokenPipeError se o outro lado já fechou,
-                    # mas é uma boa prática tentar.
+                    
                     conn.shutdown(socket.SHUT_RDWR) 
                     conn.close()
                     self.log(f"[{self.proxy_name}] [HANDLE_CLIENT] Conexão de cliente {addr[0]}:{addr[1]} fechada.")
@@ -151,7 +134,6 @@ class AbstractProxy(threading.Thread):
 
 
 
-    # Dentro de AbstractProxy.py
     def _get_or_create_outbound_connection(self, target_address: TargetAddress) -> socket.socket:
         target_key = (target_address.get_ip(), target_address.get_port())
 
@@ -162,7 +144,7 @@ class AbstractProxy(threading.Thread):
                 self.log(f"[{self.proxy_name}] [OUTBOUND_CONN] Reutilizando conexão ativa para {target_address.get_ip()}:{target_address.get_port()}")
                 return sock
 
-            # ... (rest of the existing logic)
+
             if sock:
                 self.log(f"[{self.proxy_name}] [OUTBOUND_CONN] Conexão existente para {target_address.get_ip()}:{target_address.get_port()} está inativa. Fechando e removendo.")
                 try:
@@ -217,7 +199,7 @@ class AbstractProxy(threading.Thread):
             self.log(f"[{self.proxy_name}] Mensagem enviada para {target_address.get_ip()}:{target_address.get_port()}: '{message.strip()}'")
         except Exception as e:
             self.log(f"[{self.proxy_name}] ERRO ao enviar mensagem para {target_address.get_ip()}:{target_address.get_port()}: {e}")
-            # Em caso de erro, tente fechar a conexão e removê-la para que uma nova seja criada na próxima tentativa
+            # Em caso de erro, tenta fechar a conexão e removê-la para que uma nova seja criada na próxima tentativa
             with self._outbound_connections_lock:
                 target_key = (target_address.get_ip(), target_address.get_port())
                 if target_key in self._outbound_connections:

@@ -69,12 +69,9 @@ class ServiceProxy(AbstractProxy):
             processed_message = self.register_time_when_go_out(message_to_process)
             self.log(f"[{self.proxy_name}] Mensagem processada. Enviando para destino: {processed_message[:50]}...")
 
-            # O destino é o Source (localhost:1025)
-            # Certifique-se de que o 'target_address' passado na inicialização para service3001 e service3002
-            # seja TargetAddress('localhost', 1025)
+            
             self.send_message_to_destiny(processed_message + "\n", self.target_address)
-            # A variável self.target_address já deve ser o endereço do Source,
-            # então não precisa de alteração aqui, mas sim na sua instanciação.
+            
         
     def register_time_when_arrives(self, received_message: str) -> str:
         parts = received_message.split(';')

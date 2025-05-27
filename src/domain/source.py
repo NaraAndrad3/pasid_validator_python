@@ -123,7 +123,7 @@ class Source(AbstractProxy):
             self.considered_messages.clear() 
             self.source_current_index_message = 0 
             
-            # Explicitly close and reopen the connection to the primary LB (Server1)
+            
             try:
                 with self._outbound_connections_lock:
                     target_key = (self.target_address.get_ip(), self.target_address.get_port())
