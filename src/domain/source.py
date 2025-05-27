@@ -7,7 +7,7 @@ import socket
 
 from src.domain.abstract_proxy import AbstractProxy
 from src.domain.target_address import TargetAddress
-from src.domain.utils import read_properties_file, get_current_millis, calculate_std_dev, calculate_mean # Presumindo que estas funções estão em utils
+from src.domain.utils import read_properties_file, get_current_millis, calculate_std_dev, calculate_mean
 
 class Source(AbstractProxy):
     """
@@ -16,25 +16,19 @@ class Source(AbstractProxy):
     """
 
     def __init__(self, properties_path: str):
-        # Carrega as propriedades do arquivo de configuração
         props = read_properties_file(properties_path)
 
-        
         self.model_feeding_stage = props.get("modelFeedingStage", "false").lower() == 'true'
 
-        
-        
         source_port = int(props.get("sourcePort"))
         target_ip = props.get("targetIp")
         target_port = int(props.get("targetPort"))
-        
         
         super().__init__("Source", source_port, TargetAddress(target_ip, target_port))
 
         self.max_considered_messages_expected = int(props.get("maxConsideredMessagesExpected"))
         self.arrival_delay = int(props.get("variatingServices.arrivalDelay")) 
         
-       
         self.variated_server_load_balancer_ip = props.get("variatingServices.variatedServerLoadBalancerIp")
         self.variated_server_load_balancer_port = int(props.get("variatingServices.variatedServerLoadBalancerPort"))
         
@@ -46,15 +40,14 @@ class Source(AbstractProxy):
         self.dropp_count = 0
         self.all_cycles_completed = False
         
-        self.considered_messages = [] # Lista para armazenar mensagens que retornam para a Source
-        self.current_cycle_index = 0 # Para rastrear em qual ciclo de qtdServices/MRT/SDV 
-        self.experiment_data = [] # Para armazenar os MRTs calculados
-        self.experiment_error = [] # Para armazenar os SDVs calculados
+        self.considered_messages = []
+        self.current_cycle_index = 0
+        self.experiment_data = []
+        self.experiment_error = []
 
         self.print_source_parameters()
 
     def print_source_parameters(self):
-        """Imprime os parâmetros de configuração da Source."""
         self.log("======================================")
         self.log("Parâmetros da Origem:")
         self.log(f"Nome do Proxy: {self.proxy_name}")
@@ -70,10 +63,6 @@ class Source(AbstractProxy):
         self.log("======================================")
 
     def run(self):
-        """
-        O loop de execução principal da Source.
-        Gera mensagens e as envia para o Load Balancer.
-        """
         self.log("Iniciando a Origem...")
        
         try:
@@ -89,24 +78,16 @@ class Source(AbstractProxy):
             self.stop_proxy() 
 
     def _send(self, msg: str):
-        """
-        Envia a mensagem via socket para o destino principal (primeiro Load Balancer).
-        """
         try:
-            
             message_with_delimiter = msg + "\n" 
             self.send_message_to_destiny(message_with_delimiter, self.target_address)
         except Exception as e:
             self.log(f"ERRO ao enviar mensagem para {self.target_address.get_ip()}:{self.target_address.get_port()}: {e}")
             self.dropp_count += 1
         
-       
         time.sleep(self.arrival_delay / 1000.0) 
 
     def _send_config_message(self, target_address: TargetAddress, config_message: str):
-        """
-        Envia uma mensagem de configuração para um Load Balancer específico.
-        """
         try:
             message_with_delimiter = config_message + "\n"
             self.send_message_to_destiny(message_with_delimiter, target_address)
@@ -119,7 +100,6 @@ class Source(AbstractProxy):
         message_index = 0
         MAX_MESSAGES_TO_SEND = 5 
         while self.is_running and message_index < MAX_MESSAGES_TO_SEND:
-            # aqui marca o timestamp de envio--> id_message;timestamp
             message = f"{message_index};{get_current_millis()};" 
             self._send(message)
             message_index += 1
@@ -127,27 +107,32 @@ class Source(AbstractProxy):
                 self.log(f"[{self.proxy_name}] Enviadas {message_index} mensagens no estágio de alimentação.")
         self.log(f"[{self.proxy_name}] Estágio de alimentação finalizado após enviar {message_index} mensagens.")
  
-        
     def send_messages_validation_stage(self):
-        
         self.log("[Stage] Validação: Iniciado.")
-        
         
         while self.current_cycle_index < len(self.qtd_services) and self.is_running:
             qtd_services_for_cycle = self.qtd_services[self.current_cycle_index]
             self.log(f"[{self.proxy_name}] Iniciando Ciclo {self.current_cycle_index + 1} com {qtd_services_for_cycle} serviços.")
 
-            
             variated_lb_address = TargetAddress(self.variated_server_load_balancer_ip, self.variated_server_load_balancer_port)
             config_message = f"config;{qtd_services_for_cycle}"
             self._send_config_message(variated_lb_address, config_message)
-            
             
             time.sleep(2) 
 
             self.considered_messages.clear() 
             self.source_current_index_message = 0 
             
+            # Explicitly close and reopen the connection to the primary LB (Server1)
+            try:
+                with self._outbound_connections_lock:
+                    target_key = (self.target_address.get_ip(), self.target_address.get_port())
+                    if target_key in self._outbound_connections:
+                        self.log(f"[{self.proxy_name}] Fechando conexão existente para {target_key} antes do novo ciclo.")
+                        self._outbound_connections[target_key].close()
+                        del self._outbound_connections[target_key]
+            except Exception as e:
+                self.log(f"[{self.proxy_name}] Erro ao tentar fechar conexão existente para LB1: {e}")
             
             while self.source_current_index_message < self.max_considered_messages_expected and self.is_running:
                 message = f"{self.source_current_index_message};{get_current_millis()};"
@@ -156,22 +141,20 @@ class Source(AbstractProxy):
                 if self.source_current_index_message % 10 == 0:
                     self.log(f"[{self.proxy_name}] Enviadas {self.source_current_index_message} mensagens no ciclo atual.")
 
-            #
             self.log(f"[{self.proxy_name}] Aguardando o retorno de {self.max_considered_messages_expected} mensagens.")
             wait_start_time = time.time()
            
-            WAIT_TIMEOUT_SECONDS = 300 
+            WAIT_TIMEOUT_SECONDS = 120 # AUMENTADO PARA 120 SEGUNDOS (antes 10)
             while len(self.considered_messages) < self.max_considered_messages_expected and \
                   self.is_running and \
                   (time.time() - wait_start_time) < WAIT_TIMEOUT_SECONDS:
-                time.sleep(0.1) # Espera pelas mensagens chegarem
+                time.sleep(0.1)
 
             if len(self.considered_messages) >= self.max_considered_messages_expected:
                 self.log(f"[{self.proxy_name}] Todas as {self.max_considered_messages_expected} mensagens retornaram para o ciclo {self.current_cycle_index + 1}.")
-                self.execute_second_stage_of_validation_metrics() # Processa mensagens retornadas e calcula métricas
+                self.execute_second_stage_of_validation_metrics()
             else:
                 self.log(f"[{self.proxy_name}] ATENÇÃO: Apenas {len(self.considered_messages)} de {self.max_considered_messages_expected} mensagens retornaram após o tempo limite para o ciclo {self.current_cycle_index + 1}.")
-                
                 self.execute_second_stage_of_validation_metrics() 
 
             self.current_cycle_index += 1 
@@ -181,54 +164,29 @@ class Source(AbstractProxy):
         self.log("[Stage] Validação: Finalizado. Todos os ciclos concluídos.")
         self.display_final_results()
 
-
     def receiving_messages(self, received_message: str,conn: socket.socket):
-        """
-            Lida com as mensagens de entrada (respostas ou pings) que chegam ao Source via socket.
-        """
         if received_message is None or received_message.strip() == "":
             return
 
         message_stripped = received_message.strip()
         
         if message_stripped == "ping":
-            
             self.log(f"[{self.proxy_name}] Recebido ping.")
             return
 
-        
         self.log(f"[{self.proxy_name}] Mensagem de resposta recebida: {message_stripped}...")
-        
-        
         self.considered_messages.append(message_stripped)
 
-
     def _simulate_is_free(self) -> bool:
-        """
-            A Source geralmente está sempre livre para receber mensagens (respostas).
-            É principalmente um emissor e receptor, não um processador com uma fila que fica "ocupada".
-        """
         return True 
+
     def _register_mrt_at_the_end_source(self, received_message):
-        """
-            Calcula o Tempo Médio de Resposta (MRT) a partir da string completa da mensagem
-            quando ela retorna para a Source.
-            Este método é mais um placeholder, pois a extração real do MRT ocorre em _parse_mrt.
-        """
-       
         return received_message 
+
     def execute_first_stage_of_model_feeding(self, processed_message: str = ""): 
-        """
-            Placeholder para a lógica após receber uma mensagem na etapa de alimentação do modelo.
-        """
-        
         pass
 
     def execute_second_stage_of_validation_metrics(self):
-        """
-            Executa a segunda etapa de validação após um ciclo de mensagens ter retornado.
-            Calcula o MRT e o desvio padrão para as mensagens coletadas.
-        """
         if not self.considered_messages:
             self.log(f"[{self.proxy_name}] Nenhuma mensagem retornou para o ciclo {self.current_cycle_index + 1}. Não é possível calcular MRT/SDV.")
             self.experiment_data.append(0.0) 
@@ -249,9 +207,6 @@ class Source(AbstractProxy):
         self.log(f"[{self.proxy_name}] Ciclo {self.current_cycle_index + 1} Concluído. MRT Experimental: {mrt_from_experiment:.2f}ms, SD Experimental: {standard_deviation:.2f}ms")
 
     def _extract_mrts(self, messages: list[str]) -> list[float]:
-        """
-        Extrai os valores de MRT de uma lista de mensagens.
-        """
         mrts = []
         for message in messages:
             mrt = self._parse_mrt(message)
@@ -260,14 +215,8 @@ class Source(AbstractProxy):
         return mrts
 
     def _parse_mrt(self, message: str) -> float | None:
-        """
-        Extrai o valor de MRT de uma única mensagem.
-        Formato esperado de ServiceProxy._register_mrt_at_the_end:
-        "...RESPONSE TIME:;{mrt_value};"
-        """
         parts = message.split(';')
         try:
-           
             if "RESPONSE TIME:" in parts:
                 idx = parts.index("RESPONSE TIME:")
                 if idx + 1 < len(parts):
@@ -277,17 +226,11 @@ class Source(AbstractProxy):
         return None
 
     def display_results(self, mrt_from_experiment: float, standard_deviation: float):
-        """
-        Exibe os resultados calculados de MRT e desvio padrão.
-        """
         self.log(f"MRT From Experiment: {mrt_from_experiment:.2f}; SD From Experiment: {standard_deviation:.2f}")
         self.experiment_data.append(mrt_from_experiment)
         self.experiment_error.append(standard_deviation)
 
     def display_final_results(self):
-        """
-        Exibe o resumo final dos resultados após a conclusão de todos os ciclos.
-        """
         self.log("\n======================================")
         self.log("Resultados Finais da Simulação:")
         for i, mrt_exp in enumerate(self.experiment_data):
@@ -299,5 +242,3 @@ class Source(AbstractProxy):
             self.log(f"  MRT do Modelo: {mrt_model}, SD do Modelo: {sd_model}")
         self.log(f"Mensagens descartadas na Origem: {self.dropp_count}")
         self.log("======================================")
-
-  

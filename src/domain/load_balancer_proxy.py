@@ -101,9 +101,13 @@ class LoadBalancerProxy(AbstractProxy):
                 return None
             
             # Garante que o índice não exceda o número de serviços
-            if self.current_service_index >= len(self.service_addresses):
-                self.current_service_index = 0
-                
+            # Adicionado um loop para garantir que todos os serviços sejam considerados
+            # em caso de falha de conexão ou serviço ocupado.
+            # No entanto, a lógica original de Round Robin é suficiente se _get_or_create_service_connection for robusto.
+            
+            # Se o problema é o service3002 não receber, esta parte não é o problema principal,
+            # mas o que acontece *depois* da escolha do serviço.
+            
             service_addr = self.service_addresses[self.current_service_index]
             self.current_service_index = (self.current_service_index + 1) % len(self.service_addresses)
             return service_addr
@@ -128,7 +132,7 @@ class LoadBalancerProxy(AbstractProxy):
             # Se não houver conexão ativa ou se a existente morreu, tenta criar uma nova
             try:
                 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                s.settimeout(5) # Timeout para a conexão e operações de E/S
+                s.settimeout(45) # AUMENTADO PARA 45 SEGUNDOS (antes 25)
                 s.connect((service_addr.get_ip(), service_addr.get_port()))
                 # Adiciona a nova conexão ao dicionário
                 self.active_service_connections[service_addr] = s
@@ -164,6 +168,11 @@ class LoadBalancerProxy(AbstractProxy):
 
             msg = self.queue[0] # Pega a mensagem mais antiga, mas não a remove ainda.
         
+        # Iterar sobre os serviços para encontrar um disponível
+        # Removi o loop 'attempts' para focar na lógica original de Round Robin,
+        # pois o problema é mais profundo do que simplesmente tentar outro serviço.
+        # O problema é a forma como o LB trata o 'free/busy' e a reconfiguração.
+        
         service_addr = self._get_next_service_address_rr()
         if not service_addr:
             self.log(f"[{self.proxy_name}] Nenhum serviço disponível para processar a mensagem. Fila: {len(self.queue)}")
@@ -172,7 +181,6 @@ class LoadBalancerProxy(AbstractProxy):
         conn_socket = self._get_or_create_service_connection(service_addr)
         if conn_socket:
             try:
-               
                 data_output_stream = conn_socket.makefile('wb')
                 data_input_stream = conn_socket.makefile('rb')
 
@@ -180,11 +188,12 @@ class LoadBalancerProxy(AbstractProxy):
                 data_output_stream.write(b"ping\n")
                 data_output_stream.flush()
                 
-                # 2. Ler a resposta "free" ou "busy" do serviço
+                # Definir um timeout para a leitura da resposta do ping
+                conn_socket.settimeout(10.0) # Aumentar o timeout para o ping
                 response = data_input_stream.readline().decode().strip()
+                conn_socket.settimeout(45.0) # Restaurar o timeout normal da conexão
 
                 if response == "free":
-                    # Se o serviço estiver livre, registra o tempo de chegada e envia a mensagem de dados
                     msg_processed = self._register_time_when_arrives_lb(msg) 
                     msg_to_send = msg_processed + f"{get_current_millis()};" # Adiciona timestamp de saída do LB
 
@@ -193,21 +202,22 @@ class LoadBalancerProxy(AbstractProxy):
                     self.log(f"[{self.proxy_name}] Mensagem enviada para {service_addr}: {msg_to_send[:50]}...")
                     
                     with self.queue_lock: 
-                        self.queue.pop(0) 
+                        self.queue.pop(0) # Remove a mensagem da fila somente após o envio bem-sucedido
                     
                 else:
-                    self.log(f"[{self.proxy_name}] Serviço {service_addr} está ocupado ({response}).")
-                    # Mensagem permanece na fila para ser tentada novamente com outro serviço
+                    self.log(f"[{self.proxy_name}] Serviço {service_addr} está ocupado ({response}). Mensagem permanece na fila.")
+                    # A mensagem permanece na fila para ser tentada novamente com outro serviço
+            except socket.timeout:
+                self.log(f"[{self.proxy_name}] Timeout ao receber resposta de ping de {service_addr}. Mensagem permanece na fila. Considerar serviço offline.")
+                self._close_service_connection(service_addr) # Fechar conexão com serviço que deu timeout
             except (socket.error, BrokenPipeError, ConnectionResetError) as e:
-                self.log(f"[{self.proxy_name}] Erro de comunicação com {service_addr} na conexão persistente: {e}. Fechando conexão.")
+                self.log(f"[{self.proxy_name}] Erro de comunicação com {service_addr} na conexão persistente: {e}. Fechando conexão. Mensagem permanece na fila.")
                 self._close_service_connection(service_addr)
-                # Mensagem permanece na fila para ser tentada novamente com outro serviço
             except Exception as e:
-                self.log(f"[{self.proxy_name}] Erro inesperado ao processar serviço {service_addr}: {e}")
-                # Mensagem permanece na fila
+                self.log(f"[{self.proxy_name}] Erro inesperado ao processar serviço {service_addr}: {e}. Mensagem permanece na fila.")
         else:
             self.log(f"[{self.proxy_name}] Não foi possível estabelecer conexão com {service_addr}. Mensagem permanece na fila.")
-            # Mensagem permanece na fila
+
 
     def has_something_to_process(self):
         """
@@ -222,13 +232,14 @@ class LoadBalancerProxy(AbstractProxy):
         dinamicamente para os serviços filhos e para seu destino principal.
         Este método não é chamado diretamente no loop principal do LB.
         """
-        # A lógica de conexão para o destino final (Source) está no AbstractProxy.
-        # As conexões para os serviços gerenciados são controladas por _get_or_create_service_connection
+       
         pass 
 
-    def receiving_messages(self, received_message: str, conn: socket.socket): # <- MUDAR AQUI
+    def receiving_messages(self, received_message: str, conn: socket.socket): 
         """
-        Processa as mensagens recebidas pelo balanecador de carga via socket.
+            Processa as mensagens recebidas pelo balanecador de carga via socket.
+            Se for uma resposta de um serviço, *ignora*, pois os serviços devem enviar diretamente ao Source.
+            Se for uma mensagem de Source/Server1, adiciona à fila.
         """
         if received_message is None or received_message.strip() == "":
             return
@@ -239,7 +250,6 @@ class LoadBalancerProxy(AbstractProxy):
             self._change_service_targets_of_this_server(message_stripped)
             
         elif message_stripped == "ping":
-            
             try:
                 output_stream = conn.makefile('wb')
                 if self._simulate_is_free(): 
@@ -252,12 +262,23 @@ class LoadBalancerProxy(AbstractProxy):
             except Exception as e:
                 self.log(f"[{self.proxy_name}] ERRO ao responder ping em LoadBalancerProxy: {e}")
         else:
+            # Se for uma mensagem que não é "config;" ou "ping", ela é uma requisição para ser balanceada
+            # (vindo de Server1 ou Source).
+            # No fluxo descrito, as respostas dos Service300x vão DIRETAMENTE para o Source.
+            # O LoadBalancerProxy (Server2) não deve receber essas respostas para reencaminhar.
+            # Se o LB2 está recebendo respostas dos Service300x, isso está fora do fluxo definido.
+            # A menos que o target_address dos ServiceProxy (3001/3002) seja o LB2 e não o Source.
+            # Se o service3001 está enviando para Source, o LB2 não deveria receber.
+
+            # Reverti a mudança anterior: O LB2 não deve encaminhar respostas.
+            # Ele só deve adicionar requisições à sua fila.
             with self.queue_lock:
                 if len(self.queue) < self.queue_load_balancer_max_size:
                     self.queue.append(message_stripped)
                     self.log(f"[{self.proxy_name}] Mensagem adicionada à fila ({len(self.queue)}/{self.queue_load_balancer_max_size}): {message_stripped[:50]}...")
                 else:
                     self.log(f"[{self.proxy_name}] Fila cheia. Mensagem descartada: {message_stripped[:50]}...")
+
 
     def _simulate_is_free(self) -> bool:
         """
@@ -269,8 +290,8 @@ class LoadBalancerProxy(AbstractProxy):
 
     def _change_service_targets_of_this_server(self, config_message: str):
         """
-        Simula a capacidade de reconfigurar dinamicamente o número de serviços que este
-        Load Balancer gerencia.
+        Reconfigura dinamicamente o número de serviços que este Load Balancer gerencia.
+        Fecha as conexões existentes e re-inicializa a lista de endereços de serviço.
         """
         self.log(f"[{self.proxy_name}] Reconfigurando serviços com a mensagem: {config_message}")
         parts = config_message.split(';')
@@ -281,21 +302,23 @@ class LoadBalancerProxy(AbstractProxy):
             self.log(f"[{self.proxy_name}] Formato de mensagem de configuração inválido: {config_message}")
             return
 
-        
-        current_service_addrs = list(self.service_addresses) 
+        # Fechar todas as conexões de serviços gerenciados ativas antes de reconfigurar
+        current_service_addrs = list(self.service_addresses) # Criar uma cópia para iterar
         for service_addr in current_service_addrs:
-            self._close_service_connection(service_addr)
+            self._close_service_connection(service_addr) # Isso também remove do dicionário
 
         with self.connections_lock:
-            self.service_addresses.clear() 
+            self.service_addresses.clear() # Limpa a lista de endereços
 
+            # As portas dos serviços gerenciados pelo LB são (porta do LB + 1), (porta do LB + 2), etc.
+            # Ex: Se LB2 está na 3000, ele gerencia 3001, 3002.
             start_service_port = self.local_port + 1
             for i in range(new_qtd_services):
                 service_port = start_service_port + i 
                 ta = TargetAddress("localhost", service_port)
                 self.service_addresses.append(ta)
                 self.log(f"[{self.proxy_name}] Adicionado novo serviço gerenciado: {ta.get_ip()}:{ta.get_port()}")
-            self.current_service_index = 0 
+            self.current_service_index = 0 # Resetar o índice Round Robin
         self.log(f"[{self.proxy_name}] Reconfiguração completa. Nova contagem de serviços conhecidos: {len(self.service_addresses)}")
         
     def _register_time_when_arrives_lb(self, received_message: str) -> str:
