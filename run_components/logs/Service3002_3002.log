@@ -1,15 +1,142 @@
-[1748213631622] Log iniciado para Service3002 na porta 3002
-[1748213631622] [Service3002] Escutando na porta 3002...
-[1748213631622] [Service3002] Iniciando Service3002 na porta 3002...
-[1748213635798] [Service3002] Conexão aceita de 127.0.0.1:37232
-[1748213635798] [Service3002] Respondeu 'free' ao ping.
-[1748213635798] [Service3002] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
-[1748213635798] [Service3002] Recebido e enfileirado para processamento: 1;1748213635737;1748213635739;0;1748213635739;1748...
-[1748213635860] [Service3002] Mensagem processada. Enviando para destino: 1;1748213635737;1748213635739;0;1748213635739;1748...
-[1748213635861] [Service3002] Conexão estabelecida com destino: localhost:1025
-[1748213635861] [Service3002] Mensagem enviada para localhost:1025: '1;1748213635737;1748213635739;0;1748213635739;1748213635739;0;1748213635796;57;1748213635798;0;1748213635798;1748213635798;0;1748213635860;62;'
-[1748213635997] [Service3002] Respondeu 'free' ao ping.
-[1748213635997] [Service3002] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
-[1748213635997] [Service3002] Recebido e enfileirado para processamento: 3;1748213635938;1748213635939;0;1748213635939;1748...
-[1748213636045] [Service3002] Mensagem processada. Enviando para destino: 3;1748213635938;1748213635939;0;1748213635939;1748...
-[1748213636046] [Service3002] Mensagem enviada para localhost:1025: '3;1748213635938;1748213635939;0;1748213635939;1748213635939;0;1748213635996;57;1748213635997;0;1748213635997;1748213635997;0;1748213636045;48;'
+[1748872943698] Log iniciado para Service3002 na porta 3002
+[1748872943699] [Service3002] Escutando na porta 3002...
+[1748872943700] [Service3002] Iniciando Service3002 na porta 3002...
+[1748872952667] [Service3002] Conexão aceita de 127.0.0.1:59140
+[1748872952667] [Service3002] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59140
+[1748872952686] [Service3002] [HANDLE_CLIENT] Recebido '5' bytes de 127.0.0.1:59140. Data: 'ping'
+[1748872952686] [Service3002] [HANDLE_CLIENT] Mensagem completa extraída: 'ping'
+[1748872952687] [Service3002] Respondeu 'free' ao ping.
+[1748872952687] [Service3002] [HANDLE_CLIENT] Recebido '147' bytes de 127.0.0.1:59140. Data: '1;1748872952599;1748872952642;0;1748872952642;1748'
+[1748872952688] [Service3002] [HANDLE_CLIENT] Mensagem completa extraída: '1;1748872952599;1748872952642;0;1748872952642;1748'
+[1748872952688] [Service3002] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748872952688] [Service3002] Mensagem adicionada à fila (1): 1;1748872952599;1748872952642;0;1748872952642;1748...
+[1748872952742] [Service3002] Sentimento detectado: Neutro
+[1748872952742] [Service3002] Mensagem processada. Enviando para destino: 1;1748872952599;1748872952642;0;1748872952642;1748...
+[1748872952746] [Service3002] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:1025
+[1748872952746] [Service3002] Mensagem enviada para localhost:1025: '1;1748872952599;1748872952642;0;1748872952642;1748872952646;2;1748872952658;12;RESPONSE TIME:;59;SENTIMENTO:;Neutro;1748872952687;0;1748872952687;1748872952688;0;1748872952742;54;RESPONSE TIME:;143;SENTIMENTO:;Neutro;'
+[1748872953041] [Service3002] [HANDLE_CLIENT] Recebido '5' bytes de 127.0.0.1:59140. Data: 'ping'
+[1748872953041] [Service3002] [HANDLE_CLIENT] Mensagem completa extraída: 'ping'
+[1748872953041] [Service3002] Respondeu 'free' ao ping.
+[1748872953041] [Service3002] [HANDLE_CLIENT] Recebido '146' bytes de 127.0.0.1:59140. Data: '3;1748872953013;1748872953027;0;1748872953027;1748'
+[1748872953041] [Service3002] [HANDLE_CLIENT] Mensagem completa extraída: '3;1748872953013;1748872953027;0;1748872953027;1748'
+[1748872953041] [Service3002] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748872953043] [Service3002] Mensagem adicionada à fila (1): 3;1748872953013;1748872953027;0;1748872953027;1748...
+[1748872953051] [Service3002] Sentimento detectado: Neutro
+[1748872953052] [Service3002] Mensagem processada. Enviando para destino: 3;1748872953013;1748872953027;0;1748872953027;1748...
+[1748872953052] [Service3002] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748872953053] [Service3002] [OUTBOUND_CONN] Conexão existente para localhost:1025 está inativa. Fechando e removendo.
+[1748872953054] [Service3002] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:1025
+[1748872953055] [Service3002] Mensagem enviada para localhost:1025: '3;1748872953013;1748872953027;0;1748872953027;1748872953032;2;1748872953033;1;RESPONSE TIME:;20;SENTIMENTO:;Neutro;1748872953041;0;1748872953041;1748872953043;2;1748872953052;9;RESPONSE TIME:;39;SENTIMENTO:;Neutro;'
+[1748872953463] [Service3002] [HANDLE_CLIENT] Recebido '5' bytes de 127.0.0.1:59140. Data: 'ping'
+[1748872953463] [Service3002] [HANDLE_CLIENT] Mensagem completa extraída: 'ping'
+[1748872953464] [Service3002] Respondeu 'free' ao ping.
+[1748872953465] [Service3002] [HANDLE_CLIENT] Recebido '147' bytes de 127.0.0.1:59140. Data: '5;1748872953426;1748872953440;0;1748872953440;1748'
+[1748872953465] [Service3002] [HANDLE_CLIENT] Mensagem completa extraída: '5;1748872953426;1748872953440;0;1748872953440;1748'
+[1748872953466] [Service3002] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748872953467] [Service3002] Mensagem adicionada à fila (1): 5;1748872953426;1748872953440;0;1748872953440;1748...
+[1748872953470] [Service3002] Sentimento detectado: Neutro
+[1748872953471] [Service3002] Mensagem processada. Enviando para destino: 5;1748872953426;1748872953440;0;1748872953440;1748...
+[1748872953471] [Service3002] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748872953471] [Service3002] [OUTBOUND_CONN] Conexão existente para localhost:1025 está inativa. Fechando e removendo.
+[1748872953472] [Service3002] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:1025
+[1748872953473] [Service3002] Mensagem enviada para localhost:1025: '5;1748872953426;1748872953440;0;1748872953440;1748872953443;1;1748872953454;11;RESPONSE TIME:;28;SENTIMENTO:;Neutro;1748872953465;1;1748872953465;1748872953467;1;1748872953471;4;RESPONSE TIME:;45;SENTIMENTO:;Neutro;'
+[1748872953878] [Service3002] [HANDLE_CLIENT] Recebido '5' bytes de 127.0.0.1:59140. Data: 'ping'
+[1748872953878] [Service3002] [HANDLE_CLIENT] Mensagem completa extraída: 'ping'
+[1748872953879] [Service3002] Respondeu 'free' ao ping.
+[1748872953880] [Service3002] [HANDLE_CLIENT] Recebido '147' bytes de 127.0.0.1:59140. Data: '7;1748872953839;1748872953855;0;1748872953855;1748'
+[1748872953880] [Service3002] [HANDLE_CLIENT] Mensagem completa extraída: '7;1748872953839;1748872953855;0;1748872953855;1748'
+[1748872953882] [Service3002] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748872953883] [Service3002] Mensagem adicionada à fila (1): 7;1748872953839;1748872953855;0;1748872953855;1748...
+[1748872953885] [Service3002] Sentimento detectado: Neutro
+[1748872953885] [Service3002] Mensagem processada. Enviando para destino: 7;1748872953839;1748872953855;0;1748872953855;1748...
+[1748872953886] [Service3002] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748872953886] [Service3002] [OUTBOUND_CONN] Conexão existente para localhost:1025 está inativa. Fechando e removendo.
+[1748872953887] [Service3002] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:1025
+[1748872953888] [Service3002] Mensagem enviada para localhost:1025: '7;1748872953839;1748872953855;0;1748872953855;1748872953857;0;1748872953869;12;RESPONSE TIME:;30;SENTIMENTO:;Neutro;1748872953880;0;1748872953880;1748872953883;1;1748872953885;2;RESPONSE TIME:;46;SENTIMENTO:;Neutro;'
+[1748872954287] [Service3002] [HANDLE_CLIENT] Recebido '5' bytes de 127.0.0.1:59140. Data: 'ping'
+[1748872954287] [Service3002] [HANDLE_CLIENT] Mensagem completa extraída: 'ping'
+[1748872954289] [Service3002] Respondeu 'free' ao ping.
+[1748872954290] [Service3002] [HANDLE_CLIENT] Recebido '147' bytes de 127.0.0.1:59140. Data: '9;1748872954253;1748872954267;1;1748872954267;1748'
+[1748872954290] [Service3002] [HANDLE_CLIENT] Mensagem completa extraída: '9;1748872954253;1748872954267;1;1748872954267;1748'
+[1748872954291] [Service3002] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748872954291] [Service3002] Mensagem adicionada à fila (1): 9;1748872954253;1748872954267;1;1748872954267;1748...
+[1748872954300] [Service3002] Sentimento detectado: Neutro
+[1748872954300] [Service3002] Mensagem processada. Enviando para destino: 9;1748872954253;1748872954267;1;1748872954267;1748...
+[1748872954300] [Service3002] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748872954302] [Service3002] [OUTBOUND_CONN] Conexão existente para localhost:1025 está inativa. Fechando e removendo.
+[1748872954303] [Service3002] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:1025
+[1748872954304] [Service3002] Mensagem enviada para localhost:1025: '9;1748872954253;1748872954267;1;1748872954267;1748872954269;0;1748872954279;10;RESPONSE TIME:;26;SENTIMENTO:;Neutro;1748872954289;0;1748872954289;1748872954291;0;1748872954300;9;RESPONSE TIME:;47;SENTIMENTO:;Neutro;'
+[1748872955299] [Service3002] [HANDLE_CLIENT] Timeout de leitura de 127.0.0.1:59140. Conexão ociosa.
+[1748872955299] [Service3002] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59140 fechada.
+[1748872955306] [Service3002] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59140.
+[1748873054944] Log iniciado para Service3002 na porta 3002
+[1748873054945] [Service3002] Escutando na porta 3002...
+[1748873054946] [Service3002] Iniciando Service3002 na porta 3002...
+[1748873063588] [Service3002] Conexão aceita de 127.0.0.1:59280
+[1748873063588] [Service3002] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59280
+[1748873063610] [Service3002] [HANDLE_CLIENT] Recebido '5' bytes de 127.0.0.1:59280. Data: 'ping'
+[1748873063610] [Service3002] [HANDLE_CLIENT] Mensagem completa extraída: 'ping'
+[1748873063610] [Service3002] Respondeu 'free' ao ping.
+[1748873063611] [Service3002] [HANDLE_CLIENT] Recebido '146' bytes de 127.0.0.1:59280. Data: '1;1748873063537;1748873063568;1;1748873063568;1748'
+[1748873063611] [Service3002] [HANDLE_CLIENT] Mensagem completa extraída: '1;1748873063537;1748873063568;1;1748873063568;1748'
+[1748873063611] [Service3002] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748873063612] [Service3002] Mensagem adicionada à fila (1): 1;1748873063537;1748873063568;1;1748873063568;1748...
+[1748873063665] [Service3002] Sentimento detectado: Neutro
+[1748873063665] [Service3002] Mensagem processada. Enviando para destino: 1;1748873063537;1748873063568;1;1748873063568;1748...
+[1748873063669] [Service3002] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:1025
+[1748873063669] [Service3002] Mensagem enviada para localhost:1025: '1;1748873063537;1748873063568;1;1748873063568;1748873063571;2;1748873063580;9;RESPONSE TIME:;43;SENTIMENTO:;Neutro;1748873063611;0;1748873063611;1748873063612;1;1748873063665;53;RESPONSE TIME:;128;SENTIMENTO:;Neutro;'
+[1748873063982] [Service3002] [HANDLE_CLIENT] Recebido '5' bytes de 127.0.0.1:59280. Data: 'ping'
+[1748873063982] [Service3002] [HANDLE_CLIENT] Mensagem completa extraída: 'ping'
+[1748873063982] [Service3002] Respondeu 'free' ao ping.
+[1748873063982] [Service3002] [HANDLE_CLIENT] Recebido '146' bytes de 127.0.0.1:59280. Data: '3;1748873063952;1748873063965;1;1748873063965;1748'
+[1748873063982] [Service3002] [HANDLE_CLIENT] Mensagem completa extraída: '3;1748873063952;1748873063965;1;1748873063965;1748'
+[1748873063983] [Service3002] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748873063984] [Service3002] Mensagem adicionada à fila (1): 3;1748873063952;1748873063965;1;1748873063965;1748...
+[1748873063990] [Service3002] Sentimento detectado: Neutro
+[1748873063990] [Service3002] Mensagem processada. Enviando para destino: 3;1748873063952;1748873063965;1;1748873063965;1748...
+[1748873063991] [Service3002] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748873063991] [Service3002] [OUTBOUND_CONN] Conexão existente para localhost:1025 está inativa. Fechando e removendo.
+[1748873063992] [Service3002] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:1025
+[1748873063993] [Service3002] Mensagem enviada para localhost:1025: '3;1748873063952;1748873063965;1;1748873063965;1748873063969;2;1748873063973;4;RESPONSE TIME:;21;SENTIMENTO:;Neutro;1748873063982;0;1748873063982;1748873063984;1;1748873063990;6;RESPONSE TIME:;38;SENTIMENTO:;Neutro;'
+[1748873064399] [Service3002] [HANDLE_CLIENT] Recebido '5' bytes de 127.0.0.1:59280. Data: 'ping'
+[1748873064399] [Service3002] [HANDLE_CLIENT] Mensagem completa extraída: 'ping'
+[1748873064400] [Service3002] Respondeu 'free' ao ping.
+[1748873064403] [Service3002] [HANDLE_CLIENT] Recebido '146' bytes de 127.0.0.1:59280. Data: '5;1748873064365;1748873064380;1;1748873064380;1748'
+[1748873064403] [Service3002] [HANDLE_CLIENT] Mensagem completa extraída: '5;1748873064365;1748873064380;1;1748873064380;1748'
+[1748873064404] [Service3002] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748873064406] [Service3002] Mensagem adicionada à fila (1): 5;1748873064365;1748873064380;1;1748873064380;1748...
+[1748873064412] [Service3002] Sentimento detectado: Neutro
+[1748873064413] [Service3002] Mensagem processada. Enviando para destino: 5;1748873064365;1748873064380;1;1748873064380;1748...
+[1748873064413] [Service3002] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748873064413] [Service3002] [OUTBOUND_CONN] Conexão existente para localhost:1025 está inativa. Fechando e removendo.
+[1748873064414] [Service3002] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:1025
+[1748873064415] [Service3002] Mensagem enviada para localhost:1025: '5;1748873064365;1748873064380;1;1748873064380;1748873064382;1;1748873064388;6;RESPONSE TIME:;23;SENTIMENTO:;Neutro;1748873064402;0;1748873064402;1748873064406;2;1748873064413;7;RESPONSE TIME:;48;SENTIMENTO:;Neutro;'
+[1748873064827] [Service3002] [HANDLE_CLIENT] Recebido '5' bytes de 127.0.0.1:59280. Data: 'ping'
+[1748873064827] [Service3002] [HANDLE_CLIENT] Mensagem completa extraída: 'ping'
+[1748873064828] [Service3002] Respondeu 'free' ao ping.
+[1748873064830] [Service3002] [HANDLE_CLIENT] Recebido '147' bytes de 127.0.0.1:59280. Data: '7;1748873064780;1748873064797;1;1748873064797;1748'
+[1748873064830] [Service3002] [HANDLE_CLIENT] Mensagem completa extraída: '7;1748873064780;1748873064797;1;1748873064797;1748'
+[1748873064831] [Service3002] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748873064832] [Service3002] Mensagem adicionada à fila (1): 7;1748873064780;1748873064797;1;1748873064797;1748...
+[1748873064841] [Service3002] Sentimento detectado: Neutro
+[1748873064841] [Service3002] Mensagem processada. Enviando para destino: 7;1748873064780;1748873064797;1;1748873064797;1748...
+[1748873064842] [Service3002] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748873064844] [Service3002] [OUTBOUND_CONN] Conexão existente para localhost:1025 está inativa. Fechando e removendo.
+[1748873064845] [Service3002] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:1025
+[1748873064846] [Service3002] Mensagem enviada para localhost:1025: '7;1748873064780;1748873064797;1;1748873064797;1748873064799;0;1748873064813;14;RESPONSE TIME:;33;SENTIMENTO:;Neutro;1748873064830;0;1748873064830;1748873064832;1;1748873064841;9;RESPONSE TIME:;61;SENTIMENTO:;Neutro;'
+[1748873065224] [Service3002] [HANDLE_CLIENT] Recebido '5' bytes de 127.0.0.1:59280. Data: 'ping'
+[1748873065224] [Service3002] [HANDLE_CLIENT] Mensagem completa extraída: 'ping'
+[1748873065225] [Service3002] Respondeu 'free' ao ping.
+[1748873065226] [Service3002] [HANDLE_CLIENT] Recebido '146' bytes de 127.0.0.1:59280. Data: '9;1748873065193;1748873065208;0;1748873065208;1748'
+[1748873065226] [Service3002] [HANDLE_CLIENT] Mensagem completa extraída: '9;1748873065193;1748873065208;0;1748873065208;1748'
+[1748873065227] [Service3002] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748873065228] [Service3002] Mensagem adicionada à fila (1): 9;1748873065193;1748873065208;0;1748873065208;1748...
+[1748873065231] [Service3002] Sentimento detectado: Neutro
+[1748873065232] [Service3002] Mensagem processada. Enviando para destino: 9;1748873065193;1748873065208;0;1748873065208;1748...
+[1748873065232] [Service3002] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748873065233] [Service3002] [OUTBOUND_CONN] Conexão existente para localhost:1025 está inativa. Fechando e removendo.
+[1748873065234] [Service3002] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:1025
+[1748873065234] [Service3002] Mensagem enviada para localhost:1025: '9;1748873065193;1748873065208;0;1748873065208;1748873065212;2;1748873065215;3;RESPONSE TIME:;22;SENTIMENTO:;Neutro;1748873065226;0;1748873065226;1748873065228;1;1748873065232;4;RESPONSE TIME:;39;SENTIMENTO:;Neutro;'
+[1748873066242] [Service3002] [HANDLE_CLIENT] Timeout de leitura de 127.0.0.1:59280. Conexão ociosa.
+[1748873066243] [Service3002] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59280 fechada.
+[1748873066244] [Service3002] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59280.

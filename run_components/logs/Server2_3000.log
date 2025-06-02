@@ -1,33 +1,510 @@
-[1748213633623] Log iniciado para Server2 na porta 3000
-[1748213633624] [Server2] Escutando na porta 3000...
-[1748213633624] [Server2] Gerenciando serviço em localhost:3001
-[1748213633624] [Server2] Gerenciando serviço em localhost:3002
-[1748213633624] ======================================
-[1748213633624] Parâmetros do Balanceador de Carga:
-[1748213633624] Nome do Balanceador de Carga: Server2
-[1748213633624] Porta Local: 3000
-[1748213633624] Tamanho Máximo da Fila do Balanceador: 10
-[1748213633624] Quantidade de Serviços (inicial): 2
-[1748213633624] Endereços dos serviços gerenciados: ["TargetAddress(ip='localhost', port=3001)", "TargetAddress(ip='localhost', port=3002)"]
-[1748213633624] Destino final dos serviços gerenciados: localhost:1025
-[1748213633624] ======================================
-[1748213633624] [Server2] Iniciando o Load Balancer.
-[1748213635700] [Server2] Conexão aceita de 127.0.0.1:54042
-[1748213635700] [Server2] Mensagem adicionada à fila (1/10): 0;1748213635637;1748213635639;0;1748213635639;1748...
-[1748213635701] [Server2] Conexão estabelecida com sucesso para TargetAddress(ip='localhost', port=3001).
-[1748213635702] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
-[1748213635702] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3001): 0;1748213635637;1748213635639;0;1748213635639;1748...
-[1748213635797] [Server2] Conexão aceita de 127.0.0.1:54046
-[1748213635797] [Server2] Mensagem adicionada à fila (1/10): 1;1748213635737;1748213635739;0;1748213635739;1748...
-[1748213635798] [Server2] Conexão estabelecida com sucesso para TargetAddress(ip='localhost', port=3002).
-[1748213635798] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
-[1748213635798] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3002): 1;1748213635737;1748213635739;0;1748213635739;1748...
-[1748213635894] [Server2] Mensagem adicionada à fila (1/10): 2;1748213635838;1748213635838;0;1748213635838;1748...
-[1748213635895] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
-[1748213635895] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3001): 2;1748213635838;1748213635838;0;1748213635838;1748...
-[1748213635996] [Server2] Mensagem adicionada à fila (1/10): 3;1748213635938;1748213635939;0;1748213635939;1748...
-[1748213635997] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
-[1748213635997] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3002): 3;1748213635938;1748213635939;0;1748213635939;1748...
-[1748213636099] [Server2] Mensagem adicionada à fila (1/10): 4;1748213636038;1748213636039;0;1748213636039;1748...
-[1748213636100] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
-[1748213636100] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3001): 4;1748213636038;1748213636039;0;1748213636039;1748...
+[1748872944315] Log iniciado para Server2 na porta 3000
+[1748872944316] [Server2] Escutando na porta 3000...
+[1748872944317] [Server2] Gerenciando serviço em localhost:3001
+[1748872944317] [Server2] Gerenciando serviço em localhost:3002
+[1748872944318] ======================================
+[1748872944318] Parâmetros do Balanceador de Carga:
+[1748872944318] Nome do Balanceador de Carga: Server2
+[1748872944318] Porta Local: 3000
+[1748872944318] Tamanho Máximo da Fila do Balanceador: 10
+[1748872944318] Quantidade de Serviços (inicial): 2
+[1748872944318] Endereços dos serviços gerenciados: ["TargetAddress(ip='localhost', port=3001)", "TargetAddress(ip='localhost', port=3002)"]
+[1748872944438] Destino final dos serviços gerenciados: localhost:1025
+[1748872944438] ======================================
+[1748872944439] [Server2] Iniciando o Load Balancer.
+[1748872946320] [Server2] Conexão aceita de 127.0.0.1:59097
+[1748872946321] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59097
+[1748872946321] [Server2] [HANDLE_CLIENT] Recebido '9' bytes de 127.0.0.1:59097. Data: 'config;1'
+[1748872946322] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: 'config;1'
+[1748872946322] [Server2] Reconfigurando serviços com a mensagem: config;1
+[1748872946322] [Server2] Adicionado novo serviço gerenciado: localhost:3001
+[1748872946322] [Server2] Reconfiguração completa. Nova contagem de serviços conhecidos: 1
+[1748872947329] [Server2] [HANDLE_CLIENT] Timeout de leitura de 127.0.0.1:59097. Conexão ociosa.
+[1748872947329] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59097 fechada.
+[1748872947329] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59097.
+[1748872948406] [Server2] Conexão aceita de 127.0.0.1:59100
+[1748872948407] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59100
+[1748872948407] [Server2] [HANDLE_CLIENT] Recebido '117' bytes de 127.0.0.1:59100. Data: '0;1748872948322;1748872948347;0;1748872948347;1748'
+[1748872948407] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '0;1748872948322;1748872948347;0;1748872948347;1748'
+[1748872948409] [Server2] Mensagem adicionada à fila (1/10): 0;1748872948322;1748872948347;0;1748872948347;1748...
+[1748872948413] [Server2] Conexão estabelecida com sucesso para TargetAddress(ip='localhost', port=3001).
+[1748872948415] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748872948415] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3001): 0;1748872948322;1748872948347;0;1748872948347;1748...
+[1748872948611] [Server2] Conexão aceita de 127.0.0.1:59105
+[1748872948613] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59105
+[1748872948613] [Server2] [HANDLE_CLIENT] Recebido '117' bytes de 127.0.0.1:59105. Data: '1;1748872948524;1748872948549;1;1748872948549;1748'
+[1748872948613] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '1;1748872948524;1748872948549;1;1748872948549;1748'
+[1748872948614] [Server2] Mensagem adicionada à fila (1/10): 1;1748872948524;1748872948549;1;1748872948549;1748...
+[1748872948617] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748872948617] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3001): 1;1748872948524;1748872948549;1;1748872948549;1748...
+[1748872948762] [Server2] [HANDLE_CLIENT] Cliente 127.0.0.1:59100 encerrou a conexão (recv retornou vazio).
+[1748872948762] [Server2] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59100.
+[1748872948762] [Server2] Conexão aceita de 127.0.0.1:59108
+[1748872948766] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59100 fechada.
+[1748872948768] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59100.
+[1748872948768] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59108
+[1748872948769] [Server2] [HANDLE_CLIENT] Recebido '116' bytes de 127.0.0.1:59108. Data: '2;1748872948731;1748872948750;2;1748872948750;1748'
+[1748872948769] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '2;1748872948731;1748872948750;2;1748872948750;1748'
+[1748872948770] [Server2] Mensagem adicionada à fila (1/10): 2;1748872948731;1748872948750;2;1748872948750;1748...
+[1748872948773] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748872948773] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3001): 2;1748872948731;1748872948750;2;1748872948750;1748...
+[1748872948976] [Server2] [HANDLE_CLIENT] Cliente 127.0.0.1:59105 encerrou a conexão (recv retornou vazio).
+[1748872948976] [Server2] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59105.
+[1748872948977] [Server2] Conexão aceita de 127.0.0.1:59111
+[1748872948977] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59105 fechada.
+[1748872948980] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59111
+[1748872948980] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59105.
+[1748872948980] [Server2] [HANDLE_CLIENT] Recebido '117' bytes de 127.0.0.1:59111. Data: '3;1748872948939;1748872948952;0;1748872948952;1748'
+[1748872948981] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '3;1748872948939;1748872948952;0;1748872948952;1748'
+[1748872948982] [Server2] Mensagem adicionada à fila (1/10): 3;1748872948939;1748872948952;0;1748872948952;1748...
+[1748872948986] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748872948986] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3001): 3;1748872948939;1748872948952;0;1748872948952;1748...
+[1748872949176] [Server2] [HANDLE_CLIENT] Cliente 127.0.0.1:59108 encerrou a conexão (recv retornou vazio).
+[1748872949176] [Server2] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59108.
+[1748872949178] [Server2] Conexão aceita de 127.0.0.1:59114
+[1748872949179] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59108 fechada.
+[1748872949180] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59108.
+[1748872949180] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59114
+[1748872949182] [Server2] [HANDLE_CLIENT] Recebido '117' bytes de 127.0.0.1:59114. Data: '4;1748872949145;1748872949160;0;1748872949160;1748'
+[1748872949182] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '4;1748872949145;1748872949160;0;1748872949160;1748'
+[1748872949182] [Server2] Mensagem adicionada à fila (1/10): 4;1748872949145;1748872949160;0;1748872949160;1748...
+[1748872949187] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748872949187] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3001): 4;1748872949145;1748872949160;0;1748872949160;1748...
+[1748872949383] [Server2] [HANDLE_CLIENT] Cliente 127.0.0.1:59111 encerrou a conexão (recv retornou vazio).
+[1748872949384] [Server2] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59111.
+[1748872949384] [Server2] Conexão aceita de 127.0.0.1:59117
+[1748872949387] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59111 fechada.
+[1748872949389] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59111.
+[1748872949389] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59117
+[1748872949389] [Server2] [HANDLE_CLIENT] Recebido '117' bytes de 127.0.0.1:59117. Data: '5;1748872949352;1748872949367;0;1748872949367;1748'
+[1748872949390] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '5;1748872949352;1748872949367;0;1748872949367;1748'
+[1748872949390] [Server2] Mensagem adicionada à fila (1/10): 5;1748872949352;1748872949367;0;1748872949367;1748...
+[1748872949392] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748872949393] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3001): 5;1748872949352;1748872949367;0;1748872949367;1748...
+[1748872949585] [Server2] [HANDLE_CLIENT] Cliente 127.0.0.1:59114 encerrou a conexão (recv retornou vazio).
+[1748872949585] [Server2] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59114.
+[1748872949586] [Server2] Conexão aceita de 127.0.0.1:59120
+[1748872949588] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59114 fechada.
+[1748872949589] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59114.
+[1748872949589] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59120
+[1748872949590] [Server2] [HANDLE_CLIENT] Recebido '117' bytes de 127.0.0.1:59120. Data: '6;1748872949559;1748872949570;0;1748872949570;1748'
+[1748872949590] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '6;1748872949559;1748872949570;0;1748872949570;1748'
+[1748872949591] [Server2] Mensagem adicionada à fila (1/10): 6;1748872949559;1748872949570;0;1748872949570;1748...
+[1748872949595] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748872949595] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3001): 6;1748872949559;1748872949570;0;1748872949570;1748...
+[1748872949792] [Server2] [HANDLE_CLIENT] Cliente 127.0.0.1:59117 encerrou a conexão (recv retornou vazio).
+[1748872949793] [Server2] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59117.
+[1748872949793] [Server2] Conexão aceita de 127.0.0.1:59123
+[1748872949795] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59117 fechada.
+[1748872949795] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59117.
+[1748872949796] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59123
+[1748872949797] [Server2] [HANDLE_CLIENT] Recebido '116' bytes de 127.0.0.1:59123. Data: '7;1748872949765;1748872949782;0;1748872949782;1748'
+[1748872949798] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '7;1748872949765;1748872949782;0;1748872949782;1748'
+[1748872949798] [Server2] Mensagem adicionada à fila (1/10): 7;1748872949765;1748872949782;0;1748872949782;1748...
+[1748872949799] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748872949801] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3001): 7;1748872949765;1748872949782;0;1748872949782;1748...
+[1748872949999] [Server2] [HANDLE_CLIENT] Cliente 127.0.0.1:59120 encerrou a conexão (recv retornou vazio).
+[1748872949999] [Server2] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59120.
+[1748872949999] [Server2] Conexão aceita de 127.0.0.1:59126
+[1748872950001] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59120 fechada.
+[1748872950002] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59120.
+[1748872950002] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59126
+[1748872950002] [Server2] [HANDLE_CLIENT] Recebido '116' bytes de 127.0.0.1:59126. Data: '8;1748872949973;1748872949987;0;1748872949987;1748'
+[1748872950003] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '8;1748872949973;1748872949987;0;1748872949987;1748'
+[1748872950003] [Server2] Mensagem adicionada à fila (1/10): 8;1748872949973;1748872949987;0;1748872949987;1748...
+[1748872950006] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748872950006] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3001): 8;1748872949973;1748872949987;0;1748872949987;1748...
+[1748872950216] [Server2] [HANDLE_CLIENT] Cliente 127.0.0.1:59123 encerrou a conexão (recv retornou vazio).
+[1748872950216] [Server2] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59123.
+[1748872950217] [Server2] Conexão aceita de 127.0.0.1:59129
+[1748872950219] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59123 fechada.
+[1748872950221] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59123.
+[1748872950222] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59129
+[1748872950223] [Server2] [HANDLE_CLIENT] Recebido '117' bytes de 127.0.0.1:59129. Data: '9;1748872950180;1748872950197;1;1748872950197;1748'
+[1748872950223] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '9;1748872950180;1748872950197;1;1748872950197;1748'
+[1748872950224] [Server2] Mensagem adicionada à fila (1/10): 9;1748872950180;1748872950197;1;1748872950197;1748...
+[1748872950228] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748872950228] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3001): 9;1748872950180;1748872950197;1;1748872950197;1748...
+[1748872950391] [Server2] Conexão aceita de 127.0.0.1:59131
+[1748872950393] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59131
+[1748872950394] [Server2] [HANDLE_CLIENT] Recebido '9' bytes de 127.0.0.1:59131. Data: 'config;2'
+[1748872950395] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: 'config;2'
+[1748872950396] [Server2] Reconfigurando serviços com a mensagem: config;2
+[1748872950397] [Server2] Conexão fechada para TargetAddress(ip='localhost', port=3001).
+[1748872950397] [Server2] Adicionado novo serviço gerenciado: localhost:3001
+[1748872950398] [Server2] Adicionado novo serviço gerenciado: localhost:3002
+[1748872950398] [Server2] Reconfiguração completa. Nova contagem de serviços conhecidos: 2
+[1748872951013] [Server2] [HANDLE_CLIENT] Timeout de leitura de 127.0.0.1:59126. Conexão ociosa.
+[1748872951013] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59126 fechada.
+[1748872951015] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59126.
+[1748872951232] [Server2] [HANDLE_CLIENT] Timeout de leitura de 127.0.0.1:59129. Conexão ociosa.
+[1748872951232] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59129 fechada.
+[1748872951233] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59129.
+[1748872951404] [Server2] [HANDLE_CLIENT] Timeout de leitura de 127.0.0.1:59131. Conexão ociosa.
+[1748872951404] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59131 fechada.
+[1748872951405] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59131.
+[1748872952437] [Server2] Conexão aceita de 127.0.0.1:59134
+[1748872952440] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59134
+[1748872952440] [Server2] [HANDLE_CLIENT] Recebido '117' bytes de 127.0.0.1:59134. Data: '0;1748872952394;1748872952422;1;1748872952422;1748'
+[1748872952441] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '0;1748872952394;1748872952422;1;1748872952422;1748'
+[1748872952441] [Server2] Mensagem adicionada à fila (1/10): 0;1748872952394;1748872952422;1;1748872952422;1748...
+[1748872952464] [Server2] Conexão estabelecida com sucesso para TargetAddress(ip='localhost', port=3001).
+[1748872952469] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748872952469] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3001): 0;1748872952394;1748872952422;1;1748872952422;1748...
+[1748872952662] [Server2] Conexão aceita de 127.0.0.1:59139
+[1748872952665] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59139
+[1748872952665] [Server2] [HANDLE_CLIENT] Recebido '117' bytes de 127.0.0.1:59139. Data: '1;1748872952599;1748872952642;0;1748872952642;1748'
+[1748872952665] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '1;1748872952599;1748872952642;0;1748872952642;1748'
+[1748872952665] [Server2] Mensagem adicionada à fila (1/10): 1;1748872952599;1748872952642;0;1748872952642;1748...
+[1748872952684] [Server2] Conexão estabelecida com sucesso para TargetAddress(ip='localhost', port=3002).
+[1748872952687] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748872952687] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3002): 1;1748872952599;1748872952642;0;1748872952642;1748...
+[1748872952829] [Server2] [HANDLE_CLIENT] Cliente 127.0.0.1:59134 encerrou a conexão (recv retornou vazio).
+[1748872952829] [Server2] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59134.
+[1748872952830] [Server2] Conexão aceita de 127.0.0.1:59143
+[1748872952831] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59134 fechada.
+[1748872952833] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59134.
+[1748872952834] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59143
+[1748872952834] [Server2] [HANDLE_CLIENT] Recebido '116' bytes de 127.0.0.1:59143. Data: '2;1748872952806;1748872952822;0;1748872952822;1748'
+[1748872952834] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '2;1748872952806;1748872952822;0;1748872952822;1748'
+[1748872952835] [Server2] Mensagem adicionada à fila (1/10): 2;1748872952806;1748872952822;0;1748872952822;1748...
+[1748872952837] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748872952837] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3001): 2;1748872952806;1748872952822;0;1748872952822;1748...
+[1748872953035] [Server2] [HANDLE_CLIENT] Cliente 127.0.0.1:59139 encerrou a conexão (recv retornou vazio).
+[1748872953036] [Server2] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59139.
+[1748872953036] [Server2] Conexão aceita de 127.0.0.1:59146
+[1748872953038] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59139 fechada.
+[1748872953038] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59139.
+[1748872953038] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59146
+[1748872953039] [Server2] [HANDLE_CLIENT] Recebido '116' bytes de 127.0.0.1:59146. Data: '3;1748872953013;1748872953027;0;1748872953027;1748'
+[1748872953039] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '3;1748872953013;1748872953027;0;1748872953027;1748'
+[1748872953040] [Server2] Mensagem adicionada à fila (1/10): 3;1748872953013;1748872953027;0;1748872953027;1748...
+[1748872953041] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748872953041] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3002): 3;1748872953013;1748872953027;0;1748872953027;1748...
+[1748872953251] [Server2] [HANDLE_CLIENT] Cliente 127.0.0.1:59143 encerrou a conexão (recv retornou vazio).
+[1748872953251] [Server2] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59143.
+[1748872953252] [Server2] Conexão aceita de 127.0.0.1:59149
+[1748872953252] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59143 fechada.
+[1748872953254] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59143.
+[1748872953255] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59149
+[1748872953256] [Server2] [HANDLE_CLIENT] Recebido '117' bytes de 127.0.0.1:59149. Data: '4;1748872953221;1748872953235;1;1748872953235;1748'
+[1748872953256] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '4;1748872953221;1748872953235;1;1748872953235;1748'
+[1748872953256] [Server2] Mensagem adicionada à fila (1/10): 4;1748872953221;1748872953235;1;1748872953235;1748...
+[1748872953259] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748872953259] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3001): 4;1748872953221;1748872953235;1;1748872953235;1748...
+[1748872953456] [Server2] [HANDLE_CLIENT] Cliente 127.0.0.1:59146 encerrou a conexão (recv retornou vazio).
+[1748872953456] [Server2] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59146.
+[1748872953457] [Server2] Conexão aceita de 127.0.0.1:59152
+[1748872953459] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59146 fechada.
+[1748872953460] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59146.
+[1748872953460] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59152
+[1748872953461] [Server2] [HANDLE_CLIENT] Recebido '117' bytes de 127.0.0.1:59152. Data: '5;1748872953426;1748872953440;0;1748872953440;1748'
+[1748872953461] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '5;1748872953426;1748872953440;0;1748872953440;1748'
+[1748872953462] [Server2] Mensagem adicionada à fila (1/10): 5;1748872953426;1748872953440;0;1748872953440;1748...
+[1748872953464] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748872953465] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3002): 5;1748872953426;1748872953440;0;1748872953440;1748...
+[1748872953667] [Server2] [HANDLE_CLIENT] Cliente 127.0.0.1:59149 encerrou a conexão (recv retornou vazio).
+[1748872953667] [Server2] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59149.
+[1748872953668] [Server2] Conexão aceita de 127.0.0.1:59155
+[1748872953671] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59149 fechada.
+[1748872953672] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59149.
+[1748872953672] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59155
+[1748872953672] [Server2] [HANDLE_CLIENT] Recebido '117' bytes de 127.0.0.1:59155. Data: '6;1748872953633;1748872953650;0;1748872953650;1748'
+[1748872953673] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '6;1748872953633;1748872953650;0;1748872953650;1748'
+[1748872953673] [Server2] Mensagem adicionada à fila (1/10): 6;1748872953633;1748872953650;0;1748872953650;1748...
+[1748872953676] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748872953676] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3001): 6;1748872953633;1748872953650;0;1748872953650;1748...
+[1748872953870] [Server2] [HANDLE_CLIENT] Cliente 127.0.0.1:59152 encerrou a conexão (recv retornou vazio).
+[1748872953870] [Server2] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59152.
+[1748872953871] [Server2] Conexão aceita de 127.0.0.1:59158
+[1748872953873] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59152 fechada.
+[1748872953874] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59152.
+[1748872953874] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59158
+[1748872953875] [Server2] [HANDLE_CLIENT] Recebido '117' bytes de 127.0.0.1:59158. Data: '7;1748872953839;1748872953855;0;1748872953855;1748'
+[1748872953876] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '7;1748872953839;1748872953855;0;1748872953855;1748'
+[1748872953876] [Server2] Mensagem adicionada à fila (1/10): 7;1748872953839;1748872953855;0;1748872953855;1748...
+[1748872953880] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748872953880] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3002): 7;1748872953839;1748872953855;0;1748872953855;1748...
+[1748872954075] [Server2] [HANDLE_CLIENT] Cliente 127.0.0.1:59155 encerrou a conexão (recv retornou vazio).
+[1748872954075] [Server2] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59155.
+[1748872954076] [Server2] Conexão aceita de 127.0.0.1:59161
+[1748872954077] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59155 fechada.
+[1748872954079] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59161
+[1748872954079] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59155.
+[1748872954080] [Server2] [HANDLE_CLIENT] Recebido '116' bytes de 127.0.0.1:59161. Data: '8;1748872954045;1748872954061;0;1748872954061;1748'
+[1748872954081] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '8;1748872954045;1748872954061;0;1748872954061;1748'
+[1748872954081] [Server2] Mensagem adicionada à fila (1/10): 8;1748872954045;1748872954061;0;1748872954061;1748...
+[1748872954085] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748872954086] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3001): 8;1748872954045;1748872954061;0;1748872954061;1748...
+[1748872954280] [Server2] [HANDLE_CLIENT] Cliente 127.0.0.1:59158 encerrou a conexão (recv retornou vazio).
+[1748872954281] [Server2] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59158.
+[1748872954281] [Server2] Conexão aceita de 127.0.0.1:59164
+[1748872954283] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59158 fechada.
+[1748872954283] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59164
+[1748872954283] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59158.
+[1748872954284] [Server2] [HANDLE_CLIENT] Recebido '117' bytes de 127.0.0.1:59164. Data: '9;1748872954253;1748872954267;1;1748872954267;1748'
+[1748872954285] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '9;1748872954253;1748872954267;1;1748872954267;1748'
+[1748872954286] [Server2] Mensagem adicionada à fila (1/10): 9;1748872954253;1748872954267;1;1748872954267;1748...
+[1748872954289] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748872954290] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3002): 9;1748872954253;1748872954267;1;1748872954267;1748...
+[1748872955083] [Server2] [HANDLE_CLIENT] Timeout de leitura de 127.0.0.1:59161. Conexão ociosa.
+[1748872955083] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59161 fechada.
+[1748872955085] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59161.
+[1748872955299] [Server2] [HANDLE_CLIENT] Timeout de leitura de 127.0.0.1:59164. Conexão ociosa.
+[1748872955299] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59164 fechada.
+[1748872955304] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59164.
+[1748873055254] Log iniciado para Server2 na porta 3000
+[1748873055255] [Server2] Escutando na porta 3000...
+[1748873055256] [Server2] Gerenciando serviço em localhost:3001
+[1748873055256] [Server2] Gerenciando serviço em localhost:3002
+[1748873055256] ======================================
+[1748873055256] Parâmetros do Balanceador de Carga:
+[1748873055256] Nome do Balanceador de Carga: Server2
+[1748873055257] Porta Local: 3000
+[1748873055257] Tamanho Máximo da Fila do Balanceador: 10
+[1748873055257] Quantidade de Serviços (inicial): 2
+[1748873055257] Endereços dos serviços gerenciados: ["TargetAddress(ip='localhost', port=3001)", "TargetAddress(ip='localhost', port=3002)"]
+[1748873055257] Destino final dos serviços gerenciados: localhost:1025
+[1748873055257] ======================================
+[1748873055257] [Server2] Iniciando o Load Balancer.
+[1748873057254] [Server2] Conexão aceita de 127.0.0.1:59234
+[1748873057254] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59234
+[1748873057254] [Server2] [HANDLE_CLIENT] Recebido '9' bytes de 127.0.0.1:59234. Data: 'config;1'
+[1748873057254] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: 'config;1'
+[1748873057254] [Server2] Reconfigurando serviços com a mensagem: config;1
+[1748873057254] [Server2] Adicionado novo serviço gerenciado: localhost:3001
+[1748873057254] [Server2] Reconfiguração completa. Nova contagem de serviços conhecidos: 1
+[1748873058268] [Server2] [HANDLE_CLIENT] Timeout de leitura de 127.0.0.1:59234. Conexão ociosa.
+[1748873058268] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59234 fechada.
+[1748873058268] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59234.
+[1748873059332] [Server2] Conexão aceita de 127.0.0.1:59238
+[1748873059332] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59238
+[1748873059332] [Server2] [HANDLE_CLIENT] Recebido '117' bytes de 127.0.0.1:59238. Data: '0;1748873059256;1748873059277;0;1748873059277;1748'
+[1748873059332] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '0;1748873059256;1748873059277;0;1748873059277;1748'
+[1748873059333] [Server2] Mensagem adicionada à fila (1/10): 0;1748873059256;1748873059277;0;1748873059277;1748...
+[1748873059353] [Server2] Conexão estabelecida com sucesso para TargetAddress(ip='localhost', port=3001).
+[1748873059355] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748873059355] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3001): 0;1748873059256;1748873059277;0;1748873059277;1748...
+[1748873059553] [Server2] Conexão aceita de 127.0.0.1:59243
+[1748873059555] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59243
+[1748873059555] [Server2] [HANDLE_CLIENT] Recebido '117' bytes de 127.0.0.1:59243. Data: '1;1748873059457;1748873059494;1;1748873059494;1748'
+[1748873059558] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '1;1748873059457;1748873059494;1;1748873059494;1748'
+[1748873059558] [Server2] Mensagem adicionada à fila (1/10): 1;1748873059457;1748873059494;1;1748873059494;1748...
+[1748873059560] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748873059560] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3001): 1;1748873059457;1748873059494;1;1748873059494;1748...
+[1748873059697] [Server2] [HANDLE_CLIENT] Cliente 127.0.0.1:59238 encerrou a conexão (recv retornou vazio).
+[1748873059698] [Server2] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59238.
+[1748873059698] [Server2] Conexão aceita de 127.0.0.1:59246
+[1748873059701] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59238 fechada.
+[1748873059702] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59238.
+[1748873059703] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59246
+[1748873059703] [Server2] [HANDLE_CLIENT] Recebido '117' bytes de 127.0.0.1:59246. Data: '2;1748873059664;1748873059676;1;1748873059676;1748'
+[1748873059703] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '2;1748873059664;1748873059676;1;1748873059676;1748'
+[1748873059703] [Server2] Mensagem adicionada à fila (1/10): 2;1748873059664;1748873059676;1;1748873059676;1748...
+[1748873059706] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748873059706] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3001): 2;1748873059664;1748873059676;1;1748873059676;1748...
+[1748873059904] [Server2] [HANDLE_CLIENT] Cliente 127.0.0.1:59243 encerrou a conexão (recv retornou vazio).
+[1748873059904] [Server2] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59243.
+[1748873059905] [Server2] Conexão aceita de 127.0.0.1:59249
+[1748873059906] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59243 fechada.
+[1748873059907] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59243.
+[1748873059907] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59249
+[1748873059908] [Server2] [HANDLE_CLIENT] Recebido '117' bytes de 127.0.0.1:59249. Data: '3;1748873059871;1748873059885;0;1748873059885;1748'
+[1748873059908] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '3;1748873059871;1748873059885;0;1748873059885;1748'
+[1748873059908] [Server2] Mensagem adicionada à fila (1/10): 3;1748873059871;1748873059885;0;1748873059885;1748...
+[1748873059912] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748873059912] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3001): 3;1748873059871;1748873059885;0;1748873059885;1748...
+[1748873060103] [Server2] [HANDLE_CLIENT] Cliente 127.0.0.1:59246 encerrou a conexão (recv retornou vazio).
+[1748873060103] [Server2] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59246.
+[1748873060103] [Server2] Conexão aceita de 127.0.0.1:59252
+[1748873060106] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59246 fechada.
+[1748873060107] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59246.
+[1748873060107] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59252
+[1748873060108] [Server2] [HANDLE_CLIENT] Recebido '116' bytes de 127.0.0.1:59252. Data: '4;1748873060078;1748873060092;0;1748873060092;1748'
+[1748873060108] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '4;1748873060078;1748873060092;0;1748873060092;1748'
+[1748873060108] [Server2] Mensagem adicionada à fila (1/10): 4;1748873060078;1748873060092;0;1748873060092;1748...
+[1748873060110] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748873060111] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3001): 4;1748873060078;1748873060092;0;1748873060092;1748...
+[1748873060311] [Server2] [HANDLE_CLIENT] Cliente 127.0.0.1:59249 encerrou a conexão (recv retornou vazio).
+[1748873060311] [Server2] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59249.
+[1748873060312] [Server2] Conexão aceita de 127.0.0.1:59255
+[1748873060315] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59249 fechada.
+[1748873060316] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59249.
+[1748873060317] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59255
+[1748873060318] [Server2] [HANDLE_CLIENT] Recebido '116' bytes de 127.0.0.1:59255. Data: '5;1748873060284;1748873060301;0;1748873060301;1748'
+[1748873060318] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '5;1748873060284;1748873060301;0;1748873060301;1748'
+[1748873060318] [Server2] Mensagem adicionada à fila (1/10): 5;1748873060284;1748873060301;0;1748873060301;1748...
+[1748873060321] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748873060321] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3001): 5;1748873060284;1748873060301;0;1748873060301;1748...
+[1748873060527] [Server2] [HANDLE_CLIENT] Cliente 127.0.0.1:59252 encerrou a conexão (recv retornou vazio).
+[1748873060528] [Server2] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59252.
+[1748873060528] [Server2] Conexão aceita de 127.0.0.1:59258
+[1748873060530] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59252 fechada.
+[1748873060533] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59252.
+[1748873060534] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59258
+[1748873060534] [Server2] [HANDLE_CLIENT] Recebido '117' bytes de 127.0.0.1:59258. Data: '6;1748873060490;1748873060506;0;1748873060506;1748'
+[1748873060535] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '6;1748873060490;1748873060506;0;1748873060506;1748'
+[1748873060535] [Server2] Mensagem adicionada à fila (1/10): 6;1748873060490;1748873060506;0;1748873060506;1748...
+[1748873060537] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748873060537] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3001): 6;1748873060490;1748873060506;0;1748873060506;1748...
+[1748873060734] [Server2] [HANDLE_CLIENT] Cliente 127.0.0.1:59255 encerrou a conexão (recv retornou vazio).
+[1748873060734] [Server2] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59255.
+[1748873060735] [Server2] Conexão aceita de 127.0.0.1:59263
+[1748873060735] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59255 fechada.
+[1748873060737] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59255.
+[1748873060738] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59263
+[1748873060738] [Server2] [HANDLE_CLIENT] Recebido '117' bytes de 127.0.0.1:59263. Data: '7;1748873060698;1748873060712;0;1748873060712;1748'
+[1748873060738] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '7;1748873060698;1748873060712;0;1748873060712;1748'
+[1748873060739] [Server2] Mensagem adicionada à fila (1/10): 7;1748873060698;1748873060712;0;1748873060712;1748...
+[1748873060742] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748873060742] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3001): 7;1748873060698;1748873060712;0;1748873060712;1748...
+[1748873060933] [Server2] [HANDLE_CLIENT] Cliente 127.0.0.1:59258 encerrou a conexão (recv retornou vazio).
+[1748873060934] [Server2] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59258.
+[1748873060934] [Server2] Conexão aceita de 127.0.0.1:59266
+[1748873060935] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59258 fechada.
+[1748873060936] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59258.
+[1748873060937] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59266
+[1748873060938] [Server2] [HANDLE_CLIENT] Recebido '116' bytes de 127.0.0.1:59266. Data: '8;1748873060905;1748873060923;0;1748873060923;1748'
+[1748873060938] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '8;1748873060905;1748873060923;0;1748873060923;1748'
+[1748873060940] [Server2] Mensagem adicionada à fila (1/10): 8;1748873060905;1748873060923;0;1748873060923;1748...
+[1748873060942] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748873060942] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3001): 8;1748873060905;1748873060923;0;1748873060923;1748...
+[1748873061147] [Server2] [HANDLE_CLIENT] Cliente 127.0.0.1:59263 encerrou a conexão (recv retornou vazio).
+[1748873061147] [Server2] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59263.
+[1748873061148] [Server2] Conexão aceita de 127.0.0.1:59269
+[1748873061148] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59263 fechada.
+[1748873061152] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59263.
+[1748873061153] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59269
+[1748873061153] [Server2] [HANDLE_CLIENT] Recebido '117' bytes de 127.0.0.1:59269. Data: '9;1748873061113;1748873061129;1;1748873061129;1748'
+[1748873061153] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '9;1748873061113;1748873061129;1;1748873061129;1748'
+[1748873061154] [Server2] Mensagem adicionada à fila (1/10): 9;1748873061113;1748873061129;1;1748873061129;1748...
+[1748873061157] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748873061157] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3001): 9;1748873061113;1748873061129;1;1748873061129;1748...
+[1748873061328] [Server2] Conexão aceita de 127.0.0.1:59271
+[1748873061330] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59271
+[1748873061330] [Server2] [HANDLE_CLIENT] Recebido '9' bytes de 127.0.0.1:59271. Data: 'config;2'
+[1748873061330] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: 'config;2'
+[1748873061334] [Server2] Reconfigurando serviços com a mensagem: config;2
+[1748873061335] [Server2] Conexão fechada para TargetAddress(ip='localhost', port=3001).
+[1748873061336] [Server2] Adicionado novo serviço gerenciado: localhost:3001
+[1748873061337] [Server2] Adicionado novo serviço gerenciado: localhost:3002
+[1748873061338] [Server2] Reconfiguração completa. Nova contagem de serviços conhecidos: 2
+[1748873061950] [Server2] [HANDLE_CLIENT] Timeout de leitura de 127.0.0.1:59266. Conexão ociosa.
+[1748873061950] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59266 fechada.
+[1748873061951] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59266.
+[1748873062166] [Server2] [HANDLE_CLIENT] Timeout de leitura de 127.0.0.1:59269. Conexão ociosa.
+[1748873062166] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59269 fechada.
+[1748873062167] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59269.
+[1748873062356] [Server2] [HANDLE_CLIENT] Timeout de leitura de 127.0.0.1:59271. Conexão ociosa.
+[1748873062356] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59271 fechada.
+[1748873062357] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59271.
+[1748873063397] [Server2] Conexão aceita de 127.0.0.1:59274
+[1748873063399] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59274
+[1748873063399] [Server2] [HANDLE_CLIENT] Recebido '116' bytes de 127.0.0.1:59274. Data: '0;1748873063332;1748873063382;0;1748873063382;1748'
+[1748873063400] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '0;1748873063332;1748873063382;0;1748873063382;1748'
+[1748873063400] [Server2] Mensagem adicionada à fila (1/10): 0;1748873063332;1748873063382;0;1748873063382;1748...
+[1748873063422] [Server2] Conexão estabelecida com sucesso para TargetAddress(ip='localhost', port=3001).
+[1748873063427] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748873063427] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3001): 0;1748873063332;1748873063382;0;1748873063382;1748...
+[1748873063583] [Server2] Conexão aceita de 127.0.0.1:59279
+[1748873063586] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59279
+[1748873063586] [Server2] [HANDLE_CLIENT] Recebido '116' bytes de 127.0.0.1:59279. Data: '1;1748873063537;1748873063568;1;1748873063568;1748'
+[1748873063587] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '1;1748873063537;1748873063568;1;1748873063568;1748'
+[1748873063587] [Server2] Mensagem adicionada à fila (1/10): 1;1748873063537;1748873063568;1;1748873063568;1748...
+[1748873063609] [Server2] Conexão estabelecida com sucesso para TargetAddress(ip='localhost', port=3002).
+[1748873063611] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748873063611] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3002): 1;1748873063537;1748873063568;1;1748873063568;1748...
+[1748873063781] [Server2] [HANDLE_CLIENT] Cliente 127.0.0.1:59274 encerrou a conexão (recv retornou vazio).
+[1748873063781] [Server2] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59274.
+[1748873063782] [Server2] Conexão aceita de 127.0.0.1:59283
+[1748873063783] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59274 fechada.
+[1748873063786] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59283
+[1748873063786] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59274.
+[1748873063788] [Server2] [HANDLE_CLIENT] Recebido '117' bytes de 127.0.0.1:59283. Data: '2;1748873063745;1748873063760;1;1748873063760;1748'
+[1748873063789] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '2;1748873063745;1748873063760;1;1748873063760;1748'
+[1748873063790] [Server2] Mensagem adicionada à fila (1/10): 2;1748873063745;1748873063760;1;1748873063760;1748...
+[1748873063795] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748873063795] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3001): 2;1748873063745;1748873063760;1;1748873063760;1748...
+[1748873063975] [Server2] [HANDLE_CLIENT] Cliente 127.0.0.1:59279 encerrou a conexão (recv retornou vazio).
+[1748873063975] [Server2] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59279.
+[1748873063976] [Server2] Conexão aceita de 127.0.0.1:59286
+[1748873063977] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59279 fechada.
+[1748873063978] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59279.
+[1748873063978] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59286
+[1748873063979] [Server2] [HANDLE_CLIENT] Recebido '116' bytes de 127.0.0.1:59286. Data: '3;1748873063952;1748873063965;1;1748873063965;1748'
+[1748873063979] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '3;1748873063952;1748873063965;1;1748873063965;1748'
+[1748873063980] [Server2] Mensagem adicionada à fila (1/10): 3;1748873063952;1748873063965;1;1748873063965;1748...
+[1748873063982] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748873063982] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3002): 3;1748873063952;1748873063965;1;1748873063965;1748...
+[1748873064178] [Server2] [HANDLE_CLIENT] Cliente 127.0.0.1:59283 encerrou a conexão (recv retornou vazio).
+[1748873064178] [Server2] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59283.
+[1748873064179] [Server2] Conexão aceita de 127.0.0.1:59289
+[1748873064180] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59283 fechada.
+[1748873064182] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59283.
+[1748873064183] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59289
+[1748873064183] [Server2] [HANDLE_CLIENT] Recebido '116' bytes de 127.0.0.1:59289. Data: '4;1748873064158;1748873064173;0;1748873064173;1748'
+[1748873064184] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '4;1748873064158;1748873064173;0;1748873064173;1748'
+[1748873064184] [Server2] Mensagem adicionada à fila (1/10): 4;1748873064158;1748873064173;0;1748873064173;1748...
+[1748873064189] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748873064189] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3001): 4;1748873064158;1748873064173;0;1748873064173;1748...
+[1748873064391] [Server2] [HANDLE_CLIENT] Cliente 127.0.0.1:59286 encerrou a conexão (recv retornou vazio).
+[1748873064391] [Server2] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59286.
+[1748873064392] [Server2] Conexão aceita de 127.0.0.1:59292
+[1748873064394] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59286 fechada.
+[1748873064396] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59286.
+[1748873064396] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59292
+[1748873064396] [Server2] [HANDLE_CLIENT] Recebido '116' bytes de 127.0.0.1:59292. Data: '5;1748873064365;1748873064380;1;1748873064380;1748'
+[1748873064396] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '5;1748873064365;1748873064380;1;1748873064380;1748'
+[1748873064397] [Server2] Mensagem adicionada à fila (1/10): 5;1748873064365;1748873064380;1;1748873064380;1748...
+[1748873064402] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748873064403] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3002): 5;1748873064365;1748873064380;1;1748873064380;1748...
+[1748873064607] [Server2] [HANDLE_CLIENT] Cliente 127.0.0.1:59289 encerrou a conexão (recv retornou vazio).
+[1748873064607] [Server2] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59289.
+[1748873064608] [Server2] Conexão aceita de 127.0.0.1:59295
+[1748873064609] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59289 fechada.
+[1748873064611] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59289.
+[1748873064611] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59295
+[1748873064612] [Server2] [HANDLE_CLIENT] Recebido '117' bytes de 127.0.0.1:59295. Data: '6;1748873064572;1748873064586;0;1748873064586;1748'
+[1748873064612] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '6;1748873064572;1748873064586;0;1748873064586;1748'
+[1748873064612] [Server2] Mensagem adicionada à fila (1/10): 6;1748873064572;1748873064586;0;1748873064586;1748...
+[1748873064615] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748873064616] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3001): 6;1748873064572;1748873064586;0;1748873064586;1748...
+[1748873064816] [Server2] [HANDLE_CLIENT] Cliente 127.0.0.1:59292 encerrou a conexão (recv retornou vazio).
+[1748873064816] [Server2] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59292.
+[1748873064818] [Server2] Conexão aceita de 127.0.0.1:59298
+[1748873064820] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59292 fechada.
+[1748873064823] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59292.
+[1748873064823] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59298
+[1748873064823] [Server2] [HANDLE_CLIENT] Recebido '117' bytes de 127.0.0.1:59298. Data: '7;1748873064780;1748873064797;1;1748873064797;1748'
+[1748873064823] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '7;1748873064780;1748873064797;1;1748873064797;1748'
+[1748873064825] [Server2] Mensagem adicionada à fila (1/10): 7;1748873064780;1748873064797;1;1748873064797;1748...
+[1748873064830] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748873064830] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3002): 7;1748873064780;1748873064797;1;1748873064797;1748...
+[1748873065021] [Server2] [HANDLE_CLIENT] Cliente 127.0.0.1:59295 encerrou a conexão (recv retornou vazio).
+[1748873065021] [Server2] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59295.
+[1748873065022] [Server2] Conexão aceita de 127.0.0.1:59301
+[1748873065024] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59295 fechada.
+[1748873065025] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59295.
+[1748873065025] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59301
+[1748873065026] [Server2] [HANDLE_CLIENT] Recebido '117' bytes de 127.0.0.1:59301. Data: '8;1748873064986;1748873065002;1;1748873065002;1748'
+[1748873065027] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '8;1748873064986;1748873065002;1;1748873065002;1748'
+[1748873065027] [Server2] Mensagem adicionada à fila (1/10): 8;1748873064986;1748873065002;1;1748873065002;1748...
+[1748873065029] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748873065030] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3001): 8;1748873064986;1748873065002;1;1748873065002;1748...
+[1748873065216] [Server2] [HANDLE_CLIENT] Cliente 127.0.0.1:59298 encerrou a conexão (recv retornou vazio).
+[1748873065216] [Server2] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59298.
+[1748873065217] [Server2] Conexão aceita de 127.0.0.1:59304
+[1748873065219] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59298 fechada.
+[1748873065221] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59298.
+[1748873065222] [Server2] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59304
+[1748873065222] [Server2] [HANDLE_CLIENT] Recebido '116' bytes de 127.0.0.1:59304. Data: '9;1748873065193;1748873065208;0;1748873065208;1748'
+[1748873065222] [Server2] [HANDLE_CLIENT] Mensagem completa extraída: '9;1748873065193;1748873065208;0;1748873065208;1748'
+[1748873065222] [Server2] Mensagem adicionada à fila (1/10): 9;1748873065193;1748873065208;0;1748873065208;1748...
+[1748873065226] [Server2] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748873065226] [Server2] Mensagem enviada para TargetAddress(ip='localhost', port=3002): 9;1748873065193;1748873065208;0;1748873065208;1748...
+[1748873066041] [Server2] [HANDLE_CLIENT] Timeout de leitura de 127.0.0.1:59301. Conexão ociosa.
+[1748873066041] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59301 fechada.
+[1748873066046] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59301.
+[1748873066227] [Server2] [HANDLE_CLIENT] Timeout de leitura de 127.0.0.1:59304. Conexão ociosa.
+[1748873066227] [Server2] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59304 fechada.
+[1748873066232] [Server2] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59304.

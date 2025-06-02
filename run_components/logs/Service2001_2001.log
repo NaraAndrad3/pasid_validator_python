@@ -1,20 +1,282 @@
-[1748213631622] Log iniciado para Service2001 na porta 2001
-[1748213631622] [Service2001] Escutando na porta 2001...
-[1748213631622] [Service2001] Iniciando Service2001 na porta 2001...
-[1748213635638] [Service2001] Conexão aceita de 127.0.0.1:53894
-[1748213635639] [Service2001] Respondeu 'free' ao ping.
-[1748213635639] [Service2001] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
-[1748213635639] [Service2001] Recebido e enfileirado para processamento: 0;1748213635637;1748213635639;0;1748213635639;1748...
-[1748213635699] [Service2001] Mensagem processada. Enviando para destino: 0;1748213635637;1748213635639;0;1748213635639;1748...
-[1748213635700] [Service2001] Conexão estabelecida com destino: localhost:3000
-[1748213635700] [Service2001] Mensagem enviada para localhost:3000: '0;1748213635637;1748213635639;0;1748213635639;1748213635639;0;1748213635699;60;'
-[1748213635838] [Service2001] Respondeu 'free' ao ping.
-[1748213635839] [Service2001] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
-[1748213635839] [Service2001] Recebido e enfileirado para processamento: 2;1748213635838;1748213635838;0;1748213635838;1748...
-[1748213635894] [Service2001] Mensagem processada. Enviando para destino: 2;1748213635838;1748213635838;0;1748213635838;1748...
-[1748213635894] [Service2001] Mensagem enviada para localhost:3000: '2;1748213635838;1748213635838;0;1748213635838;1748213635839;0;1748213635894;55;'
-[1748213636039] [Service2001] Respondeu 'free' ao ping.
-[1748213636040] [Service2001] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
-[1748213636040] [Service2001] Recebido e enfileirado para processamento: 4;1748213636038;1748213636039;0;1748213636039;1748...
-[1748213636099] [Service2001] Mensagem processada. Enviando para destino: 4;1748213636038;1748213636039;0;1748213636039;1748...
-[1748213636099] [Service2001] Mensagem enviada para localhost:3000: '4;1748213636038;1748213636039;0;1748213636039;1748213636040;0;1748213636099;59;'
+[1748872943688] Log iniciado para Service2001 na porta 2001
+[1748872943689] [Service2001] Escutando na porta 2001...
+[1748872943690] [Service2001] Iniciando Service2001 na porta 2001...
+[1748872948329] [Service2001] Conexão aceita de 127.0.0.1:59099
+[1748872948330] [Service2001] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59099
+[1748872948345] [Service2001] [HANDLE_CLIENT] Recebido '5' bytes de 127.0.0.1:59099. Data: 'ping'
+[1748872948345] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: 'ping'
+[1748872948346] [Service2001] Respondeu 'free' ao ping.
+[1748872948347] [Service2001] [HANDLE_CLIENT] Recebido '47' bytes de 127.0.0.1:59099. Data: '0;1748872948322;1748872948347;0;1748872948347;'
+[1748872948347] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: '0;1748872948322;1748872948347;0;1748872948347;'
+[1748872948348] [Service2001] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748872948348] [Service2001] Mensagem adicionada à fila (1): 0;1748872948322;1748872948347;0;1748872948347;...
+[1748872948402] [Service2001] Sentimento detectado: Neutro
+[1748872948402] [Service2001] Mensagem processada. Enviando para destino: 0;1748872948322;1748872948347;0;1748872948347;1748...
+[1748872948406] [Service2001] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:3000
+[1748872948406] [Service2001] Mensagem enviada para localhost:3000: '0;1748872948322;1748872948347;0;1748872948347;1748872948348;0;1748872948402;54;RESPONSE TIME:;80;SENTIMENTO:;Neutro;'
+[1748872948747] [Service2001] [HANDLE_CLIENT] Recebido '5' bytes de 127.0.0.1:59099. Data: 'ping'
+[1748872948747] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: 'ping'
+[1748872948748] [Service2001] Respondeu 'free' ao ping.
+[1748872948750] [Service2001] [HANDLE_CLIENT] Recebido '47' bytes de 127.0.0.1:59099. Data: '2;1748872948731;1748872948750;2;1748872948750;'
+[1748872948750] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: '2;1748872948731;1748872948750;2;1748872948750;'
+[1748872948750] [Service2001] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748872948752] [Service2001] Mensagem adicionada à fila (1): 2;1748872948731;1748872948750;2;1748872948750;...
+[1748872948760] [Service2001] Sentimento detectado: Neutro
+[1748872948761] [Service2001] Mensagem processada. Enviando para destino: 2;1748872948731;1748872948750;2;1748872948750;1748...
+[1748872948761] [Service2001] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748872948762] [Service2001] [OUTBOUND_CONN] Conexão existente para localhost:3000 está inativa. Fechando e removendo.
+[1748872948762] [Service2001] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:3000
+[1748872948762] [Service2001] Mensagem enviada para localhost:3000: '2;1748872948731;1748872948750;2;1748872948750;1748872948752;2;1748872948761;9;RESPONSE TIME:;30;SENTIMENTO:;Neutro;'
+[1748872949159] [Service2001] [HANDLE_CLIENT] Recebido '5' bytes de 127.0.0.1:59099. Data: 'ping'
+[1748872949159] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: 'ping'
+[1748872949159] [Service2001] Respondeu 'free' ao ping.
+[1748872949160] [Service2001] [HANDLE_CLIENT] Recebido '47' bytes de 127.0.0.1:59099. Data: '4;1748872949145;1748872949160;0;1748872949160;'
+[1748872949161] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: '4;1748872949145;1748872949160;0;1748872949160;'
+[1748872949163] [Service2001] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748872949164] [Service2001] Mensagem adicionada à fila (1): 4;1748872949145;1748872949160;0;1748872949160;...
+[1748872949174] [Service2001] Sentimento detectado: Neutro
+[1748872949174] [Service2001] Mensagem processada. Enviando para destino: 4;1748872949145;1748872949160;0;1748872949160;1748...
+[1748872949174] [Service2001] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748872949176] [Service2001] [OUTBOUND_CONN] Conexão existente para localhost:3000 está inativa. Fechando e removendo.
+[1748872949178] [Service2001] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:3000
+[1748872949178] [Service2001] Mensagem enviada para localhost:3000: '4;1748872949145;1748872949160;0;1748872949160;1748872949164;1;1748872949174;10;RESPONSE TIME:;29;SENTIMENTO:;Neutro;'
+[1748872949569] [Service2001] [HANDLE_CLIENT] Recebido '5' bytes de 127.0.0.1:59099. Data: 'ping'
+[1748872949569] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: 'ping'
+[1748872949569] [Service2001] Respondeu 'free' ao ping.
+[1748872949570] [Service2001] [HANDLE_CLIENT] Recebido '47' bytes de 127.0.0.1:59099. Data: '6;1748872949559;1748872949570;0;1748872949570;'
+[1748872949571] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: '6;1748872949559;1748872949570;0;1748872949570;'
+[1748872949572] [Service2001] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748872949573] [Service2001] Mensagem adicionada à fila (1): 6;1748872949559;1748872949570;0;1748872949570;...
+[1748872949583] [Service2001] Sentimento detectado: Neutro
+[1748872949583] [Service2001] Mensagem processada. Enviando para destino: 6;1748872949559;1748872949570;0;1748872949570;1748...
+[1748872949584] [Service2001] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748872949584] [Service2001] [OUTBOUND_CONN] Conexão existente para localhost:3000 está inativa. Fechando e removendo.
+[1748872949586] [Service2001] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:3000
+[1748872949586] [Service2001] Mensagem enviada para localhost:3000: '6;1748872949559;1748872949570;0;1748872949570;1748872949573;1;1748872949583;10;RESPONSE TIME:;24;SENTIMENTO:;Neutro;'
+[1748872949984] [Service2001] [HANDLE_CLIENT] Recebido '5' bytes de 127.0.0.1:59099. Data: 'ping'
+[1748872949984] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: 'ping'
+[1748872949986] [Service2001] Respondeu 'free' ao ping.
+[1748872949988] [Service2001] [HANDLE_CLIENT] Recebido '47' bytes de 127.0.0.1:59099. Data: '8;1748872949973;1748872949987;0;1748872949987;'
+[1748872949988] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: '8;1748872949973;1748872949987;0;1748872949987;'
+[1748872949989] [Service2001] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748872949990] [Service2001] Mensagem adicionada à fila (1): 8;1748872949973;1748872949987;0;1748872949987;...
+[1748872949997] [Service2001] Sentimento detectado: Neutro
+[1748872949997] [Service2001] Mensagem processada. Enviando para destino: 8;1748872949973;1748872949987;0;1748872949987;1748...
+[1748872949997] [Service2001] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748872949998] [Service2001] [OUTBOUND_CONN] Conexão existente para localhost:3000 está inativa. Fechando e removendo.
+[1748872949999] [Service2001] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:3000
+[1748872950000] [Service2001] Mensagem enviada para localhost:3000: '8;1748872949973;1748872949987;0;1748872949987;1748872949990;1;1748872949997;7;RESPONSE TIME:;24;SENTIMENTO:;Neutro;'
+[1748872950997] [Service2001] [HANDLE_CLIENT] Timeout de leitura de 127.0.0.1:59099. Conexão ociosa.
+[1748872950997] [Service2001] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59099 fechada.
+[1748872950998] [Service2001] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59099.
+[1748872952406] [Service2001] Conexão aceita de 127.0.0.1:59133
+[1748872952408] [Service2001] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59133
+[1748872952418] [Service2001] [HANDLE_CLIENT] Recebido '5' bytes de 127.0.0.1:59133. Data: 'ping'
+[1748872952419] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: 'ping'
+[1748872952421] [Service2001] Respondeu 'free' ao ping.
+[1748872952422] [Service2001] [HANDLE_CLIENT] Recebido '47' bytes de 127.0.0.1:59133. Data: '0;1748872952394;1748872952422;1;1748872952422;'
+[1748872952422] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: '0;1748872952394;1748872952422;1;1748872952422;'
+[1748872952424] [Service2001] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748872952424] [Service2001] Mensagem adicionada à fila (1): 0;1748872952394;1748872952422;1;1748872952422;...
+[1748872952434] [Service2001] Sentimento detectado: Neutro
+[1748872952434] [Service2001] Mensagem processada. Enviando para destino: 0;1748872952394;1748872952422;1;1748872952422;1748...
+[1748872952434] [Service2001] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748872952436] [Service2001] [OUTBOUND_CONN] Conexão existente para localhost:3000 está inativa. Fechando e removendo.
+[1748872952437] [Service2001] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:3000
+[1748872952437] [Service2001] Mensagem enviada para localhost:3000: '0;1748872952394;1748872952422;1;1748872952422;1748872952424;0;1748872952434;10;RESPONSE TIME:;40;SENTIMENTO:;Neutro;'
+[1748872952819] [Service2001] [HANDLE_CLIENT] Recebido '5' bytes de 127.0.0.1:59133. Data: 'ping'
+[1748872952819] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: 'ping'
+[1748872952821] [Service2001] Respondeu 'free' ao ping.
+[1748872952822] [Service2001] [HANDLE_CLIENT] Recebido '47' bytes de 127.0.0.1:59133. Data: '2;1748872952806;1748872952822;0;1748872952822;'
+[1748872952823] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: '2;1748872952806;1748872952822;0;1748872952822;'
+[1748872952824] [Service2001] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748872952824] [Service2001] Mensagem adicionada à fila (1): 2;1748872952806;1748872952822;0;1748872952822;...
+[1748872952827] [Service2001] Sentimento detectado: Neutro
+[1748872952827] [Service2001] Mensagem processada. Enviando para destino: 2;1748872952806;1748872952822;0;1748872952822;1748...
+[1748872952828] [Service2001] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748872952829] [Service2001] [OUTBOUND_CONN] Conexão existente para localhost:3000 está inativa. Fechando e removendo.
+[1748872952830] [Service2001] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:3000
+[1748872952830] [Service2001] Mensagem enviada para localhost:3000: '2;1748872952806;1748872952822;0;1748872952822;1748872952824;0;1748872952827;3;RESPONSE TIME:;21;SENTIMENTO:;Neutro;'
+[1748872953232] [Service2001] [HANDLE_CLIENT] Recebido '5' bytes de 127.0.0.1:59133. Data: 'ping'
+[1748872953232] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: 'ping'
+[1748872953234] [Service2001] Respondeu 'free' ao ping.
+[1748872953235] [Service2001] [HANDLE_CLIENT] Recebido '47' bytes de 127.0.0.1:59133. Data: '4;1748872953221;1748872953235;1;1748872953235;'
+[1748872953235] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: '4;1748872953221;1748872953235;1;1748872953235;'
+[1748872953236] [Service2001] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748872953236] [Service2001] Mensagem adicionada à fila (1): 4;1748872953221;1748872953235;1;1748872953235;...
+[1748872953248] [Service2001] Sentimento detectado: Neutro
+[1748872953248] [Service2001] Mensagem processada. Enviando para destino: 4;1748872953221;1748872953235;1;1748872953235;1748...
+[1748872953249] [Service2001] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748872953251] [Service2001] [OUTBOUND_CONN] Conexão existente para localhost:3000 está inativa. Fechando e removendo.
+[1748872953251] [Service2001] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:3000
+[1748872953252] [Service2001] Mensagem enviada para localhost:3000: '4;1748872953221;1748872953235;1;1748872953235;1748872953236;0;1748872953248;12;RESPONSE TIME:;27;SENTIMENTO:;Neutro;'
+[1748872953647] [Service2001] [HANDLE_CLIENT] Recebido '5' bytes de 127.0.0.1:59133. Data: 'ping'
+[1748872953647] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: 'ping'
+[1748872953649] [Service2001] Respondeu 'free' ao ping.
+[1748872953650] [Service2001] [HANDLE_CLIENT] Recebido '47' bytes de 127.0.0.1:59133. Data: '6;1748872953633;1748872953650;0;1748872953650;'
+[1748872953651] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: '6;1748872953633;1748872953650;0;1748872953650;'
+[1748872953654] [Service2001] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748872953654] [Service2001] Mensagem adicionada à fila (1): 6;1748872953633;1748872953650;0;1748872953650;...
+[1748872953664] [Service2001] Sentimento detectado: Neutro
+[1748872953665] [Service2001] Mensagem processada. Enviando para destino: 6;1748872953633;1748872953650;0;1748872953650;1748...
+[1748872953665] [Service2001] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748872953666] [Service2001] [OUTBOUND_CONN] Conexão existente para localhost:3000 está inativa. Fechando e removendo.
+[1748872953668] [Service2001] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:3000
+[1748872953668] [Service2001] Mensagem enviada para localhost:3000: '6;1748872953633;1748872953650;0;1748872953650;1748872953654;0;1748872953665;11;RESPONSE TIME:;32;SENTIMENTO:;Neutro;'
+[1748872954059] [Service2001] [HANDLE_CLIENT] Recebido '5' bytes de 127.0.0.1:59133. Data: 'ping'
+[1748872954059] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: 'ping'
+[1748872954060] [Service2001] Respondeu 'free' ao ping.
+[1748872954061] [Service2001] [HANDLE_CLIENT] Recebido '47' bytes de 127.0.0.1:59133. Data: '8;1748872954045;1748872954061;0;1748872954061;'
+[1748872954062] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: '8;1748872954045;1748872954061;0;1748872954061;'
+[1748872954063] [Service2001] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748872954064] [Service2001] Mensagem adicionada à fila (1): 8;1748872954045;1748872954061;0;1748872954061;...
+[1748872954072] [Service2001] Sentimento detectado: Neutro
+[1748872954073] [Service2001] Mensagem processada. Enviando para destino: 8;1748872954045;1748872954061;0;1748872954061;1748...
+[1748872954073] [Service2001] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748872954075] [Service2001] [OUTBOUND_CONN] Conexão existente para localhost:3000 está inativa. Fechando e removendo.
+[1748872954076] [Service2001] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:3000
+[1748872954076] [Service2001] Mensagem enviada para localhost:3000: '8;1748872954045;1748872954061;0;1748872954061;1748872954064;1;1748872954073;9;RESPONSE TIME:;28;SENTIMENTO:;Neutro;'
+[1748872955067] [Service2001] [HANDLE_CLIENT] Timeout de leitura de 127.0.0.1:59133. Conexão ociosa.
+[1748872955067] [Service2001] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59133 fechada.
+[1748872955069] [Service2001] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59133.
+[1748873054944] Log iniciado para Service2001 na porta 2001
+[1748873054945] [Service2001] Escutando na porta 2001...
+[1748873054947] [Service2001] Iniciando Service2001 na porta 2001...
+[1748873059263] [Service2001] Conexão aceita de 127.0.0.1:59237
+[1748873059263] [Service2001] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59237
+[1748873059276] [Service2001] [HANDLE_CLIENT] Recebido '5' bytes de 127.0.0.1:59237. Data: 'ping'
+[1748873059276] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: 'ping'
+[1748873059277] [Service2001] Respondeu 'free' ao ping.
+[1748873059277] [Service2001] [HANDLE_CLIENT] Recebido '47' bytes de 127.0.0.1:59237. Data: '0;1748873059256;1748873059277;0;1748873059277;'
+[1748873059277] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: '0;1748873059256;1748873059277;0;1748873059277;'
+[1748873059277] [Service2001] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748873059278] [Service2001] Mensagem adicionada à fila (1): 0;1748873059256;1748873059277;0;1748873059277;...
+[1748873059327] [Service2001] Sentimento detectado: Neutro
+[1748873059328] [Service2001] Mensagem processada. Enviando para destino: 0;1748873059256;1748873059277;0;1748873059277;1748...
+[1748873059331] [Service2001] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:3000
+[1748873059332] [Service2001] Mensagem enviada para localhost:3000: '0;1748873059256;1748873059277;0;1748873059277;1748873059278;1;1748873059328;50;RESPONSE TIME:;72;SENTIMENTO:;Neutro;'
+[1748873059675] [Service2001] [HANDLE_CLIENT] Recebido '5' bytes de 127.0.0.1:59237. Data: 'ping'
+[1748873059675] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: 'ping'
+[1748873059675] [Service2001] Respondeu 'free' ao ping.
+[1748873059676] [Service2001] [HANDLE_CLIENT] Recebido '47' bytes de 127.0.0.1:59237. Data: '2;1748873059664;1748873059676;1;1748873059676;'
+[1748873059676] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: '2;1748873059664;1748873059676;1;1748873059676;'
+[1748873059676] [Service2001] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748873059678] [Service2001] Mensagem adicionada à fila (1): 2;1748873059664;1748873059676;1;1748873059676;...
+[1748873059693] [Service2001] Sentimento detectado: Neutro
+[1748873059693] [Service2001] Mensagem processada. Enviando para destino: 2;1748873059664;1748873059676;1;1748873059676;1748...
+[1748873059693] [Service2001] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748873059695] [Service2001] [OUTBOUND_CONN] Conexão existente para localhost:3000 está inativa. Fechando e removendo.
+[1748873059698] [Service2001] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:3000
+[1748873059698] [Service2001] Mensagem enviada para localhost:3000: '2;1748873059664;1748873059676;1;1748873059676;1748873059678;2;1748873059693;15;RESPONSE TIME:;29;SENTIMENTO:;Neutro;'
+[1748873060088] [Service2001] [HANDLE_CLIENT] Recebido '5' bytes de 127.0.0.1:59237. Data: 'ping'
+[1748873060088] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: 'ping'
+[1748873060090] [Service2001] Respondeu 'free' ao ping.
+[1748873060092] [Service2001] [HANDLE_CLIENT] Recebido '47' bytes de 127.0.0.1:59237. Data: '4;1748873060078;1748873060092;0;1748873060092;'
+[1748873060092] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: '4;1748873060078;1748873060092;0;1748873060092;'
+[1748873060094] [Service2001] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748873060096] [Service2001] Mensagem adicionada à fila (1): 4;1748873060078;1748873060092;0;1748873060092;...
+[1748873060101] [Service2001] Sentimento detectado: Neutro
+[1748873060101] [Service2001] Mensagem processada. Enviando para destino: 4;1748873060078;1748873060092;0;1748873060092;1748...
+[1748873060102] [Service2001] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748873060102] [Service2001] [OUTBOUND_CONN] Conexão existente para localhost:3000 está inativa. Fechando e removendo.
+[1748873060103] [Service2001] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:3000
+[1748873060103] [Service2001] Mensagem enviada para localhost:3000: '4;1748873060078;1748873060092;0;1748873060092;1748873060096;2;1748873060101;5;RESPONSE TIME:;23;SENTIMENTO:;Neutro;'
+[1748873060502] [Service2001] [HANDLE_CLIENT] Recebido '5' bytes de 127.0.0.1:59237. Data: 'ping'
+[1748873060502] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: 'ping'
+[1748873060504] [Service2001] Respondeu 'free' ao ping.
+[1748873060506] [Service2001] [HANDLE_CLIENT] Recebido '47' bytes de 127.0.0.1:59237. Data: '6;1748873060490;1748873060506;0;1748873060506;'
+[1748873060507] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: '6;1748873060490;1748873060506;0;1748873060506;'
+[1748873060509] [Service2001] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748873060510] [Service2001] Mensagem adicionada à fila (1): 6;1748873060490;1748873060506;0;1748873060506;...
+[1748873060523] [Service2001] Sentimento detectado: Neutro
+[1748873060523] [Service2001] Mensagem processada. Enviando para destino: 6;1748873060490;1748873060506;0;1748873060506;1748...
+[1748873060524] [Service2001] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748873060527] [Service2001] [OUTBOUND_CONN] Conexão existente para localhost:3000 está inativa. Fechando e removendo.
+[1748873060528] [Service2001] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:3000
+[1748873060529] [Service2001] Mensagem enviada para localhost:3000: '6;1748873060490;1748873060506;0;1748873060506;1748873060510;1;1748873060523;13;RESPONSE TIME:;33;SENTIMENTO:;Neutro;'
+[1748873060919] [Service2001] [HANDLE_CLIENT] Recebido '5' bytes de 127.0.0.1:59237. Data: 'ping'
+[1748873060919] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: 'ping'
+[1748873060921] [Service2001] Respondeu 'free' ao ping.
+[1748873060923] [Service2001] [HANDLE_CLIENT] Recebido '47' bytes de 127.0.0.1:59237. Data: '8;1748873060905;1748873060923;0;1748873060923;'
+[1748873060924] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: '8;1748873060905;1748873060923;0;1748873060923;'
+[1748873060926] [Service2001] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748873060926] [Service2001] Mensagem adicionada à fila (1): 8;1748873060905;1748873060923;0;1748873060923;...
+[1748873060932] [Service2001] Sentimento detectado: Neutro
+[1748873060932] [Service2001] Mensagem processada. Enviando para destino: 8;1748873060905;1748873060923;0;1748873060923;1748...
+[1748873060933] [Service2001] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748873060933] [Service2001] [OUTBOUND_CONN] Conexão existente para localhost:3000 está inativa. Fechando e removendo.
+[1748873060934] [Service2001] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:3000
+[1748873060934] [Service2001] Mensagem enviada para localhost:3000: '8;1748873060905;1748873060923;0;1748873060923;1748873060926;0;1748873060932;6;RESPONSE TIME:;27;SENTIMENTO:;Neutro;'
+[1748873061934] [Service2001] [HANDLE_CLIENT] Timeout de leitura de 127.0.0.1:59237. Conexão ociosa.
+[1748873061934] [Service2001] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59237 fechada.
+[1748873061935] [Service2001] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59237.
+[1748873063351] [Service2001] Conexão aceita de 127.0.0.1:59273
+[1748873063353] [Service2001] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59273
+[1748873063376] [Service2001] [HANDLE_CLIENT] Recebido '5' bytes de 127.0.0.1:59273. Data: 'ping'
+[1748873063377] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: 'ping'
+[1748873063379] [Service2001] Respondeu 'free' ao ping.
+[1748873063383] [Service2001] [HANDLE_CLIENT] Recebido '47' bytes de 127.0.0.1:59273. Data: '0;1748873063332;1748873063382;0;1748873063382;'
+[1748873063383] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: '0;1748873063332;1748873063382;0;1748873063382;'
+[1748873063385] [Service2001] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748873063386] [Service2001] Mensagem adicionada à fila (1): 0;1748873063332;1748873063382;0;1748873063382;...
+[1748873063393] [Service2001] Sentimento detectado: Neutro
+[1748873063393] [Service2001] Mensagem processada. Enviando para destino: 0;1748873063332;1748873063382;0;1748873063382;1748...
+[1748873063394] [Service2001] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748873063395] [Service2001] [OUTBOUND_CONN] Conexão existente para localhost:3000 está inativa. Fechando e removendo.
+[1748873063397] [Service2001] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:3000
+[1748873063397] [Service2001] Mensagem enviada para localhost:3000: '0;1748873063332;1748873063382;0;1748873063382;1748873063386;1;1748873063393;7;RESPONSE TIME:;61;SENTIMENTO:;Neutro;'
+[1748873063757] [Service2001] [HANDLE_CLIENT] Recebido '5' bytes de 127.0.0.1:59273. Data: 'ping'
+[1748873063757] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: 'ping'
+[1748873063759] [Service2001] Respondeu 'free' ao ping.
+[1748873063760] [Service2001] [HANDLE_CLIENT] Recebido '47' bytes de 127.0.0.1:59273. Data: '2;1748873063745;1748873063760;1;1748873063760;'
+[1748873063760] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: '2;1748873063745;1748873063760;1;1748873063760;'
+[1748873063762] [Service2001] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748873063763] [Service2001] Mensagem adicionada à fila (1): 2;1748873063745;1748873063760;1;1748873063760;...
+[1748873063777] [Service2001] Sentimento detectado: Neutro
+[1748873063778] [Service2001] Mensagem processada. Enviando para destino: 2;1748873063745;1748873063760;1;1748873063760;1748...
+[1748873063778] [Service2001] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748873063781] [Service2001] [OUTBOUND_CONN] Conexão existente para localhost:3000 está inativa. Fechando e removendo.
+[1748873063782] [Service2001] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:3000
+[1748873063783] [Service2001] Mensagem enviada para localhost:3000: '2;1748873063745;1748873063760;1;1748873063760;1748873063763;1;1748873063778;15;RESPONSE TIME:;33;SENTIMENTO:;Neutro;'
+[1748873064170] [Service2001] [HANDLE_CLIENT] Recebido '5' bytes de 127.0.0.1:59273. Data: 'ping'
+[1748873064170] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: 'ping'
+[1748873064172] [Service2001] Respondeu 'free' ao ping.
+[1748873064173] [Service2001] [HANDLE_CLIENT] Recebido '47' bytes de 127.0.0.1:59273. Data: '4;1748873064158;1748873064173;0;1748873064173;'
+[1748873064174] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: '4;1748873064158;1748873064173;0;1748873064173;'
+[1748873064174] [Service2001] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748873064175] [Service2001] Mensagem adicionada à fila (1): 4;1748873064158;1748873064173;0;1748873064173;...
+[1748873064177] [Service2001] Sentimento detectado: Neutro
+[1748873064177] [Service2001] Mensagem processada. Enviando para destino: 4;1748873064158;1748873064173;0;1748873064173;1748...
+[1748873064177] [Service2001] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748873064178] [Service2001] [OUTBOUND_CONN] Conexão existente para localhost:3000 está inativa. Fechando e removendo.
+[1748873064178] [Service2001] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:3000
+[1748873064179] [Service2001] Mensagem enviada para localhost:3000: '4;1748873064158;1748873064173;0;1748873064173;1748873064175;1;1748873064177;2;RESPONSE TIME:;19;SENTIMENTO:;Neutro;'
+[1748873064583] [Service2001] [HANDLE_CLIENT] Recebido '5' bytes de 127.0.0.1:59273. Data: 'ping'
+[1748873064584] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: 'ping'
+[1748873064586] [Service2001] Respondeu 'free' ao ping.
+[1748873064586] [Service2001] [HANDLE_CLIENT] Recebido '47' bytes de 127.0.0.1:59273. Data: '6;1748873064572;1748873064586;0;1748873064586;'
+[1748873064586] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: '6;1748873064572;1748873064586;0;1748873064586;'
+[1748873064590] [Service2001] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748873064592] [Service2001] Mensagem adicionada à fila (1): 6;1748873064572;1748873064586;0;1748873064586;...
+[1748873064605] [Service2001] Sentimento detectado: Neutro
+[1748873064605] [Service2001] Mensagem processada. Enviando para destino: 6;1748873064572;1748873064586;0;1748873064586;1748...
+[1748873064605] [Service2001] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748873064606] [Service2001] [OUTBOUND_CONN] Conexão existente para localhost:3000 está inativa. Fechando e removendo.
+[1748873064608] [Service2001] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:3000
+[1748873064608] [Service2001] Mensagem enviada para localhost:3000: '6;1748873064572;1748873064586;0;1748873064586;1748873064592;2;1748873064605;13;RESPONSE TIME:;33;SENTIMENTO:;Neutro;'
+[1748873064998] [Service2001] [HANDLE_CLIENT] Recebido '5' bytes de 127.0.0.1:59273. Data: 'ping'
+[1748873064998] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: 'ping'
+[1748873065000] [Service2001] Respondeu 'free' ao ping.
+[1748873065002] [Service2001] [HANDLE_CLIENT] Recebido '47' bytes de 127.0.0.1:59273. Data: '8;1748873064986;1748873065002;1;1748873065002;'
+[1748873065002] [Service2001] [HANDLE_CLIENT] Mensagem completa extraída: '8;1748873064986;1748873065002;1;1748873065002;'
+[1748873065004] [Service2001] Aviso: Último elemento '' não é um timestamp válido. Usando tempo atual.
+[1748873065005] [Service2001] Mensagem adicionada à fila (1): 8;1748873064986;1748873065002;1;1748873065002;...
+[1748873065019] [Service2001] Sentimento detectado: Neutro
+[1748873065020] [Service2001] Mensagem processada. Enviando para destino: 8;1748873064986;1748873065002;1;1748873065002;1748...
+[1748873065020] [Service2001] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748873065021] [Service2001] [OUTBOUND_CONN] Conexão existente para localhost:3000 está inativa. Fechando e removendo.
+[1748873065022] [Service2001] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:3000
+[1748873065022] [Service2001] Mensagem enviada para localhost:3000: '8;1748873064986;1748873065002;1;1748873065002;1748873065005;1;1748873065020;15;RESPONSE TIME:;34;SENTIMENTO:;Neutro;'
+[1748873066009] [Service2001] [HANDLE_CLIENT] Timeout de leitura de 127.0.0.1:59273. Conexão ociosa.
+[1748873066009] [Service2001] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59273 fechada.
+[1748873066010] [Service2001] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59273.

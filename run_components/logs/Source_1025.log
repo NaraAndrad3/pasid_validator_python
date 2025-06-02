@@ -1,33 +1,606 @@
-[1748213635636] Log iniciado para Source na porta 1025
-[1748213635636] [Source] Escutando na porta 1025...
-[1748213635636] ======================================
-[1748213635636] Parâmetros da Origem:
-[1748213635636] Nome do Proxy: Source
-[1748213635636] Porta Local: 1025
-[1748213635636] Destino Principal (Primeiro LB): localhost:2000
-[1748213635636] Estágio de Alimentação do Modelo: True
-[1748213635637] Atraso de Chegada (ms): 100
-[1748213635637] Máximo de Mensagens Esperadas por Ciclo: 10
-[1748213635637] Servidor Balanceador Variável (IP:Porta): localhost:3000
-[1748213635637] Qtd. de Serviços por Ciclo: [1, 2]
-[1748213635637] MRTs do Modelo: [405597.23, 203892.96]
-[1748213635637] SDVs do Modelo: [1245.97, 613.95]
-[1748213635637] ======================================
-[1748213635637] Iniciando a Origem...
-[1748213635637] [Stage] Alimentação do Modelo: Iniciado.
-[1748213635637] [Source] Conexão estabelecida com destino: localhost:2000
-[1748213635637] [Source] Mensagem enviada para localhost:2000: '0;1748213635637;'
-[1748213635737] [Source] Mensagem enviada para localhost:2000: '1;1748213635737;'
-[1748213635759] [Source] Conexão aceita de 127.0.0.1:49736
-[1748213635759] [Source] Mensagem de resposta recebida: 0;1748213635637;1748213635639;0;1748213635639;1748213635639;0;1748213635699;60;1748213635702;0;1748213635702;1748213635702;0;1748213635758;56;...
-[1748213635838] [Source] Mensagem enviada para localhost:2000: '2;1748213635838;'
-[1748213635861] [Source] Conexão aceita de 127.0.0.1:49738
-[1748213635861] [Source] Mensagem de resposta recebida: 1;1748213635737;1748213635739;0;1748213635739;1748213635739;0;1748213635796;57;1748213635798;0;1748213635798;1748213635798;0;1748213635860;62;...
-[1748213635938] [Source] Mensagem enviada para localhost:2000: '3;1748213635938;'
-[1748213635942] [Source] Mensagem de resposta recebida: 2;1748213635838;1748213635838;0;1748213635838;1748213635839;0;1748213635894;55;1748213635895;0;1748213635895;1748213635895;0;1748213635941;46;...
-[1748213636038] [Source] Mensagem enviada para localhost:2000: '4;1748213636038;'
-[1748213636046] [Source] Mensagem de resposta recebida: 3;1748213635938;1748213635939;0;1748213635939;1748213635939;0;1748213635996;57;1748213635997;0;1748213635997;1748213635997;0;1748213636045;48;...
-[1748213636138] [Source] Estágio de alimentação finalizado após enviar 5 mensagens.
-[1748213636139] [Source] Sinal de parada recebido. Encerrando threads e conexões...
-[1748213636139] [Source] Socket local fechado na porta 1025.
-[1748213636139] [Source] Conexão de saída para localhost:2000 fechada.
+[1748872946314] Log iniciado para Source na porta 1025
+[1748872946315] [Source] Escutando na porta 1025...
+[1748872946315] ======================================
+[1748872946315] Parâmetros da Origem:
+[1748872946316] Nome do Proxy: Source
+[1748872946316] Porta Local: 1025
+[1748872946316] Destino Principal (Primeiro LB): localhost:2000
+[1748872946316] Estágio de Alimentação do Modelo: False
+[1748872946316] Atraso de Chegada (ms): 200
+[1748872946316] Máximo de Mensagens Esperadas por Ciclo: 10
+[1748872946316] Servidor Balanceador Variável (IP:Porta): localhost:3000
+[1748872946316] Qtd. de Serviços por Ciclo: [1, 2]
+[1748872946317] MRTs do Modelo: [405597.23, 203892.96]
+[1748872946317] SDVs do Modelo: [1245.97, 613.95]
+[1748872946317] ======================================
+[1748872946317] Iniciando a Origem...
+[1748872946317] [Stage] Validação: Iniciado.
+[1748872946317] [Source] Iniciando Ciclo 1 com 1 serviços.
+[1748872946320] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:3000
+[1748872946321] [Source] Mensagem enviada para localhost:3000: 'config;1'
+[1748872946321] [Source] Mensagem de configuração enviada para TargetAddress(ip='localhost', port=3000): 'config;1'
+[1748872948323] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748872948323] [Source] Mensagem enviada para localhost:2000: '0;1748872948322;'
+[1748872948474] [Source] Conexão aceita de 127.0.0.1:59102
+[1748872948474] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59102
+[1748872948474] [Source] [HANDLE_CLIENT] Recebido '218' bytes de 127.0.0.1:59102. Data: '0;1748872948322;1748872948347;0;1748872948347;1748'
+[1748872948475] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '0;1748872948322;1748872948347;0;1748872948347;1748'
+[1748872948476] [Source] Mensagem de resposta recebida: 0;1748872948322;1748872948347;0;1748872948347;1748872948348;0;1748872948402;54;RESPONSE TIME:;80;SENTIMENTO:;Neutro;1748872948415;0;1748872948415;1748872948415;0;1748872948469;54;RESPONSE TIME:;147;SENTIMENTO:;Neutro;...
+[1748872948524] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748872948524] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748872948526] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748872948528] [Source] Mensagem enviada para localhost:2000: '1;1748872948524;'
+[1748872948620] [Source] [HANDLE_CLIENT] Cliente 127.0.0.1:59102 encerrou a conexão (recv retornou vazio).
+[1748872948621] [Source] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59102.
+[1748872948621] [Source] Conexão aceita de 127.0.0.1:59106
+[1748872948623] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59102 fechada.
+[1748872948626] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59102.
+[1748872948626] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59106
+[1748872948627] [Source] [HANDLE_CLIENT] Recebido '216' bytes de 127.0.0.1:59106. Data: '1;1748872948524;1748872948549;1;1748872948549;1748'
+[1748872948628] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '1;1748872948524;1748872948549;1;1748872948549;1748'
+[1748872948629] [Source] Mensagem de resposta recebida: 1;1748872948524;1748872948549;1;1748872948549;1748872948549;0;1748872948606;57;RESPONSE TIME:;82;SENTIMENTO:;Neutro;1748872948617;0;1748872948617;1748872948619;2;1748872948619;0;RESPONSE TIME:;95;SENTIMENTO:;Neutro;...
+[1748872948731] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748872948731] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748872948734] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748872948734] [Source] Mensagem enviada para localhost:2000: '2;1748872948731;'
+[1748872948793] [Source] [HANDLE_CLIENT] Cliente 127.0.0.1:59106 encerrou a conexão (recv retornou vazio).
+[1748872948793] [Source] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59106.
+[1748872948794] [Source] Conexão aceita de 127.0.0.1:59109
+[1748872948798] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59106 fechada.
+[1748872948800] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59106.
+[1748872948800] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59109
+[1748872948801] [Source] [HANDLE_CLIENT] Recebido '216' bytes de 127.0.0.1:59109. Data: '2;1748872948731;1748872948750;2;1748872948750;1748'
+[1748872948801] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '2;1748872948731;1748872948750;2;1748872948750;1748'
+[1748872948801] [Source] Mensagem de resposta recebida: 2;1748872948731;1748872948750;2;1748872948750;1748872948752;2;1748872948761;9;RESPONSE TIME:;30;SENTIMENTO:;Neutro;1748872948773;0;1748872948773;1748872948776;1;1748872948790;14;RESPONSE TIME:;59;SENTIMENTO:;Neutro;...
+[1748872948939] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748872948939] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748872948940] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748872948942] [Source] Mensagem enviada para localhost:2000: '3;1748872948939;'
+[1748872949001] [Source] [HANDLE_CLIENT] Cliente 127.0.0.1:59109 encerrou a conexão (recv retornou vazio).
+[1748872949002] [Source] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59109.
+[1748872949002] [Source] Conexão aceita de 127.0.0.1:59112
+[1748872949003] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59109 fechada.
+[1748872949005] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59109.
+[1748872949006] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59112
+[1748872949007] [Source] [HANDLE_CLIENT] Recebido '217' bytes de 127.0.0.1:59112. Data: '3;1748872948939;1748872948952;0;1748872948952;1748'
+[1748872949007] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '3;1748872948939;1748872948952;0;1748872948952;1748'
+[1748872949007] [Source] Mensagem de resposta recebida: 3;1748872948939;1748872948952;0;1748872948952;1748872948954;2;1748872948973;19;RESPONSE TIME:;34;SENTIMENTO:;Neutro;1748872948986;1;1748872948986;1748872948988;0;1748872948999;11;RESPONSE TIME:;60;SENTIMENTO:;Neutro;...
+[1748872949145] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748872949145] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748872949147] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748872949149] [Source] Mensagem enviada para localhost:2000: '4;1748872949145;'
+[1748872949198] [Source] [HANDLE_CLIENT] Cliente 127.0.0.1:59112 encerrou a conexão (recv retornou vazio).
+[1748872949198] [Source] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59112.
+[1748872949199] [Source] Conexão aceita de 127.0.0.1:59115
+[1748872949201] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59112 fechada.
+[1748872949203] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59115
+[1748872949203] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59112.
+[1748872949203] [Source] [HANDLE_CLIENT] Recebido '216' bytes de 127.0.0.1:59115. Data: '4;1748872949145;1748872949160;0;1748872949160;1748'
+[1748872949205] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '4;1748872949145;1748872949160;0;1748872949160;1748'
+[1748872949205] [Source] Mensagem de resposta recebida: 4;1748872949145;1748872949160;0;1748872949160;1748872949164;1;1748872949174;10;RESPONSE TIME:;29;SENTIMENTO:;Neutro;1748872949187;0;1748872949187;1748872949188;0;1748872949196;8;RESPONSE TIME:;51;SENTIMENTO:;Neutro;...
+[1748872949352] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748872949352] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748872949355] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748872949356] [Source] Mensagem enviada para localhost:2000: '5;1748872949352;'
+[1748872949411] [Source] [HANDLE_CLIENT] Cliente 127.0.0.1:59115 encerrou a conexão (recv retornou vazio).
+[1748872949411] [Source] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59115.
+[1748872949412] [Source] Conexão aceita de 127.0.0.1:59118
+[1748872949414] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59115 fechada.
+[1748872949415] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59115.
+[1748872949415] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59118
+[1748872949415] [Source] [HANDLE_CLIENT] Recebido '217' bytes de 127.0.0.1:59118. Data: '5;1748872949352;1748872949367;0;1748872949367;1748'
+[1748872949416] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '5;1748872949352;1748872949367;0;1748872949367;1748'
+[1748872949416] [Source] Mensagem de resposta recebida: 5;1748872949352;1748872949367;0;1748872949367;1748872949371;2;1748872949382;11;RESPONSE TIME:;30;SENTIMENTO:;Neutro;1748872949393;1;1748872949393;1748872949395;1;1748872949408;13;RESPONSE TIME:;56;SENTIMENTO:;Neutro;...
+[1748872949559] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748872949559] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748872949561] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748872949563] [Source] Mensagem enviada para localhost:2000: '6;1748872949559;'
+[1748872949609] [Source] [HANDLE_CLIENT] Cliente 127.0.0.1:59118 encerrou a conexão (recv retornou vazio).
+[1748872949609] [Source] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59118.
+[1748872949610] [Source] Conexão aceita de 127.0.0.1:59121
+[1748872949612] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59118 fechada.
+[1748872949613] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59118.
+[1748872949613] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59121
+[1748872949614] [Source] [HANDLE_CLIENT] Recebido '216' bytes de 127.0.0.1:59121. Data: '6;1748872949559;1748872949570;0;1748872949570;1748'
+[1748872949614] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '6;1748872949559;1748872949570;0;1748872949570;1748'
+[1748872949614] [Source] Mensagem de resposta recebida: 6;1748872949559;1748872949570;0;1748872949570;1748872949573;1;1748872949583;10;RESPONSE TIME:;24;SENTIMENTO:;Neutro;1748872949595;0;1748872949595;1748872949598;1;1748872949606;8;RESPONSE TIME:;47;SENTIMENTO:;Neutro;...
+[1748872949765] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748872949765] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748872949768] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748872949770] [Source] Mensagem enviada para localhost:2000: '7;1748872949765;'
+[1748872949811] [Source] [HANDLE_CLIENT] Cliente 127.0.0.1:59121 encerrou a conexão (recv retornou vazio).
+[1748872949811] [Source] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59121.
+[1748872949812] [Source] Conexão aceita de 127.0.0.1:59124
+[1748872949814] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59121 fechada.
+[1748872949815] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59121.
+[1748872949815] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59124
+[1748872949816] [Source] [HANDLE_CLIENT] Recebido '215' bytes de 127.0.0.1:59124. Data: '7;1748872949765;1748872949782;0;1748872949782;1748'
+[1748872949816] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '7;1748872949765;1748872949782;0;1748872949782;1748'
+[1748872949816] [Source] Mensagem de resposta recebida: 7;1748872949765;1748872949782;0;1748872949782;1748872949785;1;1748872949789;4;RESPONSE TIME:;24;SENTIMENTO:;Neutro;1748872949801;2;1748872949801;1748872949802;0;1748872949809;7;RESPONSE TIME:;44;SENTIMENTO:;Neutro;...
+[1748872949973] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748872949973] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748872949976] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748872949976] [Source] Mensagem enviada para localhost:2000: '8;1748872949973;'
+[1748872950012] [Source] [HANDLE_CLIENT] Cliente 127.0.0.1:59124 encerrou a conexão (recv retornou vazio).
+[1748872950012] [Source] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59124.
+[1748872950013] [Source] Conexão aceita de 127.0.0.1:59127
+[1748872950014] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59124 fechada.
+[1748872950016] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59124.
+[1748872950016] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59127
+[1748872950016] [Source] [HANDLE_CLIENT] Recebido '215' bytes de 127.0.0.1:59127. Data: '8;1748872949973;1748872949987;0;1748872949987;1748'
+[1748872950018] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '8;1748872949973;1748872949987;0;1748872949987;1748'
+[1748872950018] [Source] Mensagem de resposta recebida: 8;1748872949973;1748872949987;0;1748872949987;1748872949990;1;1748872949997;7;RESPONSE TIME:;24;SENTIMENTO:;Neutro;1748872950006;0;1748872950006;1748872950009;0;1748872950011;2;RESPONSE TIME:;38;SENTIMENTO:;Neutro;...
+[1748872950180] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748872950180] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748872950182] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748872950182] [Source] Mensagem enviada para localhost:2000: '9;1748872950180;'
+[1748872950247] [Source] [HANDLE_CLIENT] Cliente 127.0.0.1:59127 encerrou a conexão (recv retornou vazio).
+[1748872950247] [Source] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59127.
+[1748872950248] [Source] Conexão aceita de 127.0.0.1:59130
+[1748872950249] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59127 fechada.
+[1748872950251] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59127.
+[1748872950251] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59130
+[1748872950252] [Source] [HANDLE_CLIENT] Recebido '217' bytes de 127.0.0.1:59130. Data: '9;1748872950180;1748872950197;1;1748872950197;1748'
+[1748872950252] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '9;1748872950180;1748872950197;1;1748872950197;1748'
+[1748872950252] [Source] Mensagem de resposta recebida: 9;1748872950180;1748872950197;1;1748872950197;1748872950201;1;1748872950214;13;RESPONSE TIME:;34;SENTIMENTO:;Neutro;1748872950228;0;1748872950228;1748872950229;0;1748872950244;15;RESPONSE TIME:;64;SENTIMENTO:;Neutro;...
+[1748872950386] [Source] Enviadas 10 mensagens no ciclo atual.
+[1748872950386] [Source] Aguardando o retorno de 10 mensagens.
+[1748872950387] [Source] Todas as 10 mensagens retornaram para o ciclo 1.
+[1748872950388] MRT From Experiment: 39.10; SD From Experiment: 21.25
+[1748872950389] [Source] Ciclo 1 Concluído. MRT Experimental: 39.10ms, SD Experimental: 21.25ms
+[1748872950389] [Source] Ciclo 1 completado.
+[1748872950389] [Source] Iniciando Ciclo 2 com 2 serviços.
+[1748872950390] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748872950390] [Source] [OUTBOUND_CONN] Conexão existente para localhost:3000 está inativa. Fechando e removendo.
+[1748872950391] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:3000
+[1748872950391] [Source] Mensagem enviada para localhost:3000: 'config;2'
+[1748872950392] [Source] Mensagem de configuração enviada para TargetAddress(ip='localhost', port=3000): 'config;2'
+[1748872951263] [Source] [HANDLE_CLIENT] Timeout de leitura de 127.0.0.1:59130. Conexão ociosa.
+[1748872951263] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59130 fechada.
+[1748872951264] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59130.
+[1748872952394] [Source] Fechando conexão existente para ('localhost', 2000) antes do novo ciclo.
+[1748872952395] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748872952396] [Source] Mensagem enviada para localhost:2000: '0;1748872952394;'
+[1748872952486] [Source] Conexão aceita de 127.0.0.1:59136
+[1748872952488] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59136
+[1748872952488] [Source] [HANDLE_CLIENT] Recebido '216' bytes de 127.0.0.1:59136. Data: '0;1748872952394;1748872952422;1;1748872952422;1748'
+[1748872952488] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '0;1748872952394;1748872952422;1;1748872952422;1748'
+[1748872952489] [Source] Mensagem de resposta recebida: 0;1748872952394;1748872952422;1;1748872952422;1748872952424;0;1748872952434;10;RESPONSE TIME:;40;SENTIMENTO:;Neutro;1748872952469;0;1748872952469;1748872952473;2;1748872952482;9;RESPONSE TIME:;88;SENTIMENTO:;Neutro;...
+[1748872952599] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748872952599] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748872952601] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748872952603] [Source] Mensagem enviada para localhost:2000: '1;1748872952599;'
+[1748872952746] [Source] Conexão aceita de 127.0.0.1:59141
+[1748872952747] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59141
+[1748872952747] [Source] [HANDLE_CLIENT] Recebido '218' bytes de 127.0.0.1:59141. Data: '1;1748872952599;1748872952642;0;1748872952642;1748'
+[1748872952748] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '1;1748872952599;1748872952642;0;1748872952642;1748'
+[1748872952748] [Source] Mensagem de resposta recebida: 1;1748872952599;1748872952642;0;1748872952642;1748872952646;2;1748872952658;12;RESPONSE TIME:;59;SENTIMENTO:;Neutro;1748872952687;0;1748872952687;1748872952688;0;1748872952742;54;RESPONSE TIME:;143;SENTIMENTO:;Neutro;...
+[1748872952806] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748872952807] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748872952809] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748872952810] [Source] Mensagem enviada para localhost:2000: '2;1748872952806;'
+[1748872952847] [Source] [HANDLE_CLIENT] Cliente 127.0.0.1:59136 encerrou a conexão (recv retornou vazio).
+[1748872952847] [Source] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59136.
+[1748872952849] [Source] Conexão aceita de 127.0.0.1:59144
+[1748872952850] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59136 fechada.
+[1748872952851] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59136.
+[1748872952851] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59144
+[1748872952852] [Source] [HANDLE_CLIENT] Recebido '215' bytes de 127.0.0.1:59144. Data: '2;1748872952806;1748872952822;0;1748872952822;1748'
+[1748872952853] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '2;1748872952806;1748872952822;0;1748872952822;1748'
+[1748872952854] [Source] Mensagem de resposta recebida: 2;1748872952806;1748872952822;0;1748872952822;1748872952824;0;1748872952827;3;RESPONSE TIME:;21;SENTIMENTO:;Neutro;1748872952837;0;1748872952837;1748872952839;1;1748872952845;6;RESPONSE TIME:;39;SENTIMENTO:;Neutro;...
+[1748872953013] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748872953013] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748872953015] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748872953017] [Source] Mensagem enviada para localhost:2000: '3;1748872953013;'
+[1748872953054] [Source] [HANDLE_CLIENT] Cliente 127.0.0.1:59141 encerrou a conexão (recv retornou vazio).
+[1748872953054] [Source] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59141.
+[1748872953055] [Source] Conexão aceita de 127.0.0.1:59147
+[1748872953057] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59141 fechada.
+[1748872953058] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59141.
+[1748872953058] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59147
+[1748872953059] [Source] [HANDLE_CLIENT] Recebido '215' bytes de 127.0.0.1:59147. Data: '3;1748872953013;1748872953027;0;1748872953027;1748'
+[1748872953060] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '3;1748872953013;1748872953027;0;1748872953027;1748'
+[1748872953060] [Source] Mensagem de resposta recebida: 3;1748872953013;1748872953027;0;1748872953027;1748872953032;2;1748872953033;1;RESPONSE TIME:;20;SENTIMENTO:;Neutro;1748872953041;0;1748872953041;1748872953043;2;1748872953052;9;RESPONSE TIME:;39;SENTIMENTO:;Neutro;...
+[1748872953221] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748872953221] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748872953223] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748872953223] [Source] Mensagem enviada para localhost:2000: '4;1748872953221;'
+[1748872953280] [Source] [HANDLE_CLIENT] Cliente 127.0.0.1:59144 encerrou a conexão (recv retornou vazio).
+[1748872953280] [Source] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59144.
+[1748872953280] [Source] Conexão aceita de 127.0.0.1:59150
+[1748872953282] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59144 fechada.
+[1748872953284] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59150
+[1748872953284] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59144.
+[1748872953284] [Source] [HANDLE_CLIENT] Recebido '217' bytes de 127.0.0.1:59150. Data: '4;1748872953221;1748872953235;1;1748872953235;1748'
+[1748872953285] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '4;1748872953221;1748872953235;1;1748872953235;1748'
+[1748872953285] [Source] Mensagem de resposta recebida: 4;1748872953221;1748872953235;1;1748872953235;1748872953236;0;1748872953248;12;RESPONSE TIME:;27;SENTIMENTO:;Neutro;1748872953259;0;1748872953259;1748872953264;2;1748872953278;14;RESPONSE TIME:;57;SENTIMENTO:;Neutro;...
+[1748872953426] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748872953426] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748872953428] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748872953430] [Source] Mensagem enviada para localhost:2000: '5;1748872953426;'
+[1748872953472] [Source] [HANDLE_CLIENT] Cliente 127.0.0.1:59147 encerrou a conexão (recv retornou vazio).
+[1748872953472] [Source] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59147.
+[1748872953473] [Source] Conexão aceita de 127.0.0.1:59153
+[1748872953474] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59147 fechada.
+[1748872953475] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59147.
+[1748872953475] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59153
+[1748872953475] [Source] [HANDLE_CLIENT] Recebido '216' bytes de 127.0.0.1:59153. Data: '5;1748872953426;1748872953440;0;1748872953440;1748'
+[1748872953476] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '5;1748872953426;1748872953440;0;1748872953440;1748'
+[1748872953477] [Source] Mensagem de resposta recebida: 5;1748872953426;1748872953440;0;1748872953440;1748872953443;1;1748872953454;11;RESPONSE TIME:;28;SENTIMENTO:;Neutro;1748872953465;1;1748872953465;1748872953467;1;1748872953471;4;RESPONSE TIME:;45;SENTIMENTO:;Neutro;...
+[1748872953633] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748872953633] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748872953635] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748872953636] [Source] Mensagem enviada para localhost:2000: '6;1748872953633;'
+[1748872953682] [Source] [HANDLE_CLIENT] Cliente 127.0.0.1:59150 encerrou a conexão (recv retornou vazio).
+[1748872953682] [Source] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59150.
+[1748872953683] [Source] Conexão aceita de 127.0.0.1:59156
+[1748872953685] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59150 fechada.
+[1748872953686] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59150.
+[1748872953686] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59156
+[1748872953686] [Source] [HANDLE_CLIENT] Recebido '216' bytes de 127.0.0.1:59156. Data: '6;1748872953633;1748872953650;0;1748872953650;1748'
+[1748872953687] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '6;1748872953633;1748872953650;0;1748872953650;1748'
+[1748872953687] [Source] Mensagem de resposta recebida: 6;1748872953633;1748872953650;0;1748872953650;1748872953654;0;1748872953665;11;RESPONSE TIME:;32;SENTIMENTO:;Neutro;1748872953676;0;1748872953676;1748872953679;2;1748872953681;2;RESPONSE TIME:;48;SENTIMENTO:;Neutro;...
+[1748872953839] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748872953839] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748872953841] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748872953843] [Source] Mensagem enviada para localhost:2000: '7;1748872953839;'
+[1748872953887] [Source] [HANDLE_CLIENT] Cliente 127.0.0.1:59153 encerrou a conexão (recv retornou vazio).
+[1748872953887] [Source] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59153.
+[1748872953887] [Source] Conexão aceita de 127.0.0.1:59159
+[1748872953889] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59153 fechada.
+[1748872953890] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59153.
+[1748872953890] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59159
+[1748872953890] [Source] [HANDLE_CLIENT] Recebido '216' bytes de 127.0.0.1:59159. Data: '7;1748872953839;1748872953855;0;1748872953855;1748'
+[1748872953891] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '7;1748872953839;1748872953855;0;1748872953855;1748'
+[1748872953891] [Source] Mensagem de resposta recebida: 7;1748872953839;1748872953855;0;1748872953855;1748872953857;0;1748872953869;12;RESPONSE TIME:;30;SENTIMENTO:;Neutro;1748872953880;0;1748872953880;1748872953883;1;1748872953885;2;RESPONSE TIME:;46;SENTIMENTO:;Neutro;...
+[1748872954045] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748872954045] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748872954048] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748872954049] [Source] Mensagem enviada para localhost:2000: '8;1748872954045;'
+[1748872954103] [Source] [HANDLE_CLIENT] Cliente 127.0.0.1:59156 encerrou a conexão (recv retornou vazio).
+[1748872954103] [Source] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59156.
+[1748872954104] [Source] Conexão aceita de 127.0.0.1:59162
+[1748872954105] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59156 fechada.
+[1748872954107] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59156.
+[1748872954107] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59162
+[1748872954108] [Source] [HANDLE_CLIENT] Recebido '216' bytes de 127.0.0.1:59162. Data: '8;1748872954045;1748872954061;0;1748872954061;1748'
+[1748872954108] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '8;1748872954045;1748872954061;0;1748872954061;1748'
+[1748872954108] [Source] Mensagem de resposta recebida: 8;1748872954045;1748872954061;0;1748872954061;1748872954064;1;1748872954073;9;RESPONSE TIME:;28;SENTIMENTO:;Neutro;1748872954086;1;1748872954086;1748872954088;1;1748872954100;12;RESPONSE TIME:;55;SENTIMENTO:;Neutro;...
+[1748872954253] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748872954253] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748872954256] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748872954257] [Source] Mensagem enviada para localhost:2000: '9;1748872954253;'
+[1748872954303] [Source] [HANDLE_CLIENT] Cliente 127.0.0.1:59159 encerrou a conexão (recv retornou vazio).
+[1748872954303] [Source] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59159.
+[1748872954304] [Source] Conexão aceita de 127.0.0.1:59165
+[1748872954306] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59159 fechada.
+[1748872954307] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59159.
+[1748872954307] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59165
+[1748872954308] [Source] [HANDLE_CLIENT] Recebido '216' bytes de 127.0.0.1:59165. Data: '9;1748872954253;1748872954267;1;1748872954267;1748'
+[1748872954308] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '9;1748872954253;1748872954267;1;1748872954267;1748'
+[1748872954308] [Source] Mensagem de resposta recebida: 9;1748872954253;1748872954267;1;1748872954267;1748872954269;0;1748872954279;10;RESPONSE TIME:;26;SENTIMENTO:;Neutro;1748872954289;0;1748872954289;1748872954291;0;1748872954300;9;RESPONSE TIME:;47;SENTIMENTO:;Neutro;...
+[1748872954460] [Source] Enviadas 10 mensagens no ciclo atual.
+[1748872954460] [Source] Aguardando o retorno de 10 mensagens.
+[1748872954462] [Source] Todas as 10 mensagens retornaram para o ciclo 2.
+[1748872954464] MRT From Experiment: 31.10; SD From Experiment: 10.71
+[1748872954464] [Source] Ciclo 2 Concluído. MRT Experimental: 31.10ms, SD Experimental: 10.71ms
+[1748872954465] [Source] Ciclo 2 completado.
+[1748872954466] [Stage] Validação: Finalizado. Todos os ciclos concluídos.
+[1748872954466] 
+======================================
+[1748872954467] Resultados Finais da Simulação:
+[1748872954467] Ciclo 1 (Qtd Serviços: 1):
+[1748872954468]   MRT Experimental: 39.10ms, SD Experimental: 21.25ms
+[1748872954468]   MRT do Modelo: 405597.23, SD do Modelo: 1245.97
+[1748872954469] Ciclo 2 (Qtd Serviços: 2):
+[1748872954470]   MRT Experimental: 31.10ms, SD Experimental: 10.71ms
+[1748872954470]   MRT do Modelo: 203892.96, SD do Modelo: 613.95
+[1748872954470] Mensagens descartadas na Origem: 0
+[1748872954471] ======================================
+[1748872954474] [Source] Sinal de parada recebido. Encerrando threads e conexões...
+[1748872954474] [Source] Socket local fechado na porta 1025.
+[1748872954475] [Source] Conexão de saída para localhost:3000 fechada.
+[1748872954476] [Source] Conexão de saída para localhost:2000 fechada.
+[1748873057246] Log iniciado para Source na porta 1025
+[1748873057248] [Source] Escutando na porta 1025...
+[1748873057248] ======================================
+[1748873057248] Parâmetros da Origem:
+[1748873057249] Nome do Proxy: Source
+[1748873057249] Porta Local: 1025
+[1748873057249] Destino Principal (Primeiro LB): localhost:2000
+[1748873057249] Estágio de Alimentação do Modelo: False
+[1748873057249] Atraso de Chegada (ms): 200
+[1748873057249] Máximo de Mensagens Esperadas por Ciclo: 10
+[1748873057249] Servidor Balanceador Variável (IP:Porta): localhost:3000
+[1748873057249] Qtd. de Serviços por Ciclo: [1, 2]
+[1748873057249] MRTs do Modelo: [405597.23, 203892.96]
+[1748873057249] SDVs do Modelo: [1245.97, 613.95]
+[1748873057250] ======================================
+[1748873057250] Iniciando a Origem...
+[1748873057250] [Stage] Validação: Iniciado.
+[1748873057250] [Source] Iniciando Ciclo 1 com 1 serviços.
+[1748873057254] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:3000
+[1748873057254] [Source] Mensagem enviada para localhost:3000: 'config;1'
+[1748873057254] [Source] Mensagem de configuração enviada para TargetAddress(ip='localhost', port=3000): 'config;1'
+[1748873059256] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748873059256] [Source] Mensagem enviada para localhost:2000: '0;1748873059256;'
+[1748873059421] [Source] Conexão aceita de 127.0.0.1:59240
+[1748873059422] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59240
+[1748873059422] [Source] [HANDLE_CLIENT] Recebido '218' bytes de 127.0.0.1:59240. Data: '0;1748873059256;1748873059277;0;1748873059277;1748'
+[1748873059423] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '0;1748873059256;1748873059277;0;1748873059277;1748'
+[1748873059424] [Source] Mensagem de resposta recebida: 0;1748873059256;1748873059277;0;1748873059277;1748873059278;1;1748873059328;50;RESPONSE TIME:;72;SENTIMENTO:;Neutro;1748873059355;0;1748873059355;1748873059356;1;1748873059418;62;RESPONSE TIME:;162;SENTIMENTO:;Neutro;...
+[1748873059457] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748873059457] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748873059459] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748873059459] [Source] Mensagem enviada para localhost:2000: '1;1748873059457;'
+[1748873059577] [Source] [HANDLE_CLIENT] Cliente 127.0.0.1:59240 encerrou a conexão (recv retornou vazio).
+[1748873059577] [Source] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59240.
+[1748873059577] [Source] Conexão aceita de 127.0.0.1:59244
+[1748873059579] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59240 fechada.
+[1748873059582] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59240.
+[1748873059583] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59244
+[1748873059584] [Source] [HANDLE_CLIENT] Recebido '218' bytes de 127.0.0.1:59244. Data: '1;1748873059457;1748873059494;1;1748873059494;1748'
+[1748873059584] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '1;1748873059457;1748873059494;1;1748873059494;1748'
+[1748873059584] [Source] Mensagem de resposta recebida: 1;1748873059457;1748873059494;1;1748873059494;1748873059494;0;1748873059550;56;RESPONSE TIME:;93;SENTIMENTO:;Neutro;1748873059560;1;1748873059560;1748873059562;2;1748873059572;10;RESPONSE TIME:;115;SENTIMENTO:;Neutro;...
+[1748873059664] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748873059664] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748873059666] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748873059667] [Source] Mensagem enviada para localhost:2000: '2;1748873059664;'
+[1748873059727] [Source] [HANDLE_CLIENT] Cliente 127.0.0.1:59244 encerrou a conexão (recv retornou vazio).
+[1748873059727] [Source] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59244.
+[1748873059728] [Source] Conexão aceita de 127.0.0.1:59247
+[1748873059731] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59244 fechada.
+[1748873059733] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59244.
+[1748873059733] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59247
+[1748873059734] [Source] [HANDLE_CLIENT] Recebido '217' bytes de 127.0.0.1:59247. Data: '2;1748873059664;1748873059676;1;1748873059676;1748'
+[1748873059734] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '2;1748873059664;1748873059676;1;1748873059676;1748'
+[1748873059734] [Source] Mensagem de resposta recebida: 2;1748873059664;1748873059676;1;1748873059676;1748873059678;2;1748873059693;15;RESPONSE TIME:;29;SENTIMENTO:;Neutro;1748873059706;0;1748873059706;1748873059708;1;1748873059724;16;RESPONSE TIME:;60;SENTIMENTO:;Neutro;...
+[1748873059871] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748873059871] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748873059873] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748873059875] [Source] Mensagem enviada para localhost:2000: '3;1748873059871;'
+[1748873059937] [Source] [HANDLE_CLIENT] Cliente 127.0.0.1:59247 encerrou a conexão (recv retornou vazio).
+[1748873059937] [Source] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59247.
+[1748873059938] [Source] Conexão aceita de 127.0.0.1:59250
+[1748873059940] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59247 fechada.
+[1748873059941] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59247.
+[1748873059942] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59250
+[1748873059942] [Source] [HANDLE_CLIENT] Recebido '217' bytes de 127.0.0.1:59250. Data: '3;1748873059871;1748873059885;0;1748873059885;1748'
+[1748873059942] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '3;1748873059871;1748873059885;0;1748873059885;1748'
+[1748873059943] [Source] Mensagem de resposta recebida: 3;1748873059871;1748873059885;0;1748873059885;1748873059887;1;1748873059902;15;RESPONSE TIME:;31;SENTIMENTO:;Neutro;1748873059912;0;1748873059912;1748873059915;1;1748873059935;20;RESPONSE TIME:;64;SENTIMENTO:;Neutro;...
+[1748873060078] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748873060078] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748873060081] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748873060082] [Source] Mensagem enviada para localhost:2000: '4;1748873060078;'
+[1748873060122] [Source] [HANDLE_CLIENT] Cliente 127.0.0.1:59250 encerrou a conexão (recv retornou vazio).
+[1748873060122] [Source] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59250.
+[1748873060123] [Source] Conexão aceita de 127.0.0.1:59253
+[1748873060123] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59250 fechada.
+[1748873060126] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59250.
+[1748873060126] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59253
+[1748873060128] [Source] [HANDLE_CLIENT] Recebido '215' bytes de 127.0.0.1:59253. Data: '4;1748873060078;1748873060092;0;1748873060092;1748'
+[1748873060129] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '4;1748873060078;1748873060092;0;1748873060092;1748'
+[1748873060129] [Source] Mensagem de resposta recebida: 4;1748873060078;1748873060092;0;1748873060092;1748873060096;2;1748873060101;5;RESPONSE TIME:;23;SENTIMENTO:;Neutro;1748873060111;1;1748873060111;1748873060114;1;1748873060120;6;RESPONSE TIME:;42;SENTIMENTO:;Neutro;...
+[1748873060284] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748873060284] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748873060286] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748873060287] [Source] Mensagem enviada para localhost:2000: '5;1748873060284;'
+[1748873060333] [Source] [HANDLE_CLIENT] Cliente 127.0.0.1:59253 encerrou a conexão (recv retornou vazio).
+[1748873060333] [Source] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59253.
+[1748873060334] [Source] Conexão aceita de 127.0.0.1:59256
+[1748873060335] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59253 fechada.
+[1748873060337] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59253.
+[1748873060337] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59256
+[1748873060337] [Source] [HANDLE_CLIENT] Recebido '215' bytes de 127.0.0.1:59256. Data: '5;1748873060284;1748873060301;0;1748873060301;1748'
+[1748873060338] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '5;1748873060284;1748873060301;0;1748873060301;1748'
+[1748873060338] [Source] Mensagem de resposta recebida: 5;1748873060284;1748873060301;0;1748873060301;1748873060303;0;1748873060309;6;RESPONSE TIME:;25;SENTIMENTO:;Neutro;1748873060321;0;1748873060321;1748873060323;1;1748873060331;8;RESPONSE TIME:;47;SENTIMENTO:;Neutro;...
+[1748873060490] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748873060490] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748873060492] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748873060493] [Source] Mensagem enviada para localhost:2000: '6;1748873060490;'
+[1748873060554] [Source] [HANDLE_CLIENT] Cliente 127.0.0.1:59256 encerrou a conexão (recv retornou vazio).
+[1748873060554] [Source] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59256.
+[1748873060555] [Source] Conexão aceita de 127.0.0.1:59259
+[1748873060556] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59256 fechada.
+[1748873060557] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59256.
+[1748873060558] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59259
+[1748873060558] [Source] [HANDLE_CLIENT] Recebido '217' bytes de 127.0.0.1:59259. Data: '6;1748873060490;1748873060506;0;1748873060506;1748'
+[1748873060558] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '6;1748873060490;1748873060506;0;1748873060506;1748'
+[1748873060559] [Source] Mensagem de resposta recebida: 6;1748873060490;1748873060506;0;1748873060506;1748873060510;1;1748873060523;13;RESPONSE TIME:;33;SENTIMENTO:;Neutro;1748873060537;0;1748873060537;1748873060541;1;1748873060552;11;RESPONSE TIME:;62;SENTIMENTO:;Neutro;...
+[1748873060698] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748873060698] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748873060701] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748873060702] [Source] Mensagem enviada para localhost:2000: '7;1748873060698;'
+[1748873060755] [Source] [HANDLE_CLIENT] Cliente 127.0.0.1:59259 encerrou a conexão (recv retornou vazio).
+[1748873060755] [Source] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59259.
+[1748873060757] [Source] Conexão aceita de 127.0.0.1:59264
+[1748873060758] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59259 fechada.
+[1748873060759] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59259.
+[1748873060760] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59264
+[1748873060760] [Source] [HANDLE_CLIENT] Recebido '216' bytes de 127.0.0.1:59264. Data: '7;1748873060698;1748873060712;0;1748873060712;1748'
+[1748873060760] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '7;1748873060698;1748873060712;0;1748873060712;1748'
+[1748873060761] [Source] Mensagem de resposta recebida: 7;1748873060698;1748873060712;0;1748873060712;1748873060717;2;1748873060730;13;RESPONSE TIME:;32;SENTIMENTO:;Neutro;1748873060742;0;1748873060742;1748873060744;1;1748873060753;9;RESPONSE TIME:;55;SENTIMENTO:;Neutro;...
+[1748873060905] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748873060905] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748873060907] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748873060909] [Source] Mensagem enviada para localhost:2000: '8;1748873060905;'
+[1748873060948] [Source] [HANDLE_CLIENT] Cliente 127.0.0.1:59264 encerrou a conexão (recv retornou vazio).
+[1748873060948] [Source] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59264.
+[1748873060949] [Source] Conexão aceita de 127.0.0.1:59267
+[1748873060951] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59264 fechada.
+[1748873060951] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59267
+[1748873060952] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59264.
+[1748873060953] [Source] [HANDLE_CLIENT] Recebido '215' bytes de 127.0.0.1:59267. Data: '8;1748873060905;1748873060923;0;1748873060923;1748'
+[1748873060954] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '8;1748873060905;1748873060923;0;1748873060923;1748'
+[1748873060954] [Source] Mensagem de resposta recebida: 8;1748873060905;1748873060923;0;1748873060923;1748873060926;0;1748873060932;6;RESPONSE TIME:;27;SENTIMENTO:;Neutro;1748873060942;0;1748873060942;1748873060943;0;1748873060947;4;RESPONSE TIME:;42;SENTIMENTO:;Neutro;...
+[1748873061113] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748873061113] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748873061115] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748873061116] [Source] Mensagem enviada para localhost:2000: '9;1748873061113;'
+[1748873061175] [Source] [HANDLE_CLIENT] Cliente 127.0.0.1:59267 encerrou a conexão (recv retornou vazio).
+[1748873061176] [Source] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59267.
+[1748873061176] [Source] Conexão aceita de 127.0.0.1:59270
+[1748873061178] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59267 fechada.
+[1748873061179] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59267.
+[1748873061179] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59270
+[1748873061180] [Source] [HANDLE_CLIENT] Recebido '217' bytes de 127.0.0.1:59270. Data: '9;1748873061113;1748873061129;1;1748873061129;1748'
+[1748873061180] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '9;1748873061113;1748873061129;1;1748873061129;1748'
+[1748873061181] [Source] Mensagem de resposta recebida: 9;1748873061113;1748873061129;1;1748873061129;1748873061131;1;1748873061144;13;RESPONSE TIME:;31;SENTIMENTO:;Neutro;1748873061157;0;1748873061157;1748873061159;0;1748873061173;14;RESPONSE TIME:;60;SENTIMENTO:;Neutro;...
+[1748873061320] [Source] Enviadas 10 mensagens no ciclo atual.
+[1748873061320] [Source] Aguardando o retorno de 10 mensagens.
+[1748873061322] [Source] Todas as 10 mensagens retornaram para o ciclo 1.
+[1748873061323] MRT From Experiment: 39.60; SD From Experiment: 22.16
+[1748873061324] [Source] Ciclo 1 Concluído. MRT Experimental: 39.60ms, SD Experimental: 22.16ms
+[1748873061324] [Source] Ciclo 1 completado.
+[1748873061325] [Source] Iniciando Ciclo 2 com 2 serviços.
+[1748873061326] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748873061326] [Source] [OUTBOUND_CONN] Conexão existente para localhost:3000 está inativa. Fechando e removendo.
+[1748873061327] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:3000
+[1748873061328] [Source] Mensagem enviada para localhost:3000: 'config;2'
+[1748873061329] [Source] Mensagem de configuração enviada para TargetAddress(ip='localhost', port=3000): 'config;2'
+[1748873062182] [Source] [HANDLE_CLIENT] Timeout de leitura de 127.0.0.1:59270. Conexão ociosa.
+[1748873062182] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59270 fechada.
+[1748873062183] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59270.
+[1748873063332] [Source] Fechando conexão existente para ('localhost', 2000) antes do novo ciclo.
+[1748873063333] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748873063334] [Source] Mensagem enviada para localhost:2000: '0;1748873063332;'
+[1748873063447] [Source] Conexão aceita de 127.0.0.1:59276
+[1748873063451] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59276
+[1748873063451] [Source] [HANDLE_CLIENT] Recebido '217' bytes de 127.0.0.1:59276. Data: '0;1748873063332;1748873063382;0;1748873063382;1748'
+[1748873063452] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '0;1748873063332;1748873063382;0;1748873063382;1748'
+[1748873063452] [Source] Mensagem de resposta recebida: 0;1748873063332;1748873063382;0;1748873063382;1748873063386;1;1748873063393;7;RESPONSE TIME:;61;SENTIMENTO:;Neutro;1748873063427;0;1748873063427;1748873063431;2;1748873063443;12;RESPONSE TIME:;111;SENTIMENTO:;Neutro;...
+[1748873063537] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748873063537] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748873063539] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748873063541] [Source] Mensagem enviada para localhost:2000: '1;1748873063537;'
+[1748873063669] [Source] Conexão aceita de 127.0.0.1:59281
+[1748873063671] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59281
+[1748873063671] [Source] [HANDLE_CLIENT] Recebido '217' bytes de 127.0.0.1:59281. Data: '1;1748873063537;1748873063568;1;1748873063568;1748'
+[1748873063673] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '1;1748873063537;1748873063568;1;1748873063568;1748'
+[1748873063674] [Source] Mensagem de resposta recebida: 1;1748873063537;1748873063568;1;1748873063568;1748873063571;2;1748873063580;9;RESPONSE TIME:;43;SENTIMENTO:;Neutro;1748873063611;0;1748873063611;1748873063612;1;1748873063665;53;RESPONSE TIME:;128;SENTIMENTO:;Neutro;...
+[1748873063745] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748873063745] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748873063746] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748873063748] [Source] Mensagem enviada para localhost:2000: '2;1748873063745;'
+[1748873063803] [Source] [HANDLE_CLIENT] Cliente 127.0.0.1:59276 encerrou a conexão (recv retornou vazio).
+[1748873063803] [Source] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59276.
+[1748873063804] [Source] Conexão aceita de 127.0.0.1:59284
+[1748873063806] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59276 fechada.
+[1748873063807] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59276.
+[1748873063807] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59284
+[1748873063808] [Source] [HANDLE_CLIENT] Recebido '216' bytes de 127.0.0.1:59284. Data: '2;1748873063745;1748873063760;1;1748873063760;1748'
+[1748873063808] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '2;1748873063745;1748873063760;1;1748873063760;1748'
+[1748873063808] [Source] Mensagem de resposta recebida: 2;1748873063745;1748873063760;1;1748873063760;1748873063763;1;1748873063778;15;RESPONSE TIME:;33;SENTIMENTO:;Neutro;1748873063795;0;1748873063795;1748873063800;3;1748873063802;2;RESPONSE TIME:;57;SENTIMENTO:;Neutro;...
+[1748873063952] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748873063952] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748873063955] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748873063956] [Source] Mensagem enviada para localhost:2000: '3;1748873063952;'
+[1748873063992] [Source] [HANDLE_CLIENT] Cliente 127.0.0.1:59281 encerrou a conexão (recv retornou vazio).
+[1748873063992] [Source] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59281.
+[1748873063993] [Source] Conexão aceita de 127.0.0.1:59287
+[1748873063995] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59281 fechada.
+[1748873063996] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59281.
+[1748873063996] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59287
+[1748873063997] [Source] [HANDLE_CLIENT] Recebido '215' bytes de 127.0.0.1:59287. Data: '3;1748873063952;1748873063965;1;1748873063965;1748'
+[1748873063997] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '3;1748873063952;1748873063965;1;1748873063965;1748'
+[1748873063998] [Source] Mensagem de resposta recebida: 3;1748873063952;1748873063965;1;1748873063965;1748873063969;2;1748873063973;4;RESPONSE TIME:;21;SENTIMENTO:;Neutro;1748873063982;0;1748873063982;1748873063984;1;1748873063990;6;RESPONSE TIME:;38;SENTIMENTO:;Neutro;...
+[1748873064158] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748873064158] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748873064161] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748873064161] [Source] Mensagem enviada para localhost:2000: '4;1748873064158;'
+[1748873064205] [Source] [HANDLE_CLIENT] Cliente 127.0.0.1:59284 encerrou a conexão (recv retornou vazio).
+[1748873064205] [Source] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59284.
+[1748873064207] [Source] Conexão aceita de 127.0.0.1:59290
+[1748873064207] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59284 fechada.
+[1748873064209] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59284.
+[1748873064210] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59290
+[1748873064210] [Source] [HANDLE_CLIENT] Recebido '216' bytes de 127.0.0.1:59290. Data: '4;1748873064158;1748873064173;0;1748873064173;1748'
+[1748873064210] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '4;1748873064158;1748873064173;0;1748873064173;1748'
+[1748873064211] [Source] Mensagem de resposta recebida: 4;1748873064158;1748873064173;0;1748873064173;1748873064175;1;1748873064177;2;RESPONSE TIME:;19;SENTIMENTO:;Neutro;1748873064189;0;1748873064189;1748873064191;0;1748873064203;12;RESPONSE TIME:;45;SENTIMENTO:;Neutro;...
+[1748873064365] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748873064365] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748873064366] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748873064369] [Source] Mensagem enviada para localhost:2000: '5;1748873064365;'
+[1748873064414] [Source] [HANDLE_CLIENT] Cliente 127.0.0.1:59287 encerrou a conexão (recv retornou vazio).
+[1748873064414] [Source] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59287.
+[1748873064415] [Source] Conexão aceita de 127.0.0.1:59293
+[1748873064418] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59287 fechada.
+[1748873064420] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59293
+[1748873064421] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59287.
+[1748873064421] [Source] [HANDLE_CLIENT] Recebido '215' bytes de 127.0.0.1:59293. Data: '5;1748873064365;1748873064380;1;1748873064380;1748'
+[1748873064422] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '5;1748873064365;1748873064380;1;1748873064380;1748'
+[1748873064423] [Source] Mensagem de resposta recebida: 5;1748873064365;1748873064380;1;1748873064380;1748873064382;1;1748873064388;6;RESPONSE TIME:;23;SENTIMENTO:;Neutro;1748873064402;0;1748873064402;1748873064406;2;1748873064413;7;RESPONSE TIME:;48;SENTIMENTO:;Neutro;...
+[1748873064572] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748873064572] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748873064574] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748873064576] [Source] Mensagem enviada para localhost:2000: '6;1748873064572;'
+[1748873064622] [Source] [HANDLE_CLIENT] Cliente 127.0.0.1:59290 encerrou a conexão (recv retornou vazio).
+[1748873064622] [Source] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59290.
+[1748873064622] [Source] Conexão aceita de 127.0.0.1:59296
+[1748873064625] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59290 fechada.
+[1748873064625] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59290.
+[1748873064626] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59296
+[1748873064626] [Source] [HANDLE_CLIENT] Recebido '216' bytes de 127.0.0.1:59296. Data: '6;1748873064572;1748873064586;0;1748873064586;1748'
+[1748873064626] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '6;1748873064572;1748873064586;0;1748873064586;1748'
+[1748873064627] [Source] Mensagem de resposta recebida: 6;1748873064572;1748873064586;0;1748873064586;1748873064592;2;1748873064605;13;RESPONSE TIME:;33;SENTIMENTO:;Neutro;1748873064616;1;1748873064616;1748873064618;1;1748873064618;0;RESPONSE TIME:;46;SENTIMENTO:;Neutro;...
+[1748873064780] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748873064780] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748873064782] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748873064783] [Source] Mensagem enviada para localhost:2000: '7;1748873064780;'
+[1748873064845] [Source] [HANDLE_CLIENT] Cliente 127.0.0.1:59293 encerrou a conexão (recv retornou vazio).
+[1748873064845] [Source] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59293.
+[1748873064845] [Source] Conexão aceita de 127.0.0.1:59299
+[1748873064847] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59293 fechada.
+[1748873064850] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59299
+[1748873064850] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59293.
+[1748873064851] [Source] [HANDLE_CLIENT] Recebido '216' bytes de 127.0.0.1:59299. Data: '7;1748873064780;1748873064797;1;1748873064797;1748'
+[1748873064851] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '7;1748873064780;1748873064797;1;1748873064797;1748'
+[1748873064851] [Source] Mensagem de resposta recebida: 7;1748873064780;1748873064797;1;1748873064797;1748873064799;0;1748873064813;14;RESPONSE TIME:;33;SENTIMENTO:;Neutro;1748873064830;0;1748873064830;1748873064832;1;1748873064841;9;RESPONSE TIME:;61;SENTIMENTO:;Neutro;...
+[1748873064986] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748873064986] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748873064988] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748873064989] [Source] Mensagem enviada para localhost:2000: '8;1748873064986;'
+[1748873065049] [Source] [HANDLE_CLIENT] Cliente 127.0.0.1:59296 encerrou a conexão (recv retornou vazio).
+[1748873065049] [Source] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59296.
+[1748873065050] [Source] Conexão aceita de 127.0.0.1:59302
+[1748873065052] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59296 fechada.
+[1748873065054] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59296.
+[1748873065054] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59302
+[1748873065055] [Source] [HANDLE_CLIENT] Recebido '217' bytes de 127.0.0.1:59302. Data: '8;1748873064986;1748873065002;1;1748873065002;1748'
+[1748873065055] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '8;1748873064986;1748873065002;1;1748873065002;1748'
+[1748873065055] [Source] Mensagem de resposta recebida: 8;1748873064986;1748873065002;1;1748873065002;1748873065005;1;1748873065020;15;RESPONSE TIME:;34;SENTIMENTO:;Neutro;1748873065030;1;1748873065030;1748873065032;1;1748873065045;13;RESPONSE TIME:;59;SENTIMENTO:;Neutro;...
+[1748873065193] [Source] Erro inesperado ao verificar conexão do socket: module 'socket' has no attribute 'MSG_DONTWAIT'
+[1748873065193] [Source] [OUTBOUND_CONN] Conexão existente para localhost:2000 está inativa. Fechando e removendo.
+[1748873065196] [Source] [OUTBOUND_CONN] Conexão ESTABELECIDA com destino: localhost:2000
+[1748873065198] [Source] Mensagem enviada para localhost:2000: '9;1748873065193;'
+[1748873065233] [Source] [HANDLE_CLIENT] Cliente 127.0.0.1:59299 encerrou a conexão (recv retornou vazio).
+[1748873065234] [Source] [HANDLE_CLIENT] Loop de recebimento encerrado para 127.0.0.1:59299.
+[1748873065234] [Source] Conexão aceita de 127.0.0.1:59305
+[1748873065235] [Source] [HANDLE_CLIENT] Conexão de cliente 127.0.0.1:59299 fechada.
+[1748873065236] [Source] [HANDLE_CLIENT] Finalizando tratamento de conexão para 127.0.0.1:59299.
+[1748873065237] [Source] [HANDLE_CLIENT] Iniciando tratamento de conexão para 127.0.0.1:59305
+[1748873065237] [Source] [HANDLE_CLIENT] Recebido '215' bytes de 127.0.0.1:59305. Data: '9;1748873065193;1748873065208;0;1748873065208;1748'
+[1748873065237] [Source] [HANDLE_CLIENT] Mensagem completa extraída: '9;1748873065193;1748873065208;0;1748873065208;1748'
+[1748873065238] [Source] Mensagem de resposta recebida: 9;1748873065193;1748873065208;0;1748873065208;1748873065212;2;1748873065215;3;RESPONSE TIME:;22;SENTIMENTO:;Neutro;1748873065226;0;1748873065226;1748873065228;1;1748873065232;4;RESPONSE TIME:;39;SENTIMENTO:;Neutro;...
+[1748873065401] [Source] Enviadas 10 mensagens no ciclo atual.
+[1748873065401] [Source] Aguardando o retorno de 10 mensagens.
+[1748873065402] [Source] Todas as 10 mensagens retornaram para o ciclo 2.
+[1748873065405] MRT From Experiment: 32.20; SD From Experiment: 12.00
+[1748873065405] [Source] Ciclo 2 Concluído. MRT Experimental: 32.20ms, SD Experimental: 12.00ms
+[1748873065406] [Source] Ciclo 2 completado.
+[1748873065406] [Stage] Validação: Finalizado. Todos os ciclos concluídos.
+[1748873065407] 
+======================================
+[1748873065408] Resultados Finais da Simulação:
+[1748873065409] Ciclo 1 (Qtd Serviços: 1):
+[1748873065409]   MRT Experimental: 39.60ms, SD Experimental: 22.16ms
+[1748873065409]   MRT do Modelo: 405597.23, SD do Modelo: 1245.97
+[1748873065410] Ciclo 2 (Qtd Serviços: 2):
+[1748873065411]   MRT Experimental: 32.20ms, SD Experimental: 12.00ms
+[1748873065411]   MRT do Modelo: 203892.96, SD do Modelo: 613.95
+[1748873065412] Mensagens descartadas na Origem: 0
+[1748873065412] ======================================
+[1748873065413] [Source] Sinal de parada recebido. Encerrando threads e conexões...
+[1748873065413] [Source] Socket local fechado na porta 1025.
+[1748873065414] [Source] Conexão de saída para localhost:3000 fechada.
+[1748873065415] [Source] Conexão de saída para localhost:2000 fechada.

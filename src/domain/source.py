@@ -95,17 +95,46 @@ class Source(AbstractProxy):
         except Exception as e:
             self.log(f"[{self.proxy_name}] ERRO ao enviar mensagem de configuração para {target_address}: {e}")
 
+    # def send_message_feeding_stage(self):
+    #     self.log("[Stage] Alimentação do Modelo: Iniciado.")
+    #     message_index = 0
+    #     MAX_MESSAGES_TO_SEND = 5 
+    #     while self.is_running and message_index < MAX_MESSAGES_TO_SEND:
+    #         message = f"{message_index};{get_current_millis()};" 
+    #         self._send(message)
+    #         message_index += 1
+    #         if message_index % 100 == 0:
+    #             self.log(f"[{self.proxy_name}] Enviadas {message_index} mensagens no estágio de alimentação.")
+    #     self.log(f"[{self.proxy_name}] Estágio de alimentação finalizado após enviar {message_index} mensagens.")
+
     def send_message_feeding_stage(self):
         self.log("[Stage] Alimentação do Modelo: Iniciado.")
+
+        messages = [
+            "Estou muito feliz com o resultado!",
+            "O serviço foi péssimo e decepcionante.",
+            "Nada de especial aconteceu hoje.",
+            "A comida estava maravilhosa, adorei!",
+            "Estou me sentindo cansado e desmotivado.",
+            "Foi um dia comum, sem novidades.",
+            "O atendimento foi ótimo e muito rápido!",
+            "O produto chegou danificado e me deixou frustrado.",
+            "Não tenho opinião formada sobre isso.",
+            "A experiência foi incrível, recomendo para todos!",
+        ]
+
+        MAX_MESSAGES_TO_SEND = len(messages)
         message_index = 0
-        MAX_MESSAGES_TO_SEND = 5 
+
         while self.is_running and message_index < MAX_MESSAGES_TO_SEND:
-            message = f"{message_index};{get_current_millis()};" 
+            message = f"{messages[message_index]};{get_current_millis()};"
             self._send(message)
             message_index += 1
-            if message_index % 100 == 0:
+            if message_index % 5 == 0:
                 self.log(f"[{self.proxy_name}] Enviadas {message_index} mensagens no estágio de alimentação.")
+
         self.log(f"[{self.proxy_name}] Estágio de alimentação finalizado após enviar {message_index} mensagens.")
+
  
     def send_messages_validation_stage(self):
         self.log("[Stage] Validação: Iniciado.")

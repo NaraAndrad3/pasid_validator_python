@@ -6,6 +6,8 @@ import os
 from src.domain.abstract_proxy import AbstractProxy
 from src.domain.target_address import TargetAddress
 from src.domain.utils import get_current_millis
+from textblob import TextBlob
+
 
 class ServiceProxy(AbstractProxy):
 
@@ -66,11 +68,56 @@ class ServiceProxy(AbstractProxy):
             delay = max(0, random.gauss(self.service_time, self.std)) / 1000.0
             time.sleep(delay)
 
+            # 🧠 Análise de sentimento
+            sentiment_result = self.analyze_sentiment(message_to_process)
+            self.log(f"[{self.proxy_name}] Sentimento detectado: {sentiment_result}")
+
+            # ⏱️ Adiciona timestamps finais
             processed_message = self.register_time_when_go_out(message_to_process)
-            self.log(f"[{self.proxy_name}] Mensagem processada. Enviando para destino: {processed_message[:50]}...")
+
+            # 📤 Envia mensagem com sentimento
+            full_message = processed_message + f"SENTIMENTO:;{sentiment_result};"
+
+            self.log(f"[{self.proxy_name}] Mensagem processada. Enviando para destino: {full_message[:50]}...")
+            self.send_message_to_destiny(full_message + "\n", self.target_address)
+
+    def analyze_sentiment(self, message: str) -> str:
+        try:
+            # Extrai apenas o texto da mensagem se ela tiver timestamps ou outros dados
+            parts = message.split(';')
+            text = parts[0] if parts else message
+            
+            blob = TextBlob(text)
+            polarity = blob.sentiment.polarity
+            
+            if polarity > 0.1:
+                return "Positivo"
+            elif polarity < -0.1:
+                return "Negativo"
+            else:
+                return "Neutro"
+        except Exception as e:
+            self.log(f"[{self.proxy_name}] Erro ao analisar sentimento: {e}")
+            return "Indefinido"
+
+
+    # def process_and_send_to_destiny(self):
+    #     message_to_process = None
+        
+    #     with self.processing_lock:
+    #         if not self.processing_queue:
+    #             return
+    #         message_to_process = self.processing_queue.pop(0)
+
+    #     if message_to_process:
+    #         delay = max(0, random.gauss(self.service_time, self.std)) / 1000.0
+    #         time.sleep(delay)
+
+    #         processed_message = self.register_time_when_go_out(message_to_process)
+    #         self.log(f"[{self.proxy_name}] Mensagem processada. Enviando para destino: {processed_message[:50]}...")
 
             
-            self.send_message_to_destiny(processed_message + "\n", self.target_address)
+    #         self.send_message_to_destiny(processed_message + "\n", self.target_address)
             
         
     def register_time_when_arrives(self, received_message: str) -> str:
