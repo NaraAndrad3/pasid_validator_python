@@ -121,6 +121,10 @@ O arquivo run.sh foi implementado apenas para facilitar a inicialização dos co
 
 ---
 
+### Grafico gerado pela execução:
+
+![Gráfico MRT](run_components/logs/mrt_por_num_mensagens.png)
+
 ### Autores
 
 * [@NaraAndrad3](https://github.com/NaraAndrad3)
