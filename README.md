@@ -99,6 +99,19 @@ O arquivo run.sh foi implementado apenas para facilitar a inicialização dos co
 
 ---
 
+#### **Como executar o sistema com o docker:**
+
+Dentro da raiz do projeto, execute:
+
+```bash
+docker-compose build
+docker-compose up
+```
+
+O arquivo run.sh foi implementado apenas para facilitar a inicialização dos componentes para os testes, dessa forma não seria necessário executar manualmente cada componente separadamente.
+
+---
+
 ### Tecnologias Utilizadas
 
 * **Python 3.12.3**: Linguagem de programação principal.
