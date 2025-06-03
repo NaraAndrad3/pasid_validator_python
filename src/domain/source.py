@@ -8,6 +8,8 @@ import socket
 from src.domain.abstract_proxy import AbstractProxy
 from src.domain.target_address import TargetAddress
 from src.domain.utils import read_properties_file, get_current_millis, calculate_std_dev, calculate_mean
+import matplotlib.pyplot as plt
+from collections import defaultdict
 
 class Source(AbstractProxy):
     """
@@ -16,6 +18,7 @@ class Source(AbstractProxy):
     """
 
     def __init__(self, properties_path: str):
+        self.experiment_config = []
         props = read_properties_file(properties_path)
 
         self.model_feeding_stage = props.get("modelFeedingStage", "false").lower() == 'true'
@@ -45,6 +48,8 @@ class Source(AbstractProxy):
         self.experiment_data = []
         self.experiment_error = []
 
+        self.messages_per_cycle = [int(m) for m in props.get("variatingServices.messagesPerCycle").split(',')]
+        
         self.print_source_parameters()
 
     def print_source_parameters(self):
@@ -138,56 +143,62 @@ class Source(AbstractProxy):
  
     def send_messages_validation_stage(self):
         self.log("[Stage] Validação: Iniciado.")
-        
-        while self.current_cycle_index < len(self.qtd_services) and self.is_running:
-            qtd_services_for_cycle = self.qtd_services[self.current_cycle_index]
-            self.log(f"[{self.proxy_name}] Iniciando Ciclo {self.current_cycle_index + 1} com {qtd_services_for_cycle} serviços.")
 
-            variated_lb_address = TargetAddress(self.variated_server_load_balancer_ip, self.variated_server_load_balancer_port)
-            config_message = f"config;{qtd_services_for_cycle}"
-            self._send_config_message(variated_lb_address, config_message)
-            
-            time.sleep(2) 
+        for qtd_services_for_cycle in self.qtd_services:
+            for num_msgs in self.messages_per_cycle:
+                self.max_considered_messages_expected = num_msgs  # atualiza dinamicamente
 
-            self.considered_messages.clear() 
-            self.source_current_index_message = 0 
-            
-            
-            try:
-                with self._outbound_connections_lock:
-                    target_key = (self.target_address.get_ip(), self.target_address.get_port())
-                    if target_key in self._outbound_connections:
-                        self.log(f"[{self.proxy_name}] Fechando conexão existente para {target_key} antes do novo ciclo.")
-                        self._outbound_connections[target_key].close()
-                        del self._outbound_connections[target_key]
-            except Exception as e:
-                self.log(f"[{self.proxy_name}] Erro ao tentar fechar conexão existente para LB1: {e}")
-            
-            while self.source_current_index_message < self.max_considered_messages_expected and self.is_running:
-                message = f"{self.source_current_index_message};{get_current_millis()};"
-                self._send(message)
-                self.source_current_index_message += 1
-                if self.source_current_index_message % 10 == 0:
-                    self.log(f"[{self.proxy_name}] Enviadas {self.source_current_index_message} mensagens no ciclo atual.")
+                self.log(f"\n[{self.proxy_name}] Iniciando ciclo com {qtd_services_for_cycle} serviço(s) e {num_msgs} mensagens.")
 
-            self.log(f"[{self.proxy_name}] Aguardando o retorno de {self.max_considered_messages_expected} mensagens.")
-            wait_start_time = time.time()
-           
-            WAIT_TIMEOUT_SECONDS = 120 # AUMENTADO PARA 120 SEGUNDOS (antes 10)
-            while len(self.considered_messages) < self.max_considered_messages_expected and \
-                  self.is_running and \
-                  (time.time() - wait_start_time) < WAIT_TIMEOUT_SECONDS:
-                time.sleep(0.1)
+                # Reconfigura LB2
+                variated_lb_address = TargetAddress(
+                    self.variated_server_load_balancer_ip,
+                    self.variated_server_load_balancer_port
+                )
+                config_message = f"config;{qtd_services_for_cycle}"
+                self._send_config_message(variated_lb_address, config_message)
+                time.sleep(2)
 
-            if len(self.considered_messages) >= self.max_considered_messages_expected:
-                self.log(f"[{self.proxy_name}] Todas as {self.max_considered_messages_expected} mensagens retornaram para o ciclo {self.current_cycle_index + 1}.")
+                # Reseta dados para o novo ciclo
+                self.considered_messages.clear()
+                self.source_current_index_message = 0
+
+                # Fecha conexão anterior com LB1
+                try:
+                    with self._outbound_connections_lock:
+                        target_key = (self.target_address.get_ip(), self.target_address.get_port())
+                        if target_key in self._outbound_connections:
+                            self.log(f"[{self.proxy_name}] Fechando conexão existente para {target_key} antes do novo ciclo.")
+                            self._outbound_connections[target_key].close()
+                            del self._outbound_connections[target_key]
+                except Exception as e:
+                    self.log(f"[{self.proxy_name}] Erro ao fechar conexão com LB1: {e}")
+
+                # Envia as mensagens para esse ciclo
+                while self.source_current_index_message < self.max_considered_messages_expected and self.is_running:
+                    message = f"{self.source_current_index_message};{get_current_millis()};"
+                    self._send(message)
+                    self.source_current_index_message += 1
+
+                    if self.source_current_index_message % 10 == 0:
+                        self.log(f"[{self.proxy_name}] Enviadas {self.source_current_index_message} mensagens no ciclo atual.")
+
+                self.log(f"[{self.proxy_name}] Aguardando {self.max_considered_messages_expected} respostas...")
+                wait_start_time = time.time()
+                WAIT_TIMEOUT_SECONDS = 120
+
+                while (len(self.considered_messages) < self.max_considered_messages_expected
+                    and self.is_running
+                    and (time.time() - wait_start_time) < WAIT_TIMEOUT_SECONDS):
+                    time.sleep(0.1)
+
+                if len(self.considered_messages) >= self.max_considered_messages_expected:
+                    self.log(f"[{self.proxy_name}] Todas as {self.max_considered_messages_expected} mensagens retornaram.")
+                else:
+                    self.log(f"[{self.proxy_name}] ATENÇÃO: Apenas {len(self.considered_messages)} de {self.max_considered_messages_expected} mensagens retornaram.")
+
+                self.experiment_config.append((qtd_services_for_cycle, num_msgs))
                 self.execute_second_stage_of_validation_metrics()
-            else:
-                self.log(f"[{self.proxy_name}] ATENÇÃO: Apenas {len(self.considered_messages)} de {self.max_considered_messages_expected} mensagens retornaram após o tempo limite para o ciclo {self.current_cycle_index + 1}.")
-                self.execute_second_stage_of_validation_metrics() 
-
-            self.current_cycle_index += 1 
-            self.log(f"[{self.proxy_name}] Ciclo {self.current_cycle_index} completado.")
 
         self.all_cycles_completed = True
         self.log("[Stage] Validação: Finalizado. Todos os ciclos concluídos.")
@@ -262,12 +273,43 @@ class Source(AbstractProxy):
     def display_final_results(self):
         self.log("\n======================================")
         self.log("Resultados Finais da Simulação:")
+
+        # Dicionário que agrupa resultados por qtd de serviços
+        resultados_por_qtd_servicos = defaultdict(dict)
+
         for i, mrt_exp in enumerate(self.experiment_data):
             sd_exp = self.experiment_error[i]
+            try:
+                qtd_serv, num_msgs = self.experiment_config[i]
+            except IndexError:
+                self.log(f"[{self.proxy_name}] Erro: índice {i} fora do range em experiment_config.")
+                continue
+
+            resultados_por_qtd_servicos[qtd_serv][num_msgs] = mrt_exp
+
             mrt_model = self.mrts_from_model[i] if i < len(self.mrts_from_model) else "N/A"
             sd_model = self.sdvs_from_model[i] if i < len(self.sdvs_from_model) else "N/A"
-            self.log(f"Ciclo {i + 1} (Qtd Serviços: {self.qtd_services[i] if i < len(self.qtd_services) else 'N/A'}):")
+            self.log(f"Ciclo {i + 1} (Qtd Serviços: {qtd_serv}):")
             self.log(f"  MRT Experimental: {mrt_exp:.2f}ms, SD Experimental: {sd_exp:.2f}ms")
             self.log(f"  MRT do Modelo: {mrt_model}, SD do Modelo: {sd_model}")
+
         self.log(f"Mensagens descartadas na Origem: {self.dropp_count}")
         self.log("======================================")
+
+        # === Gerar o gráfico final agrupado por qtd de serviços ===
+        plt.figure(figsize=(10, 6))
+        for qtd_servicos, resultados in sorted(resultados_por_qtd_servicos.items()):
+            frases = sorted(resultados.keys())
+            mrt_ms = [resultados[qtd] for qtd in frases]
+            plt.plot(frases, mrt_ms, marker='o', label=f'{qtd_servicos} serviço(s)')
+
+        plt.title("Tempo Médio de Resposta (MRT) por Quantidade de Mensagens")
+        plt.xlabel("Quantidade de Mensagens por Ciclo")
+        plt.ylabel("MRT (ms)")
+        plt.legend(title="Qtd. Serviços")
+        plt.grid(True, linestyle='--', alpha=0.7)
+        plt.tight_layout()
+
+        os.makedirs("logs", exist_ok=True)
+        plt.savefig("logs/mrt_por_num_mensagens.png")
+        plt.show()
