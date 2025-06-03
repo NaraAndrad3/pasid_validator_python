@@ -1,0 +1,81 @@
+version: '3.9'
+
+services:
+
+  source:
+    build: .
+    container_name: source
+    command: ["python", "main.py", "source"]
+    volumes:
+      - ./config:/app/config
+      - ./logs:/app/logs
+    depends_on:
+      - loadbalancer1
+    networks:
+      - pasid-net
+
+  loadbalancer1:
+    build: .
+    container_name: loadbalancer1
+    command: ["python", "main.py", "lb1"]
+    volumes:
+      - ./config:/app/config
+      - ./logs:/app/logs
+    depends_on:
+      - loadbalancer2
+    networks:
+      - pasid-net
+
+  loadbalancer2:
+    build: .
+    container_name: loadbalancer2
+    command: ["python", "main.py", "lb2"]
+    volumes:
+      - ./config:/app/config
+      - ./logs:/app/logs
+    networks:
+      - pasid-net
+
+  service_2001:
+    build: .
+    container_name: service_2001
+    command: ["python", "run_service.py", "config/service_2001.properties"]
+    volumes:
+      - ./config:/app/config
+      - ./logs:/app/logs
+    networks:
+      - pasid-net
+
+  service_2002:
+    build: .
+    container_name: service_2002
+    command: ["python", "run_service.py", "config/service_2002.properties"]
+    volumes:
+      - ./config:/app/config
+      - ./logs:/app/logs
+    networks:
+      - pasid-net
+
+  service_3001:
+    build: .
+    container_name: service_3001
+    command: ["python", "run_service.py", "config/service_3001.properties"]
+    volumes:
+      - ./config:/app/config
+      - ./logs:/app/logs
+    networks:
+      - pasid-net
+
+  service_3002:
+    build: .
+    container_name: service_3002
+    command: ["python", "run_service.py", "config/service_3002.properties"]
+    volumes:
+      - ./config:/app/config
+      - ./logs:/app/logs
+    networks:
+      - pasid-net
+
+networks:
+  pasid-net:
+    driver: bridge
